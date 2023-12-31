@@ -359,13 +359,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:^2.11.2":
-  version: 2.11.8
-  resolution: "@popperjs/core@npm:2.11.8"
-  checksum: e5c69fdebf52a4012f6a1f14817ca8e9599cb1be73dd1387e1785e2ed5e5f0862ff817f420a87c7fc532add1f88a12e25aeb010ffcbdc98eace3d55ce2139cf0
-  languageName: node
-  linkType: hard
-
 "@rollup/rollup-android-arm-eabi@npm:4.9.1":
   version: 4.9.1
   resolution: "@rollup/rollup-android-arm-eabi@npm:4.9.1"
@@ -591,6 +584,15 @@ __metadata:
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 97ed0cb44d4070aecea772b7b2e2ed971e10c81ec87dd4ecc160322ffa55ff330dace1793489540e3e318d90942064bb697cc0f8989391797792d919737b3b98
+  languageName: node
+  linkType: hard
+
+"@types/postcss-js@npm:^4.0.0":
+  version: 4.0.4
+  resolution: "@types/postcss-js@npm:4.0.4"
+  dependencies:
+    postcss: ^8.3.3
+  checksum: e6dc3213d56d6474c7f139e8836bd51c533b8db5bf57c9aea73aa0e61df9559ef396498abc222dfc0f035d51fc6e16d33e14b722bbba352d34802920668359e8
   languageName: node
   linkType: hard
 
@@ -2420,7 +2422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-js@npm:^4.0.1":
+"postcss-js@npm:^4.0.0, postcss-js@npm:^4.0.1":
   version: 4.0.1
   resolution: "postcss-js@npm:4.0.1"
   dependencies:
@@ -2477,7 +2479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.23, postcss@npm:^8.4.32":
+"postcss@npm:^8.3.3, postcss@npm:^8.4.19, postcss@npm:^8.4.23, postcss@npm:^8.4.32":
   version: 8.4.32
   resolution: "postcss@npm:8.4.32"
   dependencies:
@@ -2488,19 +2490,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"preline@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "preline@npm:2.0.3"
-  dependencies:
-    "@popperjs/core": ^2.11.2
-  checksum: 90a589c18637af74fae7d2ec6563b100d962ce642b177a36cd1772c698e97df50fc90cadd5a9d2c8e2934caf3d5cffa52a9d5047c45e9014e500bd599c1fb395
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
   checksum: cd192ec0d0a8e4c6da3bb80e4f62afe336df3f76271ac6deb0e6a36187133b6073a19e9727a1ff108cd8b9982e4768850d413baa71214dd80c7979617dca827a
+  languageName: node
+  linkType: hard
+
+"prettier@npm:3.1.1":
+  version: 3.1.1
+  resolution: "prettier@npm:3.1.1"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: e386855e3a1af86a748e16953f168be555ce66d6233f4ba54eb6449b88eb0c6b2ca79441b11eae6d28a7f9a5c96440ce50864b9d5f6356d331d39d6bb66c648e
   languageName: node
   linkType: hard
 
@@ -2632,6 +2634,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rippleui@npm:^1.12.1":
+  version: 1.12.1
+  resolution: "rippleui@npm:1.12.1"
+  dependencies:
+    "@types/postcss-js": ^4.0.0
+    postcss: ^8.4.19
+    postcss-js: ^4.0.0
+    tailwindcss: ^3.3.1
+  checksum: cfe00d8677dfdd1e437d3ecc1b3a7c0d9150c92320d7fabda37b4913dc52f2186b00c95e327d2b7628cd6ae395d16766998e95dad8f61835e71bf5ede0bcb43b
+  languageName: node
+  linkType: hard
+
 "rollup@npm:^4.2.0":
   version: 4.9.1
   resolution: "rollup@npm:4.9.1"
@@ -2736,9 +2750,10 @@ __metadata:
     eslint-plugin-react-refresh: ^0.4.5
     lucide-react: ^0.303.0
     postcss: ^8.4.32
-    preline: ^2.0.3
+    prettier: 3.1.1
     react: ^18.2.0
     react-dom: ^18.2.0
+    rippleui: ^1.12.1
     tailwindcss: ^3.4.0
     typescript: ^5.2.2
     vite: ^5.0.8
@@ -2900,7 +2915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^3.4.0":
+"tailwindcss@npm:^3.3.1, tailwindcss@npm:^3.4.0":
   version: 3.4.0
   resolution: "tailwindcss@npm:3.4.0"
   dependencies:

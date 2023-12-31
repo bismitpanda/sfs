@@ -11,15 +11,16 @@ import {
     FileDigit,
     FileAxis3D,
     FileSpreadsheet,
-    FileQuestion,
+    File,
     FileWarning,
 } from "lucide-react";
 
-export const getIcon = (ext: string) => {
+export const getIcon = (path: string) => {
+    let ext = path.split(".").at(-1);
     let icon;
     switch (ext) {
         case "txt":
-            icon = <FileText />;
+            icon = <FileText size={18} strokeWidth={1} />;
             break;
 
         case "zip":
@@ -46,7 +47,7 @@ export const getIcon = (ext: string) => {
         case "lzma":
         case "cpio":
         case "arc":
-            icon = <FileArchive />;
+            icon = <FileArchive size={18} strokeWidth={1} />;
             break;
 
         case "apng":
@@ -61,7 +62,7 @@ export const getIcon = (ext: string) => {
         case "heic":
         case "ico":
         case "jpg":
-            icon = <FileImage />;
+            icon = <FileImage size={18} strokeWidth={1} />;
             break;
 
         case "mov":
@@ -74,7 +75,8 @@ export const getIcon = (ext: string) => {
         case "wmv":
         case "webm":
         case "mpeg":
-            icon = <FileVideo />;
+        case "mp4":
+            icon = <FileVideo size={18} strokeWidth={1} />;
             break;
 
         case "au":
@@ -89,14 +91,14 @@ export const getIcon = (ext: string) => {
         case "opus":
         case "mp3":
         case "ogg":
-            icon = <FileAudio />;
+            icon = <FileAudio size={18} strokeWidth={1} />;
             break;
 
         case "otf":
         case "ttf":
         case "woff2":
         case "woff":
-            icon = <FileType />;
+            icon = <FileType size={18} strokeWidth={1} />;
             break;
 
         case "ps1":
@@ -104,21 +106,21 @@ export const getIcon = (ext: string) => {
         case "bat":
         case "vbs":
         case "sh":
-            icon = <FileTerminal />;
+            icon = <FileTerminal size={18} strokeWidth={1} />;
             break;
 
         case "key":
         case "pem":
-            icon = <FileKey />;
+            icon = <FileKey size={18} strokeWidth={1} />;
             break;
 
         case "json":
-            icon = <FileJson />;
+            icon = <FileJson size={18} strokeWidth={1} />;
             break;
 
         case "dat":
         case "bin":
-            icon = <FileDigit />;
+            icon = <FileDigit size={18} strokeWidth={1} />;
             break;
 
         case "stl":
@@ -128,22 +130,22 @@ export const getIcon = (ext: string) => {
         case "glb":
         case "stp":
         case "blend":
-            icon = <FileAxis3D />;
+            icon = <FileAxis3D size={18} strokeWidth={1} />;
             break;
 
         case "csv":
         case "tsv":
         case "xls":
         case "xlsx":
-            icon = <FileSpreadsheet />;
+            icon = <FileSpreadsheet size={18} strokeWidth={1} />;
             break;
 
         case "log":
-            icon = <FileWarning />;
+            icon = <FileWarning size={18} strokeWidth={1} />;
             break;
 
         default:
-            icon = <FileQuestion />;
+            icon = <File size={18} strokeWidth={1} />;
             break;
     }
 
