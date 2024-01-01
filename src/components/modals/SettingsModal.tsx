@@ -1,5 +1,5 @@
-import { Modal, ModalProps } from "./Modal";
 import { PathInput } from "../inputs/PathInput";
+import { Modal, ModalProps } from "./Modal";
 
 export const SettingsModal: React.FC<ModalProps> = ({ onClick, checked }) => (
     <Modal onClick={onClick} checked={checked} title="Settings">

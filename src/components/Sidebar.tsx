@@ -1,8 +1,9 @@
-import { Cog, FolderClock, LogOut, PieChart } from "lucide-react";
-import { NavIcon } from "./NavIcon";
-import { deleteColor, folderActionColor, infoColor } from "../utils";
 import { exit } from "@tauri-apps/api/process";
+import { Cog, FolderClock, LogOut, PieChart } from "lucide-react";
 import { useState } from "react";
+
+import { deleteColor, folderActionColor, infoColor } from "../utils";
+import { NavIcon } from "./NavIcon";
 import { PropertiesModal, SettingsModal } from "./modals";
 
 export const Sidebar: React.FC = () => {

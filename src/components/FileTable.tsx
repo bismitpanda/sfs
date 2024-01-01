@@ -1,6 +1,7 @@
+import { ArrowDownUp, Folder } from "lucide-react";
+
 import { getIcon } from "../utils/mapExtIcon";
 import "./FileTable.css";
-import { Folder, ArrowDownUp } from "lucide-react";
 
 export type Record =
     | { kind: "FILE"; name: string; size: number }

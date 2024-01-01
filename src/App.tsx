@@ -1,4 +1,4 @@
-import { Navbar, Sidebar, FileTable, WorkingDir } from "./components";
+import { FileTable, Navbar, Sidebar, WorkingDir } from "./components";
 import { Record } from "./components/FileTable";
 import mockData from "./mock.json";
 

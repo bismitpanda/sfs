@@ -11,20 +11,21 @@ import {
     Trash2,
     Upload,
 } from "lucide-react";
-import { NavIcon } from "./NavIcon";
+import { useState } from "react";
+
 import {
     createColor,
     deleteColor,
     folderActionColor,
     infoColor,
 } from "../utils";
+import { NavIcon } from "./NavIcon";
 import {
-    RenameModal,
     NewFileModal,
     NewFolderModal,
+    RenameModal,
     SearchModal,
 } from "./modals";
-import { useState } from "react";
 
 export const Navbar: React.FC<{ selected?: boolean }> = ({ selected }) => {
     const [search, setSearch] = useState(false);

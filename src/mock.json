@@ -1,9 +1,6 @@
 {
     "selected": true,
-    "path": [
-        "Documents",
-        "My Folder"
-    ],
+    "path": ["Documents", "My Folder"],
     "records1": [
         {
             "kind": "FOLDER",
