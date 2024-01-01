@@ -11,57 +11,98 @@ import {
     Trash2,
     Upload,
 } from "lucide-react";
+import { NavIcon } from "./NavIcon";
+import {
+    createColor,
+    deleteColor,
+    folderActionColor,
+    infoColor,
+} from "../utils";
+import {
+    RenameModal,
+    NewFileModal,
+    NewFolderModal,
+    SearchModal,
+} from "./modals";
+import { useState } from "react";
 
-export const Navbar: React.FC<{ selected?: boolean }> = ({ selected }) => (
-    <div className="navbar bg-[#222] shadow-none rounded-lg">
-        <div className="navbar-start gap-3">
-            <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                <FolderUp color="#ffaa5c" size={16} strokeWidth={1} />
+export const Navbar: React.FC<{ selected?: boolean }> = ({ selected }) => {
+    const [search, setSearch] = useState(false);
+    const [rename, setRename] = useState(false);
+    const [newFile, setNewFile] = useState(false);
+    const [newFolder, setNewFolder] = useState(false);
+
+    return (
+        <>
+            <SearchModal checked={search} onClick={() => setSearch(false)} />
+            <RenameModal checked={rename} onClick={() => setRename(false)} />
+            <NewFileModal checked={newFile} onClick={() => setNewFile(false)} />
+            <NewFolderModal
+                checked={newFolder}
+                onClick={() => setNewFolder(false)}
+            />
+
+            <div className="navbar bg-[#1a1a1a] shadow-none rounded-lg">
+                <div className="navbar-start gap-3">
+                    <NavIcon
+                        icon={FolderUp}
+                        color={folderActionColor}
+                        tooltipBot="Move Up"
+                    />
+                    <NavIcon
+                        icon={FolderSearch2}
+                        color={infoColor}
+                        tooltipBot="Search"
+                    />
+                    <NavIcon
+                        icon={FolderPlus}
+                        color={createColor}
+                        tooltipBot="New Folder"
+                    />
+                    <NavIcon
+                        icon={FilePlus}
+                        color={createColor}
+                        tooltipBot="New File"
+                    />
+                </div>
+                <div className="navbar-end gap-3">
+                    {selected && (
+                        <>
+                            <NavIcon
+                                icon={SendHorizonal}
+                                color={deleteColor}
+                                tooltipBot="Move To"
+                            />
+                            <NavIcon
+                                icon={Pencil}
+                                color={deleteColor}
+                                tooltipBot="Rename"
+                            />
+                            <NavIcon
+                                icon={Trash2}
+                                color={deleteColor}
+                                tooltipBot="Delete"
+                            />
+                            <NavIcon
+                                icon={ClipboardCopy}
+                                color={infoColor}
+                                tooltipBot="Copy"
+                            />
+                        </>
+                    )}
+                    <NavIcon icon={Info} color={infoColor} tooltipBot="Info" />
+                    <NavIcon
+                        icon={Upload}
+                        color={createColor}
+                        tooltipBot="Export"
+                    />
+                    <NavIcon
+                        icon={Download}
+                        color={createColor}
+                        tooltipBot="Import"
+                    />
+                </div>
             </div>
-            <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                <FolderSearch2 color="#8fd0ff" size={16} strokeWidth={1} />
-            </div>
-            <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                <FolderPlus color="#7dff9a" size={16} strokeWidth={1} />
-            </div>
-            <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                <FilePlus color="#7dff9a" size={16} strokeWidth={1} />
-            </div>
-        </div>
-        <div className="navbar-end gap-3">
-            {selected && (
-                <>
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <SendHorizonal
-                            color="#ff7979"
-                            size={16}
-                            strokeWidth={1}
-                        />
-                    </div>
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <Pencil color="#ff7979" size={16} strokeWidth={1} />
-                    </div>
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <Trash2 color="#ff7979" size={16} strokeWidth={1} />
-                    </div>
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <ClipboardCopy
-                            color="#8fd0ff"
-                            size={16}
-                            strokeWidth={1}
-                        />
-                    </div>
-                </>
-            )}
-            <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                <Info color="#8fd0ff" size={16} strokeWidth={1} />
-            </div>
-            <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                <Upload color="#7dff9a" size={16} strokeWidth={1} />
-            </div>
-            <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                <Download color="#7dff9a" size={16} strokeWidth={1} />
-            </div>
-        </div>
-    </div>
-);
+        </>
+    );
+};

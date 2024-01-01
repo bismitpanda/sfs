@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
+body {
     font-family: "Space Grotesk", sans-serif;
     line-height: 1.5;
     font-weight: 400;
@@ -13,11 +13,14 @@ html {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    overscroll-behavior: none;
+    background-color: #111;
 }
 
 ::-webkit-scrollbar {
     width: 1rem;
-    background-color: #222;
+    background-color: #1a1a1a;
     border-radius: 8px;
 }
 

@@ -4,7 +4,7 @@
         "Documents",
         "My Folder"
     ],
-    "records": [
+    "records1": [
         {
             "kind": "FOLDER",
             "name": "Folder 1"
@@ -37,6 +37,48 @@
             "kind": "FOLDER",
             "name": "Folder 8"
         },
+        {
+            "kind": "FILE",
+            "name": "File 1.zip",
+            "size": 3
+        },
+        {
+            "kind": "FILE",
+            "name": "File 2.tar",
+            "size": 10
+        },
+        {
+            "kind": "FILE",
+            "name": "File 3.tar.gz",
+            "size": 10
+        },
+        {
+            "kind": "FILE",
+            "name": "File 4.txt",
+            "size": 4
+        },
+        {
+            "kind": "FILE",
+            "name": "File 5.png",
+            "size": 10
+        },
+        {
+            "kind": "FILE",
+            "name": "File 6.jpeg",
+            "size": 10
+        },
+        {
+            "kind": "FILE",
+            "name": "File 7.mp4",
+            "size": 5
+        },
+        {
+            "kind": "FILE",
+            "name": "File 8.mkv",
+            "size": 7
+        }
+    ],
+    "records2": [
         {
             "kind": "FILE",
             "name": "File 1.zip",

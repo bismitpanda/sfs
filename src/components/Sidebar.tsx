@@ -1,25 +1,56 @@
 import { Cog, FolderClock, LogOut, PieChart } from "lucide-react";
+import { NavIcon } from "./NavIcon";
+import { deleteColor, folderActionColor, infoColor } from "../utils";
+import { exit } from "@tauri-apps/api/process";
+import { useState } from "react";
+import { PropertiesModal, SettingsModal } from "./modals";
 
-export const Sidebar: React.FC = () => (
-    <aside className="sidebar h-screen justify-start">
-        <section className="sidebar-content"></section>
-        <section className="sidebar-footer justify-end h-fit min-h-[20rem] overflow-visible px-4 pb-3">
-            <div className="navbar bg-[#222] shadow-none rounded-lg">
-                <div className="navbar-start justify-between">
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <Cog size={18} strokeWidth={1} />
+export const Sidebar: React.FC = () => {
+    const [properties, setProperties] = useState(false);
+    const [settings, setSetings] = useState(false);
+
+    return (
+        <>
+            <PropertiesModal
+                checked={properties}
+                onClick={() => setProperties(false)}
+            />
+            <SettingsModal
+                checked={settings}
+                onClick={() => setSetings(false)}
+            />
+            <aside className="sidebar h-screen justify-start bg-[#1a1a1a]">
+                <section className="sidebar-content"></section>
+                <section className="sidebar-footer justify-end h-fit min-h-[20rem] overflow-visible px-4 pb-3">
+                    <div className="navbar bg-[#151515] shadow-none rounded-lg">
+                        <div className="navbar-start justify-between">
+                            <NavIcon
+                                icon={Cog}
+                                color={infoColor}
+                                tooltipTop="Settings"
+                                onClick={() => setSetings(true)}
+                            />
+                            <NavIcon
+                                icon={PieChart}
+                                color={infoColor}
+                                tooltipTop="Properties"
+                                onClick={() => setProperties(true)}
+                            />
+                            <NavIcon
+                                icon={FolderClock}
+                                color={folderActionColor}
+                                tooltipTop="Recent"
+                            />
+                            <NavIcon
+                                icon={LogOut}
+                                color={deleteColor}
+                                tooltipTop="Exit"
+                                onClick={() => exit(0)}
+                            />
+                        </div>
                     </div>
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <PieChart size={18} strokeWidth={1} />
-                    </div>
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <FolderClock size={18} strokeWidth={1} />
-                    </div>
-                    <div className="navbar-item bg-[#333] aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97]">
-                        <LogOut size={18} strokeWidth={1} />
-                    </div>
-                </div>
-            </div>
-        </section>
-    </aside>
-);
+                </section>
+            </aside>
+        </>
+    );
+};

@@ -102,6 +102,7 @@ pub struct Meta {
     free_fragments: Vec<(usize, Vec<usize>)>,
     empty_records: Vec<usize>,
     end_offset: usize,
+    pinned_records: Vec<usize>,
 }
 
 impl RecordTable {
@@ -140,6 +141,7 @@ impl RecordTable {
                 free_fragments: Vec::new(),
                 empty_records: Vec::new(),
                 end_offset: 0,
+                pinned_records: Vec::new(),
             },
             crypt: Crypt {
                 store_key: store_cipher

@@ -1,7 +1,7 @@
 import { Home } from "lucide-react";
 
 export const WorkingDir: React.FC<{ path: string[] }> = ({ path }) => (
-    <div className="breadcrumbs text-sm h-fit">
+    <div className="breadcrumbs text-sm min-h-5">
         <ul>
             <li>
                 <a>
