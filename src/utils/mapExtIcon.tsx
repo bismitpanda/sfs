@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 export const getIcon = (path: string) => {
-    let ext = path.split(".").at(-1);
+    const ext = path.split(".").at(-1);
     let icon;
     switch (ext) {
         case "txt":

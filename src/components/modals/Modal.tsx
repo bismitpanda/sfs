@@ -1,16 +1,16 @@
 export const Modal: React.FC<{
-    onClick: () => void;
-    checked: boolean;
+    close: () => void;
+    state: boolean;
     title: string;
     children?: React.ReactNode;
-}> = ({ onClick, checked, title, children }) => (
+}> = ({ close, state, title, children }) => (
     <>
-        <div className={`modal ${checked ? "!opacity-100 !visible" : ""}`}>
-            <div className="modal-overlay" onClick={onClick}></div>
+        <div className={`modal ${state ? "!opacity-100 !visible" : ""}`}>
+            <div className="modal-overlay" onClick={close}></div>
             <div className="modal-content flex flex-col gap-5 bg-[#1a1a1a] w-full items-center">
                 <div
-                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                    onClick={onClick}
+                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-xl"
+                    onClick={close}
                 >
                     &times;
                 </div>
@@ -22,6 +22,6 @@ export const Modal: React.FC<{
 );
 
 export interface ModalProps {
-    onClick: () => void;
-    checked: boolean;
+    close: () => void;
+    state: boolean;
 }

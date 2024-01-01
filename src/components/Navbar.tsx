@@ -11,93 +11,107 @@ import {
     Trash2,
     Upload,
 } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
+import { SelectedContext } from "../contexts";
 import {
     createColor,
     deleteColor,
     folderActionColor,
     infoColor,
 } from "../utils";
-import { NavIcon } from "./NavIcon";
+import { IconButton } from "./IconButton";
 import {
+    DeleteModal,
+    InfoModal,
     NewFileModal,
     NewFolderModal,
-    RenameModal,
     SearchModal,
 } from "./modals";
 
-export const Navbar: React.FC<{ selected?: boolean }> = ({ selected }) => {
+export const Navbar: React.FC = () => {
     const [search, setSearch] = useState(false);
-    const [rename, setRename] = useState(false);
+    const [del, setDel] = useState(false);
     const [newFile, setNewFile] = useState(false);
     const [newFolder, setNewFolder] = useState(false);
+    const [info, setInfo] = useState(false);
+    const { selected } = useContext(SelectedContext);
 
     return (
         <>
-            <SearchModal checked={search} onClick={() => setSearch(false)} />
-            <RenameModal checked={rename} onClick={() => setRename(false)} />
-            <NewFileModal checked={newFile} onClick={() => setNewFile(false)} />
+            <SearchModal state={search} close={() => setSearch(false)} />
+            <NewFileModal state={newFile} close={() => setNewFile(false)} />
             <NewFolderModal
-                checked={newFolder}
-                onClick={() => setNewFolder(false)}
+                state={newFolder}
+                close={() => setNewFolder(false)}
             />
+            <InfoModal state={info} close={() => setInfo(false)} />
+            <DeleteModal state={del} close={() => setDel(false)} />
 
             <div className="navbar bg-[#1a1a1a] shadow-none rounded-lg">
                 <div className="navbar-start gap-3">
-                    <NavIcon
+                    <IconButton
                         icon={FolderUp}
                         color={folderActionColor}
                         tooltipBot="Move Up"
                     />
-                    <NavIcon
+                    <IconButton
                         icon={FolderSearch2}
                         color={infoColor}
                         tooltipBot="Search"
+                        onClick={() => setSearch(true)}
                     />
-                    <NavIcon
+                    <IconButton
                         icon={FolderPlus}
                         color={createColor}
                         tooltipBot="New Folder"
+                        onClick={() => setNewFolder(true)}
                     />
-                    <NavIcon
+                    <IconButton
                         icon={FilePlus}
                         color={createColor}
                         tooltipBot="New File"
+                        onClick={() => setNewFile(true)}
                     />
                 </div>
                 <div className="navbar-end gap-3">
-                    {selected && (
+                    {typeof selected !== "undefined" && (
                         <>
-                            <NavIcon
+                            <IconButton
                                 icon={SendHorizonal}
                                 color={deleteColor}
                                 tooltipBot="Move To"
                             />
-                            <NavIcon
+                            <IconButton
                                 icon={Pencil}
                                 color={deleteColor}
                                 tooltipBot="Rename"
                             />
-                            <NavIcon
+                            <IconButton
                                 icon={Trash2}
                                 color={deleteColor}
                                 tooltipBot="Delete"
+                                onClick={() => setDel(true)}
                             />
-                            <NavIcon
+                            <IconButton
                                 icon={ClipboardCopy}
                                 color={infoColor}
                                 tooltipBot="Copy"
                             />
                         </>
                     )}
-                    <NavIcon icon={Info} color={infoColor} tooltipBot="Info" />
-                    <NavIcon
+                    <IconButton
+                        icon={Info}
+                        color={infoColor}
+                        tooltipBot="Info"
+                        onClick={() => setInfo(true)}
+                    />
+                    <IconButton
                         icon={Upload}
                         color={createColor}
                         tooltipBot="Export"
                     />
-                    <NavIcon
+                    <IconButton
                         icon={Download}
                         color={createColor}
                         tooltipBot="Import"

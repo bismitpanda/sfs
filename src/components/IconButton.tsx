@@ -1,7 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import { MouseEventHandler } from "react";
 
-export const NavIcon: React.FC<{
+export const IconButton: React.FC<{
     icon: LucideIcon;
     color?: string;
     tooltipTop?: string;
