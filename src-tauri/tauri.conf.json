@@ -6,7 +6,7 @@
         "distDir": "../dist"
     },
     "package": {
-        "productName": "sfs-ui",
+        "productName": "app",
         "version": "0.1.0"
     },
     "tauri": {
@@ -34,7 +34,7 @@
                 "icons/icon.icns",
                 "icons/icon.ico"
             ],
-            "identifier": "com.tauri.dev",
+            "identifier": "sfs",
             "longDescription": "",
             "macOS": {
                 "entitlements": null,

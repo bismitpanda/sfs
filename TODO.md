@@ -1,10 +1,8 @@
 ## Immediate
 
--   Pin folders/ Favourites
 -   Animated icons
 -   Colored folder icon
--   Move sidebar icons to Navbar
--   Add stats button and move settings to bottom, add stats and recents button
+-   Add Symlink
 
 ## Long Term
 

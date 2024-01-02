@@ -1,6 +1,4 @@
-import { useContext } from "react";
-
-import { SelectedContext } from "../contexts";
+import { useSelectedContext } from "../context";
 import { humanTime } from "../utils";
 
 export const TableRecord: React.FC<{
@@ -10,7 +8,7 @@ export const TableRecord: React.FC<{
     size: string;
     icon: React.ReactNode;
 }> = ({ idx, name, date, size, icon }) => {
-    const { selected } = useContext(SelectedContext);
+    const { selected } = useSelectedContext();
 
     return (
         <>
@@ -19,8 +17,8 @@ export const TableRecord: React.FC<{
                     checked
                     disabled
                     type="checkbox"
-                    className={`checkbox checkbox-sm pl-2 ${
-                        selected === idx ? "visible" : "invisible"
+                    className={`checkbox checkbox-sm pl-3 transition-opacity duration-300 ${
+                        selected.includes(idx) ? "opacity-50" : "!opacity-0"
                     }`}
                 />
                 {icon}
