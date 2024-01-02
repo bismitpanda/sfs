@@ -6,6 +6,7 @@ import {
     FolderSearch2,
     FolderUp,
     Info,
+    Link2,
     Pencil,
     Pin,
     SendHorizonal,
@@ -13,8 +14,12 @@ import {
     Upload,
 } from "lucide-react";
 
-import { useModalContext, useSelectedContext } from "../context";
-import { ModalEnum } from "../types";
+import {
+    useAppStateContext,
+    useModalContext,
+    useSelectedContext,
+} from "../context";
+import { ActionType, ModalEnum } from "../types";
 import {
     createColor,
     deleteColor,
@@ -26,6 +31,7 @@ import { IconButton } from "./IconButton";
 export const Navbar: React.FC = () => {
     const { selected } = useSelectedContext();
     const { openModal } = useModalContext();
+    const { appState, dispatch } = useAppStateContext();
 
     return (
         <>
@@ -35,6 +41,12 @@ export const Navbar: React.FC = () => {
                         icon={Pin}
                         color={folderActionColor}
                         tooltipBot="Pin Folder"
+                        onClick={() =>
+                            dispatch({
+                                type: ActionType.PIN,
+                                payload: appState.records[selected[0]],
+                            })
+                        }
                     />
                     <IconButton
                         icon={FolderUp}
@@ -92,6 +104,11 @@ export const Navbar: React.FC = () => {
                         color={infoColor}
                         tooltipBot="Info"
                         onClick={() => openModal(ModalEnum.INFO)}
+                    />
+                    <IconButton
+                        icon={Link2}
+                        color={createColor}
+                        tooltipBot="Create Link"
                     />
                     <IconButton
                         icon={Upload}

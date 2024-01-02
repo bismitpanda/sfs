@@ -1,18 +1,30 @@
-import { useAppStateContext } from "../../context";
-import { AppActionType, ModalProps } from "../../types";
+import { useAppStateContext, useSelectedContext } from "../../context";
+import { ActionType, ModalProps } from "../../types";
 import { Modal } from "./Modal";
 
 export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {
-    const { dispatch } = useAppStateContext();
+    const {
+        appState: { records },
+        dispatch,
+    } = useAppStateContext();
+    const { selected, setSelected } = useSelectedContext();
 
     return (
-        <Modal state={state} close={close} title="Delete">
-            <div className="flex flex-row gap-4">
-                <button className="btn">Cancel</button>
+        <Modal state={state} close={close}>
+            Are you sure you want to delete
+            {selected.length > 1 ? ` ${selected.length} files` : " this file"}?
+            <div className="flex flex-row gap-4 w-full justify-end">
+                <button className="btn" onClick={() => close()}>
+                    Cancel
+                </button>
                 <button
                     className="btn bg-[#ff5a5a]"
                     onClick={() => {
-                        dispatch({ type: AppActionType.DELETE });
+                        dispatch({
+                            type: ActionType.DELETE,
+                            payload: selected.map((value) => records[value]),
+                        });
+                        setSelected([]);
                         close();
                     }}
                 >

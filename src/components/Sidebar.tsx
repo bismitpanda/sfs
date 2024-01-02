@@ -25,17 +25,17 @@ export const Sidebar: React.FC = () => {
                                 className="flex flex-row gap-3 cursor-pointer px-6 py-4 relative hover:bg-[#282828] active:bg-[#222222] after:content-[''] after:absolute after:w-[calc(100%-40px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-[#282828] after:left-[20px] after:-bottom-[1px]  transition-colors duration-200"
                                 key={idx}
                             >
-                                {record.kind === "FILE" ? (
-                                    getIcon(record.name)
+                                {record.kind === "File" ? (
+                                    getIcon(record.content.name)
                                 ) : (
                                     <Folder size={18} strokeWidth={1} />
                                 )}{" "}
-                                {record.name}
+                                {record.content.name}
                             </div>
                         ))}
                     </div>
                 </section>
-                <section className="sidebar-footer justify-end h-fit overflow-visible p-4">
+                <section className="sidebar-footer justify-end h-fit p-4">
                     <div className="navbar bg-[#151515] shadow-none rounded-lg">
                         <div className="navbar-start justify-between">
                             <IconButton

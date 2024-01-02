@@ -15,47 +15,42 @@ export const FileTable: React.FC = () => {
 
     const getRow = (record: Record, idx: number) => {
         switch (record.kind) {
-            case "FILE":
+            case "File":
                 return (
                     <TableRow
                         idx={idx}
-                        name={record.name}
-                        date={Date.parse(record.date)}
-                        size={humanFileSize(record.size)}
-                        icon={getIcon(record.name)}
+                        name={record.content.name}
+                        date={Date.parse(record.content.date_time.modified)}
+                        size={humanFileSize(record.content.size)}
+                        icon={getIcon(record.content.name)}
                     />
                 );
 
-            case "FOLDER":
+            case "Directory":
                 return (
                     <TableRow
                         idx={idx}
-                        name={record.name}
-                        date={Date.parse(record.date)}
+                        name={record.content.name}
+                        date={Date.parse(record.content.date_time.modified)}
                         size="-"
                         icon={<Folder size={18} strokeWidth={1} />}
                     />
                 );
 
-            case "SYMLINK_FILE":
+            case "Symlink":
                 return (
                     <TableRow
                         idx={idx}
-                        name={record.name}
-                        date={Date.parse(record.date)}
+                        name={record.content.name}
+                        date={Date.parse(record.content.date_time.modified)}
                         size="-"
-                        icon={<FileSymlink size={18} strokeWidth={1} />}
-                    />
-                );
-
-            case "SYMLINK_FOLDER":
-                return (
-                    <TableRow
-                        idx={idx}
-                        name={record.name}
-                        date={Date.parse(record.date)}
-                        size="-"
-                        icon={<FolderSymlink size={18} strokeWidth={1} />}
+                        icon={
+                            record.content.is_file ? (
+                                <FileSymlink size={18} strokeWidth={1} />
+                            ) : (
+                                <FolderSymlink size={18} strokeWidth={1} />
+                            )
+                        }
                     />
                 );
         }
@@ -71,7 +66,7 @@ export const FileTable: React.FC = () => {
                         className={`checkbox checkbox-sm pl-3 mr-11 transition-opacity duration-200 ${
                             selected.length > 0 ? "opacity-100" : "!opacity-0"
                         }`}
-                        disabled={!(selected.length > 0)}
+                        readOnly={!(selected.length > 0)}
                         onChange={() => {
                             setSelected(
                                 selected.length < recordsLen
@@ -119,7 +114,9 @@ export const FileTable: React.FC = () => {
                                               idx,
                                           ])
                                 }
-                                onDoubleClick={() => console.log(record.name)}
+                                onDoubleClick={() =>
+                                    console.log(record.content.name)
+                                }
                             >
                                 {getRow(record, idx)}
                             </div>

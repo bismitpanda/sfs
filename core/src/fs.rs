@@ -1,5 +1,5 @@
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     fs::File as StdFile,
     io::{Read, Seek, SeekFrom, Write},
     path::{Component, Path, PathBuf},
@@ -11,7 +11,6 @@ use aes_gcm::{
 };
 use argon2::Argon2;
 use itertools::Itertools;
-use rkyv::{Archive, Deserialize, Serialize};
 use snap::raw::{Decoder, Encoder};
 use xxhash_rust::xxh3::xxh3_64;
 
@@ -20,7 +19,9 @@ use crate::{
     datetime::{self, FileTimes},
 };
 
-#[derive(Archive, Serialize, Deserialize, Clone)]
+#[derive(
+    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+)]
 #[archive(check_bytes)]
 pub struct FileRecord {
     name: String,
@@ -32,7 +33,9 @@ pub struct FileRecord {
     date_time: FileTimes,
 }
 
-#[derive(Archive, Serialize, Deserialize, Clone)]
+#[derive(
+    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+)]
 #[archive(check_bytes)]
 pub struct DirectoryRecord {
     name: String,
@@ -40,13 +43,27 @@ pub struct DirectoryRecord {
     entries: HashMap<String, usize>,
 }
 
-#[derive(Archive, Serialize, Deserialize, Clone)]
+#[derive(
+    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+)]
+#[archive(check_bytes)]
+pub struct SymlinkRecord {
+    name: String,
+    date_time: FileTimes,
+    reference_record_id: usize,
+    is_file: bool,
+}
+
+#[derive(
+    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+)]
+#[serde(tag = "kind", content = "record")]
 #[archive(check_bytes)]
 pub enum Record {
     Empty,
     File(FileRecord),
     Directory(DirectoryRecord),
-    SymLink(usize),
+    Symlink(SymlinkRecord),
 }
 
 impl Record {
@@ -88,7 +105,7 @@ pub struct RecordTable {
     crypt: Crypt,
 }
 
-#[derive(Archive, Serialize, Deserialize)]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]
 #[archive(check_bytes)]
 struct Crypt {
     user_salt: [u8; 16],
@@ -96,14 +113,16 @@ struct Crypt {
     store_nonce: [u8; 12],
 }
 
-#[derive(Archive, Serialize, Deserialize)]
+#[derive(
+    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize,
+)]
 #[archive(check_bytes)]
 pub struct Meta {
     entries: Vec<Record>,
     free_fragments: Vec<(usize, Vec<usize>)>,
     empty_records: Vec<usize>,
     end_offset: usize,
-    pinned_records: Vec<usize>,
+    pinned: HashSet<usize>,
 }
 
 impl RecordTable {
@@ -142,7 +161,7 @@ impl RecordTable {
                 free_fragments: Vec::new(),
                 empty_records: Vec::new(),
                 end_offset: 0,
-                pinned_records: Vec::new(),
+                pinned: HashSet::new(),
             },
             crypt: Crypt {
                 store_key: store_cipher
@@ -195,7 +214,15 @@ impl RecordTable {
                 .values()
                 .map(|&record_id| self.get_size(&self.meta.entries[record_id]))
                 .sum(),
-            Record::SymLink(record_id) => self.get_size(&self.meta.entries[*record_id]),
+            Record::Symlink(symlink) => {
+                let record = &self.meta.entries[symlink.reference_record_id];
+
+                if symlink.is_file {
+                    record.as_file().size
+                } else {
+                    self.get_size(record)
+                }
+            }
         }
     }
 
@@ -278,6 +305,10 @@ impl RecordTable {
 
         std::fs::write(&self.config.meta, &meta).unwrap();
         std::fs::write(&self.config.crypt, &crypt).unwrap();
+    }
+
+    pub fn pin(&mut self, record_id: usize) {
+        self.meta.pinned.insert(record_id);
     }
 }
 

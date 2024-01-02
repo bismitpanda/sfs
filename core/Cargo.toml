@@ -7,10 +7,11 @@ edition = "2021"
 [dependencies]
 aes-gcm = "0.10.3"
 argon2 = "0.5.2"
-chrono = "0.4.31"
+chrono = { version = "0.4.31", features = ["serde"] }
 dirs = "5.0.1"
 itertools = "0.12.0"
 rkyv = { version = "0.7.43", features = ["validation"] }
+serde = { version = "1.0.194", features = ["derive"] }
 snap = "1.1.1"
 xxhash-rust = { version = "0.8.8", features = ["xxh3"] }
 

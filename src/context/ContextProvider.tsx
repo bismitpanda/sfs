@@ -9,9 +9,10 @@ import {
     SettingsModal,
 } from "../components/modals";
 import { AppState, ModalEnum } from "../types";
-import { AppStateContext, appStateReducer } from "./appState";
-import { ModalContext } from "./modal";
-import { SelectedContext } from "./selected";
+import { AppStateContext } from "./AppStateContext";
+import { ModalContext } from "./ModalContext";
+import { SelectedContext } from "./SelectedContext";
+import { appStateReducer } from "./appStateReducer";
 
 export const ContextProvider: React.FC<{
     children: React.ReactNode;

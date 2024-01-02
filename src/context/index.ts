@@ -1,8 +1,8 @@
 import { useContext } from "react";
 
-import { AppStateContext } from "./appState";
-import { ModalContext } from "./modal";
-import { SelectedContext } from "./selected";
+import { AppStateContext } from "./AppStateContext";
+import { ModalContext } from "./ModalContext";
+import { SelectedContext } from "./SelectedContext";
 
 export const useSelectedContext = () => useContext(SelectedContext);
 export const useAppStateContext = () => useContext(AppStateContext);

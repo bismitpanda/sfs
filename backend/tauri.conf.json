@@ -14,9 +14,7 @@
             "all": false,
             "process": {
                 "all": false,
-                "exit": true,
-                "relaunch": false,
-                "relaunchDangerousAllowSymlinkMacos": false
+                "exit": true
             }
         },
         "bundle": {

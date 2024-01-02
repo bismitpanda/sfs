@@ -1,6 +1,8 @@
-export type { AppAction, AppState } from "./appState";
-export { AppActionType } from "./appState";
-export type { ModalState, ModalProps } from "./modal";
-export { ModalEnum } from "./modal";
-export type { Record } from "./record";
-export type { SelectedState } from "./selected";
+export type { AppState } from "./AppState";
+export { ActionType } from "./ActionType";
+export type { Action } from "./Action";
+export type { ModalState } from "./ModalState";
+export type { ModalProps } from "./ModalProps";
+export { ModalEnum } from "./ModalEnum";
+export type { Record } from "./Record";
+export type { SelectedState } from "./SelectedState";
