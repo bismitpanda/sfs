@@ -1,7 +1,7 @@
 import { FileTable, Navbar, Sidebar, WorkingDir } from "./components";
-import { Record } from "./components/FileTable";
 import { ContextProvider } from "./context";
 import mockData from "./mock.json";
+import { Record } from "./types";
 
 const mock = mockData as {
     path: string[];

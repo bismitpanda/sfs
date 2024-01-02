@@ -1,23 +1,11 @@
 import { createContext } from "react";
 
-export enum ModalEnum {
-    SETTINGS = "settings",
-    PROPERTIES = "properties",
-    NEW_FILE = "newFile",
-    NEW_FOLDER = "newFolder",
-    SEARCH = "search",
-    INFO = "info",
-    DELETE = "delete",
-}
+import { ModalEnum, ModalState } from "../types";
 
-interface State {
-    openModal: (modal: ModalEnum) => void;
-}
-
-const initialState: State = {
+const initialState: ModalState = {
     openModal: (modal: ModalEnum) => {
         console.log(modal);
     },
 };
 
-export const ModalContext = createContext<State>(initialState);
+export const ModalContext = createContext<ModalState>(initialState);

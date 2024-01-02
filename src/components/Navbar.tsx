@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 import { useModalContext, useSelectedContext } from "../context";
-import { ModalEnum } from "../context/modal";
+import { ModalEnum } from "../types";
 import {
     createColor,
     deleteColor,
@@ -57,14 +57,13 @@ export const Navbar: React.FC = () => {
                         icon={FolderSearch2}
                         color={infoColor}
                         tooltipBot="Search"
-                        onClick={() => openModal(ModalEnum.SEARCH)}
                     />
                 </div>
                 <div className="navbar-end gap-3">
                     <span
                         className={`${
                             selected.length > 0 ? "opacity-100" : "opacity-0"
-                        } flex flex-row gap-3 transition-all ease-in-out duration-300`}
+                        } flex flex-row gap-3 transition-all ease-in-out duration-200`}
                     >
                         <IconButton
                             icon={SendHorizonal}

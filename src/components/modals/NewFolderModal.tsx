@@ -1,4 +1,5 @@
-import { Modal, ModalProps } from "./Modal";
+import { ModalProps } from "../../types";
+import { Modal } from "./Modal";
 
 export const NewFolderModal: React.FC<ModalProps> = ({ close, state }) => (
     <Modal state={state} close={close} title="New Folder">

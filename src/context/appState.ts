@@ -1,27 +1,10 @@
 import { Dispatch, createContext } from "react";
 
-import { Record } from "../components/FileTable";
-
-interface State {
-    records: Record[];
-    workingDir: string[];
-    pinned: Record[];
-}
-
-export enum ActionType {
-    DELETE,
-}
-
-interface Action {
-    type: ActionType;
-    payload?: {
-        [key: string]: string;
-    };
-}
+import { AppAction, AppState } from "../types";
 
 export const AppStateContext = createContext<{
-    appState: State;
-    dispatch: Dispatch<Action>;
+    appState: AppState;
+    dispatch: Dispatch<AppAction>;
 }>({
     appState: {
         records: [],
@@ -31,10 +14,9 @@ export const AppStateContext = createContext<{
     dispatch: (value) => console.log(value),
 });
 
-export const appStateReducer = (state: State, action: Action) => {
+export const appStateReducer = (state: AppState, action: AppAction) => {
     switch (action.type) {
         default:
             return state;
     }
 };
-export type { State as AppState };

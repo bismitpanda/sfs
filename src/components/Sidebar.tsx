@@ -1,9 +1,9 @@
 import { exit } from "@tauri-apps/api/process";
-import { Cog, FolderClock, LogOut, PieChart } from "lucide-react";
+import { Cog, Folder, FolderClock, LogOut, PieChart } from "lucide-react";
 
 import { useAppStateContext, useModalContext } from "../context";
-import { ModalEnum } from "../context/modal";
-import { deleteColor, folderActionColor, infoColor } from "../utils";
+import { ModalEnum } from "../types";
+import { deleteColor, folderActionColor, getIcon, infoColor } from "../utils";
 import { IconButton } from "./IconButton";
 
 export const Sidebar: React.FC = () => {
@@ -16,12 +16,22 @@ export const Sidebar: React.FC = () => {
         <>
             <aside className="sidebar h-screen justify-start bg-[#1a1a1a]">
                 <section className="sidebar-content">
-                    <div className="w-full h-full p-4">
-                        <h2 className="text-sm text-[#aaa]">Pinned</h2>
-                        <div className="divider mt-0"></div>
+                    <div className="w-full h-full py-4 text-sm text-[#aaa] flex flex-col">
+                        <h2 className="px-4">Pinned</h2>
+                        <div className="divider mt-0 px-4"></div>
 
                         {pinned.map((record, idx) => (
-                            <div key={idx}>{record.name}</div>
+                            <div
+                                className="flex flex-row gap-3 cursor-pointer px-6 py-4 relative hover:bg-[#282828] active:bg-[#222222] after:content-[''] after:absolute after:w-[calc(100%-40px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-[#282828] after:left-[20px] after:-bottom-[1px]  transition-colors duration-200"
+                                key={idx}
+                            >
+                                {record.kind === "FILE" ? (
+                                    getIcon(record.name)
+                                ) : (
+                                    <Folder size={18} strokeWidth={1} />
+                                )}{" "}
+                                {record.name}
+                            </div>
                         ))}
                     </div>
                 </section>

@@ -1,5 +1,6 @@
-import { PathInput } from "../inputs/PathInput";
-import { Modal, ModalProps } from "./Modal";
+import { ModalProps } from "../../types";
+import { PathInput } from "../inputs";
+import { Modal } from "./Modal";
 
 export const SettingsModal: React.FC<ModalProps> = ({ close, state }) => (
     <Modal close={close} state={state} title="Settings">

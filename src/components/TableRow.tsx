@@ -1,7 +1,7 @@
 import { useSelectedContext } from "../context";
 import { humanTime } from "../utils";
 
-export const TableRecord: React.FC<{
+export const TableRow: React.FC<{
     idx: number;
     name: string;
     date: number;
@@ -17,7 +17,7 @@ export const TableRecord: React.FC<{
                     checked
                     disabled
                     type="checkbox"
-                    className={`checkbox checkbox-sm pl-3 transition-opacity duration-300 ${
+                    className={`checkbox checkbox-sm pl-3 transition-opacity duration-200 ${
                         selected.includes(idx) ? "opacity-50" : "!opacity-0"
                     }`}
                 />

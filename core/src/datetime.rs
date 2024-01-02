@@ -35,13 +35,13 @@ impl From<FileTime> for NaiveDateTime {
 
 impl From<NaiveDateTime> for FileTime {
     fn from(value: NaiveDateTime) -> Self {
-        let year = value.year() as u64;
-        let month = value.month() as u64;
-        let day = value.day() as u64;
+        let year = u64::from(value.year().unsigned_abs());
+        let month = u64::from(value.month());
+        let day = u64::from(value.day());
 
-        let hour = value.hour() as u64;
-        let min = value.minute() as u64;
-        let sec = value.second() as u64;
+        let hour = u64::from(value.hour());
+        let min = u64::from(value.minute());
+        let sec = u64::from(value.second());
 
         let mut dt = 0;
 
@@ -60,6 +60,7 @@ impl From<NaiveDateTime> for FileTime {
 const MASK: u64 = 0xff_ffff_ffff;
 const MASK_128: u128 = 0xff_ffff_ffff;
 
+#[derive(Clone, Copy)]
 pub struct FileTime(u64);
 
 #[derive(Clone, Copy, Archive, Deserialize, Serialize)]
@@ -79,7 +80,7 @@ impl FileTimes {
         FileTime((self.0 & MASK_128) as u64)
     }
 
-    pub fn from_times(accessed: FileTime, modified: FileTime, created: FileTime) -> Self {
+    pub const fn from_times(accessed: FileTime, modified: FileTime, created: FileTime) -> Self {
         let mut times = 0u128;
 
         times |= (accessed.0 & MASK) as u128;
@@ -91,7 +92,7 @@ impl FileTimes {
         times |= (created.0 & MASK) as u128;
         times <<= 40;
 
-        FileTimes(times)
+        Self(times)
     }
 }
 

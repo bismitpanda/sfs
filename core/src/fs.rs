@@ -46,6 +46,7 @@ pub enum Record {
     Empty,
     File(FileRecord),
     Directory(DirectoryRecord),
+    SymLink(usize),
 }
 
 impl Record {
@@ -192,8 +193,9 @@ impl RecordTable {
             Record::Directory(dir) => dir
                 .entries
                 .values()
-                .map(|&id| self.get_size(&self.meta.entries[id]))
+                .map(|&record_id| self.get_size(&self.meta.entries[record_id]))
                 .sum(),
+            Record::SymLink(record_id) => self.get_size(&self.meta.entries[*record_id]),
         }
     }
 

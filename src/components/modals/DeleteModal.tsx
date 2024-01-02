@@ -1,6 +1,6 @@
 import { useAppStateContext } from "../../context";
-import { ActionType } from "../../context/appState";
-import { Modal, ModalProps } from "./Modal";
+import { AppActionType, ModalProps } from "../../types";
+import { Modal } from "./Modal";
 
 export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {
     const { dispatch } = useAppStateContext();
@@ -12,7 +12,7 @@ export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {
                 <button
                     className="btn bg-[#ff5a5a]"
                     onClick={() => {
-                        dispatch({ type: ActionType.DELETE });
+                        dispatch({ type: AppActionType.DELETE });
                         close();
                     }}
                 >

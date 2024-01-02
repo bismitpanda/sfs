@@ -1,15 +1,12 @@
-import { Dispatch, SetStateAction, createContext } from "react";
+import { SetStateAction, createContext } from "react";
 
-interface State {
-    selected: number[];
-    setSelected: Dispatch<SetStateAction<number[]>>;
-}
+import { SelectedState } from "../types";
 
-const initialState: State = {
+const initialState: SelectedState = {
     selected: [],
     setSelected: (num: SetStateAction<number[]>) => {
         console.log(num);
     },
 };
 
-export const SelectedContext = createContext<State>(initialState);
+export const SelectedContext = createContext<SelectedState>(initialState);

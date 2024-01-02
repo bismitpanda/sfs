@@ -20,8 +20,3 @@ export const Modal: React.FC<{
         </div>
     </>
 );
-
-export interface ModalProps {
-    close: () => void;
-    state: boolean;
-}

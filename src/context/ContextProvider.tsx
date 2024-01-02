@@ -6,11 +6,11 @@ import {
     NewFileModal,
     NewFolderModal,
     PropertiesModal,
-    SearchModal,
     SettingsModal,
 } from "../components/modals";
-import { AppState, AppStateContext, appStateReducer } from "./appState";
-import { ModalContext, ModalEnum } from "./modal";
+import { AppState, ModalEnum } from "../types";
+import { AppStateContext, appStateReducer } from "./appState";
+import { ModalContext } from "./modal";
 import { SelectedContext } from "./selected";
 
 export const ContextProvider: React.FC<{
@@ -24,7 +24,6 @@ export const ContextProvider: React.FC<{
         properties: false,
         newFile: false,
         newFolder: false,
-        search: false,
         info: false,
         delete: false,
     };
@@ -52,7 +51,6 @@ export const ContextProvider: React.FC<{
                         state={modals.newFolder}
                         close={closeModal}
                     />
-                    <SearchModal state={modals.search} close={closeModal} />
                     <InfoModal state={modals.info} close={closeModal} />
                     <DeleteModal state={modals.delete} close={closeModal} />
                     {children}

@@ -174,28 +174,28 @@
             "date": "2023-01-01T12:33:44.165Z"
         },
         {
-            "kind": "FOLDER",
-            "name": "Folder 5",
-            "size": 0,
-            "date": "2020-01-31T19:16:49.331Z"
+            "kind": "FILE",
+            "name": "File 5.png",
+            "size": 10,
+            "date": "2020-03-06T12:33:34.691Z"
         },
         {
-            "kind": "FOLDER",
-            "name": "Folder 6",
-            "size": 0,
-            "date": "2023-11-25T20:37:18.161Z"
+            "kind": "FILE",
+            "name": "File 6.jpeg",
+            "size": 10,
+            "date": "2021-05-21T13:20:12.861Z"
         },
         {
-            "kind": "FOLDER",
-            "name": "Folder 7",
-            "size": 0,
-            "date": "2020-02-06T12:23:06.375Z"
+            "kind": "FILE",
+            "name": "File 7.mp4",
+            "size": 5,
+            "date": "2023-04-09T13:23:21.395Z"
         },
         {
-            "kind": "FOLDER",
-            "name": "Folder 8",
-            "size": 0,
-            "date": "2021-02-22T15:17:38.866Z"
+            "kind": "FILE",
+            "name": "File 8.mkv",
+            "size": 7,
+            "date": "2021-05-23T15:01:59.495Z"
         }
     ]
 }
