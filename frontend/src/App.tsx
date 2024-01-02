@@ -13,7 +13,7 @@ const mock = mockData as {
 const App: React.FC = () => (
     <ContextProvider
         initialAppState={{
-            records: mock.records1,
+            records: mock.records2,
             workingDir: mock.path,
             pinned: mock.pinned,
         }}

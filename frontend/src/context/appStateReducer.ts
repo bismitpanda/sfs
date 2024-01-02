@@ -14,7 +14,7 @@ export const appStateReducer = (state: AppState, action: Action) => {
             };
 
         case ActionType.PIN:
-            invoke("pin");
+            invoke("pin", { record: action.payload });
             return {
                 ...state,
                 pinned: [...state.pinned, action.payload],

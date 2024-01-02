@@ -1,3 +1,4 @@
+import { isEqual } from "lodash";
 import { ArrowDownUp, FileSymlink, Folder, FolderSymlink } from "lucide-react";
 
 import { useAppStateContext, useSelectedContext } from "../context";
@@ -11,15 +12,12 @@ export const FileTable: React.FC = () => {
         appState: { records },
     } = useAppStateContext();
 
-    const recordsLen = records.length;
-
-    const getRow = (record: Record, idx: number) => {
+    const getRow = (record: Record) => {
         switch (record.kind) {
             case "File":
                 return (
                     <TableRow
-                        idx={idx}
-                        name={record.content.name}
+                        record={record}
                         date={Date.parse(record.content.date_time.modified)}
                         size={humanFileSize(record.content.size)}
                         icon={getIcon(record.content.name)}
@@ -29,8 +27,7 @@ export const FileTable: React.FC = () => {
             case "Directory":
                 return (
                     <TableRow
-                        idx={idx}
-                        name={record.content.name}
+                        record={record}
                         date={Date.parse(record.content.date_time.modified)}
                         size="-"
                         icon={<Folder size={18} strokeWidth={1} />}
@@ -40,8 +37,7 @@ export const FileTable: React.FC = () => {
             case "Symlink":
                 return (
                     <TableRow
-                        idx={idx}
-                        name={record.content.name}
+                        record={record}
                         date={Date.parse(record.content.date_time.modified)}
                         size="-"
                         icon={
@@ -61,21 +57,19 @@ export const FileTable: React.FC = () => {
             <div className="grid grid-cols-[50%_15%_auto] py-3 bg-inherit border-b-[3px] border-b-[#111] rounded-t-md">
                 <div className="flex flex-row gap-1 pl-3">
                     <input
-                        checked={selected.length === recordsLen}
+                        checked={selected.length === records.length}
                         type="checkbox"
                         className={`checkbox checkbox-sm pl-3 mr-11 transition-opacity duration-200 ${
                             selected.length > 0 ? "opacity-100" : "!opacity-0"
                         }`}
-                        readOnly={!(selected.length > 0)}
                         onChange={() => {
-                            setSelected(
-                                selected.length < recordsLen
-                                    ? Array.from(
-                                          { length: recordsLen },
-                                          (_, index) => index,
-                                      )
-                                    : [],
-                            );
+                            if (selected.length > 0) {
+                                setSelected(
+                                    selected.length < records.length
+                                        ? records
+                                        : [],
+                                );
+                            }
                         }}
                     />
                     Name
@@ -91,34 +85,38 @@ export const FileTable: React.FC = () => {
                 </div>
             </div>
             <div className="overflow-y-auto grid grid-cols-[51%_15%_auto]">
-                {recordsLen > 0 &&
+                {records.length > 0 &&
                     records.map((record, idx) => {
                         return (
                             <div
                                 key={idx}
                                 className={`
                                     ${
-                                        selected.includes(idx)
+                                        selected.includes(record)
                                             ? "bg-[#282828] after:bottom-0"
                                             : "after:-bottom-[1px]"
-                                    } grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-[#282828] active:bg-[#222222] after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-[#282828] after:left-[30px] transition-colors duration-200`}
+                                    } last:hover:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-[#282828] active:bg-[#222222] after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-[#282828] after:left-[30px] transition-all duration-200`}
                                 onClick={() =>
-                                    selected.includes(idx)
+                                    selected.includes(record)
                                         ? setSelected((selected) =>
                                               selected.filter(
-                                                  (num) => num !== idx,
+                                                  (selectedRecord) =>
+                                                      !isEqual(
+                                                          selectedRecord,
+                                                          record,
+                                                      ),
                                               ),
                                           )
                                         : setSelected((selected) => [
                                               ...selected,
-                                              idx,
+                                              record,
                                           ])
                                 }
                                 onDoubleClick={() =>
                                     console.log(record.content.name)
                                 }
                             >
-                                {getRow(record, idx)}
+                                {getRow(record)}
                             </div>
                         );
                     })}

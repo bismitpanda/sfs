@@ -1,12 +1,10 @@
 import { SetStateAction, createContext } from "react";
 
-import { SelectedState } from "../types";
+import { Record, SelectedState } from "../types";
 
 const initialState: SelectedState = {
     selected: [],
-    setSelected: (num: SetStateAction<number[]>) => {
-        console.log(num);
-    },
+    setSelected: (_: SetStateAction<Record[]>) => {},
 };
 
 export const SelectedContext = createContext<SelectedState>(initialState);

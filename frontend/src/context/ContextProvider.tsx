@@ -8,7 +8,7 @@ import {
     PropertiesModal,
     SettingsModal,
 } from "../components/modals";
-import { AppState, ModalEnum } from "../types";
+import { AppState, ModalEnum, Record } from "../types";
 import { AppStateContext } from "./AppStateContext";
 import { ModalContext } from "./ModalContext";
 import { SelectedContext } from "./SelectedContext";
@@ -18,7 +18,7 @@ export const ContextProvider: React.FC<{
     children: React.ReactNode;
     initialAppState: AppState;
 }> = ({ children, initialAppState }) => {
-    const [selected, setSelected] = useState<number[]>([]);
+    const [selected, setSelected] = useState<Record[]>([]);
 
     const defaultModals = {
         settings: false,

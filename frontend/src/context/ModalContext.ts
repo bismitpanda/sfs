@@ -3,9 +3,7 @@ import { createContext } from "react";
 import { ModalEnum, ModalState } from "../types";
 
 const initialState: ModalState = {
-    openModal: (modal: ModalEnum) => {
-        console.log(modal);
-    },
+    openModal: (_: ModalEnum) => {},
 };
 
 export const ModalContext = createContext<ModalState>(initialState);

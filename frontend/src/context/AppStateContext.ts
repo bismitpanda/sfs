@@ -11,5 +11,5 @@ export const AppStateContext = createContext<{
         workingDir: [],
         pinned: [],
     },
-    dispatch: (value) => console.log(value),
+    dispatch: (_) => {},
 });

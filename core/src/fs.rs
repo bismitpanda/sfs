@@ -25,10 +25,14 @@ use crate::{
 #[archive(check_bytes)]
 pub struct FileRecord {
     name: String,
+    #[serde(skip)]
     checksum: u64,
+    #[serde(skip)]
     offset: usize,
+    #[serde(skip)]
     len: usize,
     size: usize,
+    #[serde(skip)]
     nonce: [u8; 12],
     date_time: FileTimes,
 }
@@ -38,7 +42,7 @@ pub struct FileRecord {
 )]
 #[archive(check_bytes)]
 pub struct DirectoryRecord {
-    name: String,
+    pub name: String,
     date_time: FileTimes,
     entries: HashMap<String, usize>,
 }
@@ -75,7 +79,7 @@ impl Record {
         file
     }
 
-    fn as_directory(&self) -> &DirectoryRecord {
+    pub fn as_directory(&self) -> &DirectoryRecord {
         let Self::Directory(directory) = self else {
             unreachable!()
         };
@@ -307,8 +311,8 @@ impl RecordTable {
         std::fs::write(&self.config.crypt, &crypt).unwrap();
     }
 
-    pub fn pin(&mut self, record_id: usize) {
-        self.meta.pinned.insert(record_id);
+    pub fn pin(&mut self, record: &Record) {
+        self.meta.pinned.insert(0);
     }
 }
 

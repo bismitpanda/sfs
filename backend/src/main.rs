@@ -2,7 +2,7 @@
 
 use std::sync::Mutex;
 
-use sfs::RecordTable;
+use sfs::{Record, RecordTable};
 use tauri::State;
 
 #[tauri::command]
@@ -11,10 +11,10 @@ fn delete() {
 }
 
 #[tauri::command]
-fn pin(state: State<AppState>) {
+fn pin(record: Record, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.pin(0);
-    println!("called pin")
+    record_table.pin(&record);
+    println!("{}", record.as_directory().name)
 }
 
 struct AppState {

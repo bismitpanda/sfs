@@ -31,7 +31,7 @@ import { IconButton } from "./IconButton";
 export const Navbar: React.FC = () => {
     const { selected } = useSelectedContext();
     const { openModal } = useModalContext();
-    const { appState, dispatch } = useAppStateContext();
+    const { dispatch } = useAppStateContext();
 
     return (
         <>
@@ -44,7 +44,7 @@ export const Navbar: React.FC = () => {
                         onClick={() =>
                             dispatch({
                                 type: ActionType.PIN,
-                                payload: appState.records[selected[0]],
+                                payload: selected[0],
                             })
                         }
                     />

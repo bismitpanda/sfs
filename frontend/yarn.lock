@@ -773,6 +773,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.14.202":
+  version: 4.14.202
+  resolution: "@types/lodash@npm:4.14.202"
+  checksum: a91acf3564a568c6f199912f3eb2c76c99c5a0d7e219394294213b3f2d54f672619f0fde4da22b29dc5d4c31457cd799acc2e5cb6bd90f9af04a1578483b6ff7
+  languageName: node
+  linkType: hard
+
 "@types/postcss-js@npm:^4.0.0":
   version: 4.0.4
   resolution: "@types/postcss-js@npm:4.0.4"
@@ -1083,6 +1090,7 @@ __metadata:
     "@fontsource/space-grotesk": ^5.0.16
     "@tauri-apps/api": ^1.5.3
     "@trivago/prettier-plugin-sort-imports": ^4.3.0
+    "@types/lodash": ^4.14.202
     "@types/react": ^18.2.43
     "@types/react-dom": ^18.2.17
     "@typescript-eslint/eslint-plugin": ^6.14.0
@@ -1093,6 +1101,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-react-refresh: ^0.4.5
     lightningcss: ^1.22.1
+    lodash: ^4.17.21
     lucide-react: ^0.303.0
     postcss: ^8.4.32
     prettier: 3.1.1

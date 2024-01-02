@@ -3,10 +3,7 @@ import { ActionType, ModalProps } from "../../types";
 import { Modal } from "./Modal";
 
 export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {
-    const {
-        appState: { records },
-        dispatch,
-    } = useAppStateContext();
+    const { dispatch } = useAppStateContext();
     const { selected, setSelected } = useSelectedContext();
 
     return (
@@ -22,7 +19,7 @@ export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {
                     onClick={() => {
                         dispatch({
                             type: ActionType.DELETE,
-                            payload: selected.map((value) => records[value]),
+                            payload: selected,
                         });
                         setSelected([]);
                         close();
