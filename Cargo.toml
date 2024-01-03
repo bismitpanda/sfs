@@ -1,3 +1,3 @@
 [workspace]
-members = ["core", "backend"]
+members = ["libsfs", "backend"]
 resolver = "2"

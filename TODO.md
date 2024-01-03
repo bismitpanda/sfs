@@ -1,7 +1,7 @@
 ## Immediate
 
 -   Animated icons
--   Colored folder icon
+-   Colored direcotry icon
 -   Add Symlink
 
 ## Long Term
@@ -10,4 +10,4 @@
 -   Move To / Send To
 -   File Conversion
 -   Audio/Video/Image Viewer
--   Locked folders
+-   Locked directories

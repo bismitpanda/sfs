@@ -1,11 +1,12 @@
 {
-    "path": ["Documents", "My Folder"],
+    "path": ["Documents", "My Directory"],
     "records1": [
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 1",
-                "size": 0,
+                "id": 1,
+                "name": "Directory 1",
+                "entries": [],
                 "date_time": {
                     "accessed": "2021-02-02T19:17:40.862Z",
                     "modified": "2021-02-02T19:17:40.862Z",
@@ -16,8 +17,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 2",
-                "size": 0,
+                "id": 2,
+                "name": "Directory 2",
+                "entries": [],
                 "date_time": {
                     "accessed": "2023-11-13T15:09:55.494Z",
                     "modified": "2023-11-13T15:09:55.494Z",
@@ -28,8 +30,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 3",
-                "size": 0,
+                "id": 3,
+                "name": "Directory 3",
+                "entries": [],
                 "date_time": {
                     "accessed": "2020-01-14T13:55:39.210Z",
                     "modified": "2020-01-14T13:55:39.210Z",
@@ -40,8 +43,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 4",
-                "size": 0,
+                "id": 4,
+                "name": "Directory 4",
+                "entries": [],
                 "date_time": {
                     "accessed": "2023-01-01T12:33:44.165Z",
                     "modified": "2023-01-01T12:33:44.165Z",
@@ -52,8 +56,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 5",
-                "size": 0,
+                "id": 5,
+                "name": "Directory 5",
+                "entries": [],
                 "date_time": {
                     "accessed": "2020-01-31T19:16:49.331Z",
                     "modified": "2020-01-31T19:16:49.331Z",
@@ -64,8 +69,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 6",
-                "size": 0,
+                "id": 6,
+                "name": "Directory 6",
+                "entries": [],
                 "date_time": {
                     "accessed": "2023-11-25T20:37:18.161Z",
                     "modified": "2023-11-25T20:37:18.161Z",
@@ -76,8 +82,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 7",
-                "size": 0,
+                "id": 7,
+                "name": "Directory 7",
+                "entries": [],
                 "date_time": {
                     "accessed": "2020-02-06T12:23:06.375Z",
                     "modified": "2020-02-06T12:23:06.375Z",
@@ -88,8 +95,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 8",
-                "size": 0,
+                "id": 8,
+                "name": "Directory 8",
+                "entries": [],
                 "date_time": {
                     "accessed": "2021-02-22T15:17:38.866Z",
                     "modified": "2021-02-22T15:17:38.866Z",
@@ -100,6 +108,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 9,
                 "name": "File 1.zip",
                 "size": 36587,
                 "date_time": {
@@ -112,6 +121,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 10,
                 "name": "File 2.tar",
                 "size": 1045,
                 "date_time": {
@@ -124,6 +134,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 11,
                 "name": "File 3.tar.gz",
                 "size": 109,
                 "date_time": {
@@ -136,6 +147,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 12,
                 "name": "File 4.txt",
                 "size": 42,
                 "date_time": {
@@ -148,6 +160,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 13,
                 "name": "File 5.png",
                 "size": 1089898,
                 "date_time": {
@@ -160,6 +173,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 14,
                 "name": "File 6.jpeg",
                 "size": 910243,
                 "date_time": {
@@ -172,6 +186,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 15,
                 "name": "File 7.mp4",
                 "size": 576349423,
                 "date_time": {
@@ -184,6 +199,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 16,
                 "name": "File 8.mkv",
                 "size": 1986749227,
                 "date_time": {
@@ -198,6 +214,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 9,
                 "name": "File 1.zip",
                 "size": 3,
                 "date_time": {
@@ -210,6 +227,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 10,
                 "name": "File 2.tar",
                 "size": 10,
                 "date_time": {
@@ -222,6 +240,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 11,
                 "name": "File 3.tar.gz",
                 "size": 10,
                 "date_time": {
@@ -234,6 +253,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 12,
                 "name": "File 4.txt",
                 "size": 4,
                 "date_time": {
@@ -246,6 +266,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 13,
                 "name": "File 5.png",
                 "size": 10,
                 "date_time": {
@@ -258,6 +279,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 14,
                 "name": "File 6.jpeg",
                 "size": 10,
                 "date_time": {
@@ -270,6 +292,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 15,
                 "name": "File 7.mp4",
                 "size": 5,
                 "date_time": {
@@ -282,6 +305,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 16,
                 "name": "File 8.mkv",
                 "size": 7,
                 "date_time": {
@@ -296,8 +320,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 1",
-                "size": 0,
+                "id": 1,
+                "name": "Directory 1",
+                "entries": [],
                 "date_time": {
                     "accessed": "2021-02-02T19:17:40.862Z",
                     "modified": "2021-02-02T19:17:40.862Z",
@@ -308,8 +333,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 2",
-                "size": 0,
+                "id": 2,
+                "name": "Directory 2",
+                "entries": [],
                 "date_time": {
                     "accessed": "2023-11-13T15:09:55.494Z",
                     "modified": "2023-11-13T15:09:55.494Z",
@@ -320,8 +346,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 3",
-                "size": 0,
+                "id": 3,
+                "name": "Directory 3",
+                "entries": [],
                 "date_time": {
                     "accessed": "2020-01-14T13:55:39.210Z",
                     "modified": "2020-01-14T13:55:39.210Z",
@@ -332,8 +359,9 @@
         {
             "kind": "Directory",
             "content": {
-                "name": "Folder 4",
-                "size": 0,
+                "id": 4,
+                "name": "Directory 4",
+                "entries": [],
                 "date_time": {
                     "accessed": "2023-01-01T12:33:44.165Z",
                     "modified": "2023-01-01T12:33:44.165Z",
@@ -344,6 +372,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 5,
                 "name": "File 5.png",
                 "size": 10,
                 "date_time": {
@@ -356,6 +385,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 6,
                 "name": "File 6.jpeg",
                 "size": 10,
                 "date_time": {
@@ -368,6 +398,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 7,
                 "name": "File 7.mp4",
                 "size": 5,
                 "date_time": {
@@ -380,6 +411,7 @@
         {
             "kind": "File",
             "content": {
+                "id": 8,
                 "name": "File 8.mkv",
                 "size": 7,
                 "date_time": {

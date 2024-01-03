@@ -4,29 +4,29 @@ import { useAppStateContext } from "../../context";
 import { ActionType, ModalProps } from "../../types";
 import { Modal } from "./Modal";
 
-export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
+export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
     const { dispatch } = useAppStateContext();
-    const fileNameRef = useRef<HTMLInputElement>(null);
+    const directoryNameRef = useRef<HTMLInputElement>(null);
 
     return (
-        <Modal state={state} close={close} title="New File">
+        <Modal state={state} close={close} title="New Directory">
             <input
                 className="input input-block"
                 type="text"
-                name="fileNameInput"
-                ref={fileNameRef}
-                placeholder="Enter File name"
+                name="directoryNameInput"
+                ref={directoryNameRef}
+                placeholder="Enter Directory name"
             />
             <button
                 className="btn bg-[#56df74] bg-opacity-60 text-black"
                 onClick={() => {
                     if (
-                        fileNameRef.current !== null &&
-                        fileNameRef.current.value !== ""
+                        directoryNameRef.current !== null &&
+                        directoryNameRef.current.value !== ""
                     ) {
                         dispatch({
-                            type: ActionType.CREATE_FILE,
-                            payload: fileNameRef.current.value,
+                            type: ActionType.CREATE_DIRECTORY,
+                            payload: directoryNameRef.current.value,
                         });
                         close();
                     }

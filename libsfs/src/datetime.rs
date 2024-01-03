@@ -2,9 +2,9 @@
 // ||..........++++++++++----------
 // -- accessed  modified  created
 
-use chrono::{DateTime, Datelike, TimeZone, Timelike, Utc};
+use chrono::{Datelike, Timelike, Utc};
 use serde::{
-    de::{self, MapAccess, Visitor},
+    de::{Error, MapAccess, Visitor},
     ser::SerializeStruct,
     Deserialize, Serialize, Serializer,
 };
@@ -14,7 +14,32 @@ const FIVE_BITS_MASK: u64 = 0x1f;
 const FOUR_BITS_MASK: u64 = 0xf;
 const FOURTEEN_BITS_MASK: u64 = 0x3fff;
 
-impl From<FileTime> for DateTime<Utc> {
+#[derive(Serialize, Deserialize, Clone, Copy)]
+struct DateTime {
+    year: u64,
+    month: u64,
+    day: u64,
+    hour: u64,
+    min: u64,
+    sec: u64,
+}
+
+impl DateTime {
+    fn now() -> Self {
+        let now_dt = Utc::now();
+
+        Self {
+            year: now_dt.year().try_into().unwrap(),
+            month: now_dt.month().into(),
+            day: now_dt.day().into(),
+            hour: now_dt.hour().into(),
+            min: now_dt.minute().into(),
+            sec: now_dt.second().into(),
+        }
+    }
+}
+
+impl From<FileTime> for DateTime {
     fn from(val: FileTime) -> Self {
         let sec = val.0 & SIX_BITS_MASK;
         let min = val.0 >> 6 & SIX_BITS_MASK;
@@ -24,27 +49,26 @@ impl From<FileTime> for DateTime<Utc> {
         let month = val.0 >> 31 & FOUR_BITS_MASK;
         let day = val.0 >> 35 & FIVE_BITS_MASK;
 
-        Utc.with_ymd_and_hms(
-            year.try_into().unwrap(),
-            month.try_into().unwrap(),
-            day.try_into().unwrap(),
-            hour.try_into().unwrap(),
-            min.try_into().unwrap(),
-            sec.try_into().unwrap(),
-        )
-        .unwrap()
+        Self {
+            year,
+            month,
+            day,
+            hour,
+            min,
+            sec,
+        }
     }
 }
 
-impl From<DateTime<Utc>> for FileTime {
-    fn from(value: DateTime<Utc>) -> Self {
-        let year = u64::from(value.year().unsigned_abs());
-        let month = u64::from(value.month());
-        let day = u64::from(value.day());
+impl From<DateTime> for FileTime {
+    fn from(value: DateTime) -> Self {
+        let year = value.year;
+        let month = value.month;
+        let day = value.day;
 
-        let hour = u64::from(value.hour());
-        let min = u64::from(value.minute());
-        let sec = u64::from(value.second());
+        let hour = value.hour;
+        let min = value.min;
+        let sec = value.sec;
 
         let mut dt = 0;
 
@@ -76,9 +100,9 @@ impl Serialize for FileTimes {
         S: Serializer,
     {
         let mut file_times = serializer.serialize_struct("FileTimes", 3)?;
-        file_times.serialize_field("accessed", &DateTime::<Utc>::from(self.accessed()))?;
-        file_times.serialize_field("modified", &DateTime::<Utc>::from(self.modified()))?;
-        file_times.serialize_field("created", &DateTime::<Utc>::from(self.created()))?;
+        file_times.serialize_field("accessed", &DateTime::from(self.accessed()))?;
+        file_times.serialize_field("modified", &DateTime::from(self.modified()))?;
+        file_times.serialize_field("created", &DateTime::from(self.created()))?;
 
         file_times.end()
     }
@@ -97,37 +121,37 @@ impl<'de> Visitor<'de> for FileTimesVisitor {
     where
         V: MapAccess<'de>,
     {
-        let mut accessed: Option<DateTime<Utc>> = None;
-        let mut modified: Option<DateTime<Utc>> = None;
-        let mut created: Option<DateTime<Utc>> = None;
+        let mut accessed: Option<DateTime> = None;
+        let mut modified: Option<DateTime> = None;
+        let mut created: Option<DateTime> = None;
         while let Some(key) = map.next_key()? {
             match key {
                 Field::Accessed => {
                     if accessed.is_some() {
-                        return Err(de::Error::duplicate_field("accessed"));
+                        return Err(Error::duplicate_field("accessed"));
                     }
                     accessed = Some(map.next_value()?);
                 }
 
                 Field::Created => {
                     if created.is_some() {
-                        return Err(de::Error::duplicate_field("created"));
+                        return Err(Error::duplicate_field("created"));
                     }
                     created = Some(map.next_value()?);
                 }
 
                 Field::Modified => {
                     if modified.is_some() {
-                        return Err(de::Error::duplicate_field("modified"));
+                        return Err(Error::duplicate_field("modified"));
                     }
                     modified = Some(map.next_value()?);
                 }
             }
         }
 
-        let accessed = accessed.ok_or_else(|| de::Error::missing_field("secs"))?;
-        let modified = modified.ok_or_else(|| de::Error::missing_field("nanos"))?;
-        let created = created.ok_or_else(|| de::Error::missing_field("nanos"))?;
+        let accessed = accessed.ok_or_else(|| Error::missing_field("secs"))?;
+        let modified = modified.ok_or_else(|| Error::missing_field("nanos"))?;
+        let created = created.ok_or_else(|| Error::missing_field("nanos"))?;
 
         Ok(FileTimes::from_times(
             accessed.into(),
@@ -150,7 +174,7 @@ impl<'de> Deserialize<'de> for FileTimes {
     where
         D: serde::Deserializer<'de>,
     {
-        const FIELDS: &'static [&'static str] = &["accessed", "modified", "created"];
+        const FIELDS: &[&str] = &["accessed", "modified", "created"];
         deserializer.deserialize_struct("FileTimes", FIELDS, FileTimesVisitor)
     }
 }
@@ -185,5 +209,9 @@ impl FileTimes {
 }
 
 pub fn now() -> FileTimes {
-    FileTimes::from_times(Utc::now().into(), Utc::now().into(), Utc::now().into())
+    FileTimes::from_times(
+        DateTime::now().into(),
+        DateTime::now().into(),
+        DateTime::now().into(),
+    )
 }

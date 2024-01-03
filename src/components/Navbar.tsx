@@ -20,16 +20,11 @@ import {
     useSelectedContext,
 } from "../context";
 import { ActionType, ModalEnum } from "../types";
-import {
-    createColor,
-    deleteColor,
-    folderActionColor,
-    infoColor,
-} from "../utils";
+import { createColor, deleteColor, dirActionColor, infoColor } from "../utils";
 import { IconButton } from "./IconButton";
 
 export const Navbar: React.FC = () => {
-    const { selected } = useSelectedContext();
+    const { selected, setSelected } = useSelectedContext();
     const { openModal } = useModalContext();
     const { dispatch } = useAppStateContext();
 
@@ -39,25 +34,26 @@ export const Navbar: React.FC = () => {
                 <div className="navbar-start gap-3">
                     <IconButton
                         icon={Pin}
-                        color={folderActionColor}
-                        tooltipBot="Pin Folder"
-                        onClick={() =>
+                        color={dirActionColor}
+                        tooltipBot="Pin Directory"
+                        onClick={() => {
                             dispatch({
                                 type: ActionType.PIN,
                                 payload: selected[0],
-                            })
-                        }
+                            });
+                            setSelected([]);
+                        }}
                     />
                     <IconButton
                         icon={FolderUp}
-                        color={folderActionColor}
+                        color={dirActionColor}
                         tooltipBot="Move Up"
                     />
                     <IconButton
                         icon={FolderPlus}
                         color={createColor}
-                        tooltipBot="New Folder"
-                        onClick={() => openModal(ModalEnum.NEW_FOLDER)}
+                        tooltipBot="New Directory"
+                        onClick={() => openModal(ModalEnum.NEW_DIRECTORY)}
                     />
                     <IconButton
                         icon={FilePlus}

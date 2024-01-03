@@ -9,7 +9,10 @@ export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {
     return (
         <Modal state={state} close={close}>
             Are you sure you want to delete
-            {selected.length > 1 ? ` ${selected.length} files` : " this file"}?
+            {selected.length > 1
+                ? ` ${selected.length} files`
+                : ` "${selected[0]?.content.name}"`}
+            ?
             <div className="flex flex-row gap-4 w-full justify-end">
                 <button className="btn" onClick={() => close()}>
                     Cancel

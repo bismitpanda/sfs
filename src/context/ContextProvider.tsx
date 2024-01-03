@@ -1,14 +1,15 @@
-import { useReducer, useState } from "react";
+import { invoke } from "@tauri-apps/api";
+import { useCallback, useReducer, useState } from "react";
 
 import {
     DeleteModal,
     InfoModal,
+    NewDirectoryModal,
     NewFileModal,
-    NewFolderModal,
     PropertiesModal,
     SettingsModal,
 } from "../components/modals";
-import { AppState, ModalEnum, Record } from "../types";
+import { Action, ActionType, AppState, ModalEnum, Record } from "../types";
 import { AppStateContext } from "./AppStateContext";
 import { ModalContext } from "./ModalContext";
 import { SelectedContext } from "./SelectedContext";
@@ -24,7 +25,7 @@ export const ContextProvider: React.FC<{
         settings: false,
         properties: false,
         newFile: false,
-        newFolder: false,
+        newDirectory: false,
         info: false,
         delete: false,
     };
@@ -32,9 +33,32 @@ export const ContextProvider: React.FC<{
     const [appState, dispatch] = useReducer(appStateReducer, initialAppState);
 
     const closeModal = () => setModals(defaultModals);
+    const asyncDispatch = useCallback(async (action: Action) => {
+        switch (action.type) {
+            case ActionType.CREATE_FILE: {
+                const record = await invoke<Record>("create_file", {
+                    name: action.payload,
+                });
+                dispatch({ type: ActionType.CREATED_FILE, payload: record });
+                break;
+            }
+
+            case ActionType.CREATE_DIRECTORY: {
+                const record = await invoke<Record>("create_directory", {
+                    name: action.payload,
+                });
+                dispatch({ type: ActionType.CREATED_FILE, payload: record });
+                break;
+            }
+
+            default:
+                dispatch(action);
+                break;
+        }
+    }, []);
 
     return (
-        <AppStateContext.Provider value={{ appState, dispatch }}>
+        <AppStateContext.Provider value={{ appState, dispatch: asyncDispatch }}>
             <SelectedContext.Provider value={{ selected, setSelected }}>
                 <ModalContext.Provider
                     value={{
@@ -48,8 +72,8 @@ export const ContextProvider: React.FC<{
                         close={closeModal}
                     />
                     <NewFileModal state={modals.newFile} close={closeModal} />
-                    <NewFolderModal
-                        state={modals.newFolder}
+                    <NewDirectoryModal
+                        state={modals.newDirectory}
                         close={closeModal}
                     />
                     <InfoModal state={modals.info} close={closeModal} />

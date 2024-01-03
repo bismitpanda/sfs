@@ -7,17 +7,11 @@ pub use fs::*;
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
-
     use crate::RecordTable;
 
     #[test]
     fn test_crud() {
-        let mut sfs = if !PathBuf::from("sfs.db").exists() {
-            RecordTable::new("user_key")
-        } else {
-            RecordTable::open("user_key")
-        };
+        let mut sfs = RecordTable::init("user_key");
 
         sfs.create_record("dir1", None);
         sfs.create_record("dir1/file1", Some("Hello, World!".as_bytes().to_vec()));
