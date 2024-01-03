@@ -6,3 +6,4 @@ export type { ModalProps } from "./ModalProps";
 export { ModalEnum } from "./ModalEnum";
 export type { Record } from "./Record";
 export type { SelectedState } from "./SelectedState";
+export type { DateTime } from "./DateTime";

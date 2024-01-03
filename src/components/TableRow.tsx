@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 import { useSelectedContext } from "../context";
 import { Record } from "../types";
 import { humanTime } from "../utils";
@@ -6,8 +8,8 @@ export const TableRow: React.FC<{
     record: Record;
     date: number;
     size: string;
-    icon: React.ReactNode;
-}> = ({ record, date, size, icon }) => {
+    icon: LucideIcon;
+}> = ({ record, date, size, icon: Icon }) => {
     const { selected } = useSelectedContext();
 
     return (
@@ -21,7 +23,7 @@ export const TableRow: React.FC<{
                         selected.includes(record) ? "opacity-50" : "!opacity-0"
                     }`}
                 />
-                {icon}
+                <Icon size={18} strokeWidth={1} />
                 {record.content.name}
             </span>
             <span>{size}</span>

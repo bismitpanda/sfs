@@ -1,5 +1,7 @@
+import { DateTime } from ".";
+
 export interface FileTimes {
-    accessed: string;
-    modified: string;
-    created: string;
+    accessed: DateTime;
+    modified: DateTime;
+    created: DateTime;
 }

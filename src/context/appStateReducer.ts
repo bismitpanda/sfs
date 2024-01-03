@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api";
-import { isEqual } from "lodash";
+import { isEqual } from "radash";
 
 import { Action, ActionType, AppState } from "../types";
 

@@ -4,6 +4,7 @@ import {
     Folder,
     FolderClock,
     LogOut,
+    LucideIcon,
     PieChart,
     PinOff,
 } from "lucide-react";
@@ -36,7 +37,12 @@ export const Sidebar: React.FC = () => {
                                 >
                                     <span className="flex flex-row gap-3">
                                         {record.kind === "File" ? (
-                                            getIcon(record.content.name)
+                                            ((Icon: LucideIcon) => (
+                                                <Icon
+                                                    size={18}
+                                                    strokeWidth={1}
+                                                />
+                                            ))(getIcon(record.content.name))
                                         ) : (
                                             <Folder size={18} strokeWidth={1} />
                                         )}{" "}

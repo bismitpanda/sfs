@@ -16,7 +16,7 @@ use xxhash_rust::xxh3::xxh3_64;
 
 use crate::{
     config::Config,
-    datetime::{self, FileTimes},
+    filetime::{self, FileTimes},
 };
 
 #[derive(
@@ -167,7 +167,7 @@ impl RecordTable {
         let root_record = DirectoryRecord {
             id: 0,
             name: String::new(),
-            date_time: datetime::now(),
+            date_time: filetime::now(),
             entries: HashMap::default(),
         };
 
@@ -364,13 +364,13 @@ impl RecordTable {
                 size,
                 len,
                 offset,
-                date_time: datetime::now(),
+                date_time: filetime::now(),
             })
         } else {
             Record::Directory(DirectoryRecord {
                 id: 0,
                 name: name.to_string(),
-                date_time: datetime::now(),
+                date_time: filetime::now(),
                 entries: HashMap::new(),
             })
         };

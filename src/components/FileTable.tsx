@@ -1,5 +1,11 @@
-import { isEqual } from "lodash";
-import { ArrowDownUp, FileSymlink, Folder, FolderSymlink } from "lucide-react";
+import {
+    ArrowDownUp,
+    FileSymlink,
+    Folder,
+    FolderGit2,
+    FolderSymlink,
+} from "lucide-react";
+import { isEqual } from "radash";
 
 import { useAppStateContext, useSelectedContext } from "../context";
 import { Record } from "../types";
@@ -30,7 +36,9 @@ export const FileTable: React.FC = () => {
                         record={record}
                         date={Date.parse(record.content.date_time.modified)}
                         size="-"
-                        icon={<Folder size={18} strokeWidth={1} />}
+                        icon={
+                            record.content.name === ".git" ? FolderGit2 : Folder
+                        }
                     />
                 );
 
@@ -41,11 +49,7 @@ export const FileTable: React.FC = () => {
                         date={Date.parse(record.content.date_time.modified)}
                         size="-"
                         icon={
-                            record.content.is_file ? (
-                                <FileSymlink size={18} strokeWidth={1} />
-                            ) : (
-                                <FolderSymlink size={18} strokeWidth={1} />
-                            )
+                            record.content.is_file ? FileSymlink : FolderSymlink
                         }
                     />
                 );

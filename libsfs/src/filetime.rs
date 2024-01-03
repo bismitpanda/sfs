@@ -2,7 +2,8 @@
 // ||..........++++++++++----------
 // -- accessed  modified  created
 
-use chrono::{Datelike, Timelike, Utc};
+use std::time::SystemTime;
+
 use serde::{
     de::{Error, MapAccess, Visitor},
     ser::SerializeStruct,
@@ -20,21 +21,44 @@ struct DateTime {
     month: u64,
     day: u64,
     hour: u64,
-    min: u64,
-    sec: u64,
+    minute: u64,
+    second: u64,
 }
 
 impl DateTime {
     fn now() -> Self {
-        let now_dt = Utc::now();
+        let seconds = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+
+        let mut days_since_epoch = seconds / 86400;
+        let today_elapsed_seconds = seconds % 86400;
+
+        days_since_epoch += 719_468;
+
+        let era = days_since_epoch / 146_097;
+        let day_of_era = days_since_epoch - era * 146_097;
+        let year_of_era =
+            (day_of_era - day_of_era / 1460 + day_of_era / 36524 - day_of_era / 146_096) / 365;
+        let day_of_year = day_of_era - (365 * year_of_era + year_of_era / 4 - year_of_era / 100);
+        let mp = (5 * day_of_year + 2) / 153;
+
+        let day = day_of_year - (153 * mp + 2) / 5 + 1;
+        let month = if mp < 10 { mp + 3 } else { mp - 9 };
+        let year = year_of_era + era * 400 + u64::from(month <= 2);
+
+        let hour = today_elapsed_seconds / 3600;
+        let minute = (today_elapsed_seconds % 3600) / 60;
+        let second = (today_elapsed_seconds % 3600) - minute * 60;
 
         Self {
-            year: now_dt.year().try_into().unwrap(),
-            month: now_dt.month().into(),
-            day: now_dt.day().into(),
-            hour: now_dt.hour().into(),
-            min: now_dt.minute().into(),
-            sec: now_dt.second().into(),
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            second,
         }
     }
 }
@@ -54,8 +78,8 @@ impl From<FileTime> for DateTime {
             month,
             day,
             hour,
-            min,
-            sec,
+            minute: min,
+            second: sec,
         }
     }
 }
@@ -67,8 +91,8 @@ impl From<DateTime> for FileTime {
         let day = value.day;
 
         let hour = value.hour;
-        let min = value.min;
-        let sec = value.sec;
+        let min = value.minute;
+        let sec = value.second;
 
         let mut dt = 0;
 

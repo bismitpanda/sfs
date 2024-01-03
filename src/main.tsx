@@ -1,4 +1,4 @@
-import "@fontsource/space-grotesk";
+import "@fontsource/space-grotesk/latin-400.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 

@@ -1,5 +1,6 @@
-export { getIcon } from "./mapExtIcon";
-export { fileSize as humanFileSize, time as humanTime } from "./human";
+export { getIcon } from "./getIcon";
+export { humanFileSize } from "./humanFileSize";
+export { humanTime } from "./humanTime";
 
 export const dirActionColor = "#ffaa5c";
 export const infoColor = "#8fd0ff";
