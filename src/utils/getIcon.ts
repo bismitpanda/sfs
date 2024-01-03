@@ -3,6 +3,7 @@ import {
     FileArchive,
     FileAudio2,
     FileBox,
+    FileCode2,
     FileCog,
     FileDigit,
     FileImage,
@@ -116,16 +117,23 @@ export const getIcon = (name: string) => {
             break;
 
         case "json":
+        case "json5":
             icon = FileJson2;
             break;
 
         case "dat":
         case "bin":
+        case "obj":
+        case "pdb":
+        case "so":
+        case "exe":
+        case "dll":
+        case "out":
+        case "app":
             icon = FileDigit;
             break;
 
         case "stl":
-        case "obj":
         case "fbx":
         case "gltf":
         case "glb":
@@ -148,7 +156,50 @@ export const getIcon = (name: string) => {
         case "yml":
         case "yaml":
         case "toml":
+        case "ini":
             icon = FileCog;
+            break;
+
+        case "c":
+        case "h":
+        case "ino":
+        case "w":
+        case "cpp":
+        case "c++":
+        case "cxx":
+        case "cc":
+        case "hpp":
+        case "hh":
+        case "h++":
+        case "hxx":
+        case "css":
+        case "scss":
+        case "sass":
+        case "html":
+        case "vue":
+        case "js":
+        case "jsx":
+        case "tsx":
+        case "ts":
+        case "rs":
+        case "go":
+        case "py":
+        case "cu":
+        case "d":
+        case "dockerfile":
+        case "ex":
+        case "exs":
+        case "rb":
+        case "pl":
+        case "erl":
+        case "s":
+        case "S":
+        case "asm":
+        case "kt":
+        case "java":
+        case "php":
+        case "hs":
+            icon = FileCode2;
             break;
 
         default:
