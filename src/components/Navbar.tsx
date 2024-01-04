@@ -76,7 +76,7 @@ export const Navbar: React.FC = () => {
                         <IconButton
                             icon={SendHorizonal}
                             color={deleteColor}
-                            tooltipBot="Move To"
+                            tooltipBot="Send To"
                         />
                         <IconButton
                             icon={Pencil}

@@ -13,7 +13,6 @@ export const AppStateContext = createContext<{
         currDirRecord: {
             name: "",
             id: 0,
-            path: [],
             fileTimes: {
                 accessed: {
                     year: 0,

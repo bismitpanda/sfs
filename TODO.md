@@ -1,13 +1,12 @@
 ## Immediate
 
 -   Animated icons
--   Colored direcotry icon
--   Add Symlink
+-   Colored directory icon
 
 ## Long Term
 
 -   Grid view
--   Move To / Send To
+-   Send To
 -   File Conversion
 -   Audio/Video/Image Viewer
 -   Locked directories

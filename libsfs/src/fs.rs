@@ -11,11 +11,13 @@ use aes_gcm::{
 };
 use argon2::Argon2;
 use itertools::Itertools;
+use snafu::{OptionExt, ResultExt};
 use snap::raw::{Decoder, Encoder};
 use xxhash_rust::xxh3::xxh3_64;
 
 use crate::{
     config::Config,
+    errors::{Error, FsError, NotFoundError, Result},
     filetime::{self, FileTimes},
 };
 
@@ -84,34 +86,39 @@ pub enum RecordInner {
 pub struct Record {
     pub id: usize,
     pub name: String,
-    pub path: Vec<String>,
     file_times: FileTimes,
     inner: RecordInner,
 }
 
 impl Record {
-    fn as_file(&self) -> &FileRecord {
+    fn as_file(&self) -> Result<&FileRecord> {
         let RecordInner::File(file) = &self.inner else {
-            unreachable!()
+            return Err(Error::NotFile {
+                name: self.name.clone(),
+            });
         };
 
-        file
+        Ok(file)
     }
 
-    pub fn as_directory(&self) -> &DirectoryRecord {
+    pub fn as_directory(&self) -> Result<&DirectoryRecord> {
         let RecordInner::Directory(directory) = &self.inner else {
-            unreachable!()
+            return Err(Error::NotDirectory {
+                name: self.name.clone(),
+            });
         };
 
-        directory
+        Ok(directory)
     }
 
-    pub fn as_directory_mut(&mut self) -> &mut DirectoryRecord {
+    pub fn as_directory_mut(&mut self) -> Result<&mut DirectoryRecord> {
         let RecordInner::Directory(directory) = &mut self.inner else {
-            unreachable!()
+            return Err(Error::NotDirectory {
+                name: self.name.clone(),
+            });
         };
 
-        directory
+        Ok(directory)
     }
 }
 
@@ -145,7 +152,7 @@ pub struct Meta {
 }
 
 impl RecordTable {
-    pub fn init(user_key: &str) -> Self {
+    pub fn init(user_key: &str) -> Result<Self> {
         if PathBuf::from("sfs.db").exists() {
             Self::open(user_key)
         } else {
@@ -153,14 +160,12 @@ impl RecordTable {
         }
     }
 
-    fn new(user_key: &str) -> Self {
+    fn new(user_key: &str) -> Result<Self> {
         let mut salt = [0; 16];
         OsRng.fill_bytes(&mut salt);
 
         let mut out = [0; 32];
-        Argon2::default()
-            .hash_password_into(user_key.as_bytes(), &salt, &mut out)
-            .unwrap();
+        Argon2::default().hash_password_into(user_key.as_bytes(), &salt, &mut out)?;
 
         let store_cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(&out));
         let store_nonce = Aes256Gcm::generate_nonce(OsRng);
@@ -169,14 +174,13 @@ impl RecordTable {
         let root_record = Record {
             id: 0,
             name: String::new(),
-            path: vec![String::new()],
             file_times: filetime::now(),
             inner: RecordInner::Directory(DirectoryRecord {
                 entries: HashMap::default(),
             }),
         };
 
-        Self {
+        Ok(Self {
             cipher: Aes256Gcm::new(&store_key),
             compressor: Encoder::new(),
             decompressor: Decoder::new(),
@@ -185,7 +189,9 @@ impl RecordTable {
                 .write(true)
                 .read(true)
                 .open(&config.storage)
-                .unwrap(),
+                .context(FsError {
+                    path: config.storage.to_string_lossy(),
+                })?,
             curr_dir: root_record.clone(),
             config,
             meta: Meta {
@@ -196,32 +202,31 @@ impl RecordTable {
                 pinned: HashSet::new(),
             },
             crypt: Crypt {
-                store_key: store_cipher
-                    .encrypt(&store_nonce, store_key.as_slice())
-                    .unwrap(),
+                store_key: store_cipher.encrypt(&store_nonce, store_key.as_slice())?,
                 store_nonce: store_nonce.into(),
                 user_salt: salt,
             },
-        }
+        })
     }
 
-    fn open(user_key: &str) -> Self {
+    fn open(user_key: &str) -> Result<Self> {
         let config = Config::new();
 
-        let meta = rkyv::from_bytes::<Meta>(&std::fs::read(&config.meta).unwrap()).unwrap();
-        let crypt = rkyv::from_bytes::<Crypt>(&std::fs::read(&config.crypt).unwrap()).unwrap();
+        let meta = rkyv::from_bytes::<Meta>(&std::fs::read(&config.meta).context(FsError {
+            path: config.meta.to_string_lossy(),
+        })?)?;
+        let crypt = rkyv::from_bytes::<Crypt>(&std::fs::read(&config.crypt).context(FsError {
+            path: config.crypt.to_string_lossy(),
+        })?)?;
 
         let mut out = [0; 32];
-        Argon2::default()
-            .hash_password_into(user_key.as_bytes(), &crypt.user_salt, &mut out)
-            .unwrap();
+        Argon2::default().hash_password_into(user_key.as_bytes(), &crypt.user_salt, &mut out)?;
 
         let store_cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(&out));
-        let store_key = store_cipher
-            .decrypt(&crypt.store_nonce.into(), crypt.store_key.as_slice())
-            .unwrap();
+        let store_key =
+            store_cipher.decrypt(&crypt.store_nonce.into(), crypt.store_key.as_slice())?;
 
-        Self {
+        Ok(Self {
             cipher: Aes256Gcm::new(store_key.as_slice().into()),
             compressor: Encoder::new(),
             decompressor: Decoder::new(),
@@ -229,18 +234,20 @@ impl RecordTable {
                 .write(true)
                 .read(true)
                 .open(&config.storage)
-                .unwrap(),
+                .context(FsError {
+                    path: config.storage.to_string_lossy(),
+                })?,
             curr_dir: meta.entries[0].clone(),
             config,
             meta,
             crypt,
-        }
+        })
     }
 
-    pub fn get_size(&self, record: &Record) -> usize {
+    pub fn get_size(&self, record: &Record) -> Result<usize> {
         match &record.inner {
-            RecordInner::Empty => 0,
-            RecordInner::File(file) => file.size,
+            RecordInner::Empty => Ok(0),
+            RecordInner::File(file) => Ok(file.size),
             RecordInner::Directory(dir) => dir
                 .entries
                 .values()
@@ -250,7 +257,7 @@ impl RecordTable {
                 let record = &self.meta.entries[symlink.reference_record_id];
 
                 if symlink.is_file {
-                    record.as_file().size
+                    Ok(record.as_file()?.size)
                 } else {
                     self.get_size(record)
                 }
@@ -307,12 +314,18 @@ impl RecordTable {
         self.meta.free_fragments.sort_unstable();
     }
 
-    pub fn close(&self) {
-        let meta = rkyv::to_bytes::<_, 1024>(&self.meta).unwrap();
-        let crypt = rkyv::to_bytes::<_, 1024>(&self.crypt).unwrap();
+    pub fn close(&self) -> Result<()> {
+        let meta = rkyv::to_bytes::<_, 1024>(&self.meta)?;
+        let crypt = rkyv::to_bytes::<_, 1024>(&self.crypt)?;
 
-        std::fs::write(&self.config.meta, &meta).unwrap();
-        std::fs::write(&self.config.crypt, &crypt).unwrap();
+        std::fs::write(&self.config.meta, &meta).context(FsError {
+            path: self.config.meta.to_string_lossy(),
+        })?;
+        std::fs::write(&self.config.crypt, &crypt).context(FsError {
+            path: self.config.crypt.to_string_lossy(),
+        })?;
+
+        Ok(())
     }
 
     pub fn pin(&mut self, record_id: usize) {
@@ -325,7 +338,7 @@ impl RecordTable {
 }
 
 impl RecordTable {
-    pub fn create_record(&mut self, name: &str, contents: Option<Vec<u8>>) -> Record {
+    pub fn create(&mut self, name: &str, contents: Option<Vec<u8>>) -> Result<Record> {
         let inner = if let Some(contents) = contents {
             let checksum = xxh3_64(&contents);
             let mut nonce = [0; 12];
@@ -333,11 +346,8 @@ impl RecordTable {
 
             let size = contents.len();
 
-            let enc = self
-                .cipher
-                .encrypt(&nonce.into(), contents.as_slice())
-                .unwrap();
-            let compressed = self.compressor.compress_vec(&enc).unwrap();
+            let enc = self.cipher.encrypt(&nonce.into(), contents.as_slice())?;
+            let compressed = self.compressor.compress_vec(&enc)?;
             let len = compressed.len();
 
             let free_pos = self
@@ -347,19 +357,24 @@ impl RecordTable {
                 .unwrap_or_else(|pos| pos);
 
             let offset = if let Some((_, ids)) = self.meta.free_fragments.get_mut(free_pos) {
-                ids.pop().unwrap()
+                if let Some(off) = ids.pop() {
+                    off
+                } else {
+                    self.meta.free_fragments.remove(free_pos);
+                    let off = self.meta.end_offset;
+                    self.meta.end_offset += len;
+
+                    off
+                }
             } else {
                 let off = self.meta.end_offset;
-
                 self.meta.end_offset += len;
 
                 off
             };
 
-            self.backend
-                .seek(SeekFrom::Start(offset.try_into().unwrap()))
-                .unwrap();
-            self.backend.write_all(&compressed).unwrap();
+            self.backend.seek(SeekFrom::Start(offset as u64))?;
+            self.backend.write_all(&compressed)?;
 
             RecordInner::File(FileRecord {
                 checksum,
@@ -377,7 +392,6 @@ impl RecordTable {
         let record = Record {
             id: 0,
             name: name.to_string(),
-            path: self.curr_dir.path.clone(),
             file_times: filetime::now(),
             inner,
         };
@@ -393,63 +407,67 @@ impl RecordTable {
         };
 
         self.curr_dir
-            .as_directory_mut()
+            .as_directory_mut()?
             .entries
             .insert(name.to_string(), record_id);
 
-        self.meta.entries.get_mut(record_id).unwrap().id = record_id;
+        self.meta.entries[record_id].id = record_id;
 
-        record
+        Ok(record)
     }
 
-    pub fn read_file_record(&mut self, name: &str) -> Vec<u8> {
-        let record = self.meta.entries[self.curr_dir.as_directory().entries[name]].clone();
+    pub fn read_file(&mut self, name: &str) -> Result<Vec<u8>> {
+        let record = self.meta.entries[self.curr_dir.as_directory()?.entries[name]].clone();
 
-        let file_record = record.as_file();
+        let file_record = record.as_file()?;
         let mut buf = vec![0; file_record.len];
         self.backend
-            .seek(SeekFrom::Start(file_record.offset as u64))
-            .unwrap();
-        self.backend.read_exact(&mut buf).unwrap();
+            .seek(SeekFrom::Start(file_record.offset as u64))?;
+        self.backend.read_exact(&mut buf)?;
 
-        let decompressed = self.decompressor.decompress_vec(&buf).unwrap();
+        let decompressed = self.decompressor.decompress_vec(&buf)?;
         let contents = self
             .cipher
-            .decrypt(&file_record.nonce.into(), decompressed.as_slice())
-            .unwrap();
+            .decrypt(&file_record.nonce.into(), decompressed.as_slice())?;
 
         if xxh3_64(&contents) == file_record.checksum {
-            return contents;
+            return Ok(contents);
         }
 
-        panic!("Corrupted data");
+        Err(Error::CorruptedData {
+            name: name.to_string(),
+            id: record.id,
+        })
     }
 
-    pub fn read_directory_record(&self, name: &str) -> Vec<Record> {
-        let record = self.meta.entries[self.curr_dir.as_directory().entries[name]].as_directory();
+    pub fn read_directory(&self, name: &str) -> Result<Vec<Record>> {
+        let record =
+            self.meta.entries[self.curr_dir.as_directory()?.entries[name]].as_directory()?;
 
-        record
+        Ok(record
             .entries
             .values()
             .map(|&id| self.meta.entries[id].clone())
-            .collect_vec()
+            .collect_vec())
     }
 
-    pub fn update_record(&mut self, name: &str, contents: &[u8]) {
-        let record = self.meta.entries[self.curr_dir.as_directory().entries[name]].as_file();
+    pub fn update(&mut self, name: &str, contents: &[u8]) -> Result<()> {
+        let record = self.meta.entries[self.curr_dir.as_directory()?.entries[name]].as_file()?;
 
         if record.len > contents.len() {
             todo!()
         }
+
+        Ok(())
     }
 
-    pub fn delete_record(&mut self, name: &str) {
+    pub fn delete(&mut self, name: &str) -> Result<()> {
         let record_id = self
             .curr_dir
-            .as_directory_mut()
+            .as_directory_mut()?
             .entries
             .remove(name)
-            .unwrap();
+            .context(NotFoundError { name })?;
 
         let record = std::mem::take(&mut self.meta.entries[record_id]);
         self.meta.empty_records.push(record_id);
@@ -458,9 +476,8 @@ impl RecordTable {
 
         if let RecordInner::File(file_record) = record.inner {
             self.backend
-                .seek(SeekFrom::Start(file_record.offset.try_into().unwrap()))
-                .unwrap();
-            self.backend.write_all(&vec![0; file_record.len]).unwrap();
+                .seek(SeekFrom::Start(file_record.offset as u64))?;
+            self.backend.write_all(&vec![0; file_record.len])?;
 
             if let Some((_, free)) = self
                 .meta
@@ -483,5 +500,45 @@ impl RecordTable {
 
             self.merge_free();
         }
+
+        Ok(())
+    }
+
+    pub fn send(&mut self, name: &str, to: &[String]) -> Result<()> {
+        let mut record = self.meta.entries[self
+            .curr_dir
+            .as_directory_mut()?
+            .entries
+            .remove(name)
+            .context(NotFoundError { name })?]
+        .clone();
+
+        let [prev @ .., last] = to else {
+            unreachable!()
+        };
+        record.name = last.clone();
+        record.file_times = filetime::now();
+
+        if prev.is_empty() {
+            self.meta.entries[0]
+                .as_directory_mut()?
+                .entries
+                .insert(last.clone(), record.id);
+            return Ok(());
+        }
+
+        let mut to_dir =
+            self.meta.entries[self.meta.entries[0].as_directory()?.entries[&prev[0]]].clone();
+
+        for part in &prev[1..] {
+            to_dir = self.meta.entries[to_dir.as_directory()?.entries[part]].clone();
+        }
+
+        to_dir
+            .as_directory_mut()?
+            .entries
+            .insert(last.clone(), record.id);
+
+        Ok(())
     }
 }
