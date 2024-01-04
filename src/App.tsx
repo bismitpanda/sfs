@@ -5,17 +5,18 @@ import { Record } from "./types";
 
 const mock = mockData as {
     path: string[];
-    records1: Record[];
-    records2: Record[];
+    records: Record[];
     pinned: Record[];
+    currDirRecord: Record;
 };
 
 const App: React.FC = () => (
     <ContextProvider
         initialAppState={{
-            records: mock.records1,
+            records: mock.records,
             workingDir: mock.path,
             pinned: mock.pinned,
+            currDirRecord: mock.currDirRecord,
         }}
     >
         <div className="flex flex-row items-start">

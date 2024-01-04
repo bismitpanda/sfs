@@ -1,424 +1,566 @@
 {
     "path": ["Documents", "My Directory"],
-    "records1": [
+    "records": [
         {
-            "kind": "Directory",
-            "content": {
-                "id": 1,
-                "name": "Directory 1",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2021-02-02T19:17:40.862Z",
-                    "modified": "2021-02-02T19:17:40.862Z",
-                    "created": "2021-02-02T19:17:40.862Z"
+            "name": "Consectetuer.png",
+            "id": 21,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 11,
+                    "month": 10,
+                    "hour": 5,
+                    "minute": 48,
+                    "second": 47
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 3,
+                    "month": 10,
+                    "hour": 0,
+                    "minute": 13,
+                    "second": 39
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 13,
+                    "month": 8,
+                    "hour": 21,
+                    "minute": 15,
+                    "second": 45
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 10105354364
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 2,
-                "name": "Directory 2",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2023-11-13T15:09:55.494Z",
-                    "modified": "2023-11-13T15:09:55.494Z",
-                    "created": "2023-11-13T15:09:55.494Z"
+            "name": "Praesent.tiff",
+            "id": 78,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 8,
+                    "month": 9,
+                    "hour": 19,
+                    "minute": 2,
+                    "second": 52
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 8,
+                    "month": 6,
+                    "hour": 15,
+                    "minute": 45,
+                    "second": 57
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 21,
+                    "month": 2,
+                    "hour": 2,
+                    "minute": 1,
+                    "second": 19
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 9035852395
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 3,
-                "name": "Directory 3",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2020-01-14T13:55:39.210Z",
-                    "modified": "2020-01-14T13:55:39.210Z",
-                    "created": "2020-01-14T13:55:39.210Z"
+            "name": "Ipsum.gif",
+            "id": 40,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 8,
+                    "month": 4,
+                    "hour": 3,
+                    "minute": 3,
+                    "second": 19
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 5,
+                    "month": 6,
+                    "hour": 0,
+                    "minute": 9,
+                    "second": 47
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 9,
+                    "month": 12,
+                    "hour": 10,
+                    "minute": 34,
+                    "second": 49
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 6840641796
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 4,
-                "name": "Directory 4",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2023-01-01T12:33:44.165Z",
-                    "modified": "2023-01-01T12:33:44.165Z",
-                    "created": "2023-01-01T12:33:44.165Z"
+            "name": "Mauris.xls",
+            "id": 4,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 1,
+                    "month": 9,
+                    "hour": 21,
+                    "minute": 58,
+                    "second": 17
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 12,
+                    "month": 12,
+                    "hour": 4,
+                    "minute": 44,
+                    "second": 33
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 18,
+                    "month": 3,
+                    "hour": 10,
+                    "minute": 9,
+                    "second": 22
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 700408540
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 5,
-                "name": "Directory 5",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2020-01-31T19:16:49.331Z",
-                    "modified": "2020-01-31T19:16:49.331Z",
-                    "created": "2020-01-31T19:16:49.331Z"
+            "name": "VenenatisTristique.mp3",
+            "id": 25,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 19,
+                    "month": 10,
+                    "hour": 1,
+                    "minute": 46,
+                    "second": 9
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 30,
+                    "month": 1,
+                    "hour": 22,
+                    "minute": 39,
+                    "second": 57
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 31,
+                    "month": 7,
+                    "hour": 19,
+                    "minute": 36,
+                    "second": 12
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 9396640854
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 6,
-                "name": "Directory 6",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2023-11-25T20:37:18.161Z",
-                    "modified": "2023-11-25T20:37:18.161Z",
-                    "created": "2023-11-25T20:37:18.161Z"
+            "name": "LobortisConvallisTortor.ppt",
+            "id": 17,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 19,
+                    "month": 6,
+                    "hour": 11,
+                    "minute": 56,
+                    "second": 32
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 30,
+                    "month": 8,
+                    "hour": 0,
+                    "minute": 36,
+                    "second": 18
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 23,
+                    "month": 9,
+                    "hour": 23,
+                    "minute": 34,
+                    "second": 40
                 }
+            },
+            "inner": {
+                "tag": "Directory",
+                "entries": {}
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 7,
-                "name": "Directory 7",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2020-02-06T12:23:06.375Z",
-                    "modified": "2020-02-06T12:23:06.375Z",
-                    "created": "2020-02-06T12:23:06.375Z"
+            "name": "TristiqueTortorEu.ppt",
+            "id": 65,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 7,
+                    "month": 12,
+                    "hour": 12,
+                    "minute": 9,
+                    "second": 55
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 1,
+                    "month": 5,
+                    "hour": 22,
+                    "minute": 8,
+                    "second": 53
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 31,
+                    "month": 3,
+                    "hour": 19,
+                    "minute": 7,
+                    "second": 23
                 }
+            },
+            "inner": {
+                "tag": "Directory",
+                "entries": {}
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 8,
-                "name": "Directory 8",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2021-02-22T15:17:38.866Z",
-                    "modified": "2021-02-22T15:17:38.866Z",
-                    "created": "2021-02-22T15:17:38.866Z"
+            "name": "SapienSapien.xls",
+            "id": 5,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 26,
+                    "month": 9,
+                    "hour": 9,
+                    "minute": 57,
+                    "second": 29
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 25,
+                    "month": 9,
+                    "hour": 10,
+                    "minute": 49,
+                    "second": 52
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 10,
+                    "month": 7,
+                    "hour": 3,
+                    "minute": 11,
+                    "second": 57
                 }
+            },
+            "inner": {
+                "tag": "Directory",
+                "entries": {}
             }
         },
         {
-            "kind": "File",
-            "content": {
-                "id": 9,
-                "name": "File 1.zip",
-                "size": 36587,
-                "date_time": {
-                    "accessed": "2022-02-07T18:40:55.389Z",
-                    "modified": "2022-02-07T18:40:55.389Z",
-                    "created": "2022-02-07T18:40:55.389Z"
+            "name": "PedeJustoEu.mov",
+            "id": 30,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 1,
+                    "month": 6,
+                    "hour": 7,
+                    "minute": 9,
+                    "second": 7
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 16,
+                    "month": 7,
+                    "hour": 9,
+                    "minute": 50,
+                    "second": 30
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 5,
+                    "month": 2,
+                    "hour": 9,
+                    "minute": 55,
+                    "second": 10
                 }
+            },
+            "inner": {
+                "tag": "Directory",
+                "entries": {}
             }
         },
         {
-            "kind": "File",
-            "content": {
-                "id": 10,
-                "name": "File 2.tar",
-                "size": 1045,
-                "date_time": {
-                    "accessed": "2020-01-08T19:24:53.446Z",
-                    "modified": "2020-01-08T19:24:53.446Z",
-                    "created": "2020-01-08T19:24:53.446Z"
+            "name": "SemperInterdumMauris.xls",
+            "id": 95,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 31,
+                    "month": 7,
+                    "hour": 11,
+                    "minute": 32,
+                    "second": 31
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 15,
+                    "month": 2,
+                    "hour": 20,
+                    "minute": 3,
+                    "second": 15
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 6,
+                    "month": 3,
+                    "hour": 11,
+                    "minute": 28,
+                    "second": 54
                 }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 11,
-                "name": "File 3.tar.gz",
-                "size": 109,
-                "date_time": {
-                    "accessed": "2022-03-25T03:28:20.735Z",
-                    "modified": "2022-03-25T03:28:20.735Z",
-                    "created": "2022-03-25T03:28:20.735Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 12,
-                "name": "File 4.txt",
-                "size": 42,
-                "date_time": {
-                    "accessed": "2020-04-28T11:15:39.219Z",
-                    "modified": "2020-04-28T11:15:39.219Z",
-                    "created": "2020-04-28T11:15:39.219Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 13,
-                "name": "File 5.png",
-                "size": 1089898,
-                "date_time": {
-                    "accessed": "2020-10-19T17:52:37.423Z",
-                    "modified": "2020-10-19T17:52:37.423Z",
-                    "created": "2020-10-19T17:52:37.423Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 14,
-                "name": "File 6.jpeg",
-                "size": 910243,
-                "date_time": {
-                    "accessed": "2023-08-31T15:24:40.427Z",
-                    "modified": "2023-08-31T15:24:40.427Z",
-                    "created": "2023-08-31T15:24:40.427Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 15,
-                "name": "File 7.mp4",
-                "size": 576349423,
-                "date_time": {
-                    "accessed": "2022-08-25T14:41:26.292Z",
-                    "modified": "2022-08-25T14:41:26.292Z",
-                    "created": "2022-08-25T14:41:26.292Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 16,
-                "name": "File 8.mkv",
-                "size": 1986749227,
-                "date_time": {
-                    "accessed": "2021-07-21T16:21:46.732Z",
-                    "modified": "2021-07-21T16:21:46.732Z",
-                    "created": "2021-07-21T16:21:46.732Z"
-                }
+            },
+            "inner": {
+                "tag": "Directory",
+                "entries": {}
             }
         }
     ],
-    "records2": [
-        {
-            "kind": "File",
-            "content": {
-                "id": 9,
-                "name": "File 1.zip",
-                "size": 3,
-                "date_time": {
-                    "accessed": "2023-01-17T02:15:09.929Z",
-                    "modified": "2023-01-17T02:15:09.929Z",
-                    "created": "2023-01-17T02:15:09.929Z"
-                }
+    "currDirRecord": {
+        "name": "LobortisConvallisTortor.ppt",
+        "id": 17,
+        "path": [],
+        "fileTimes": {
+            "accessed": {
+                "year": 2023,
+                "day": 19,
+                "month": 6,
+                "hour": 11,
+                "minute": 56,
+                "second": 32
+            },
+            "modified": {
+                "year": 2023,
+                "day": 30,
+                "month": 8,
+                "hour": 0,
+                "minute": 36,
+                "second": 18
+            },
+            "created": {
+                "year": 2023,
+                "day": 23,
+                "month": 9,
+                "hour": 23,
+                "minute": 34,
+                "second": 40
             }
         },
-        {
-            "kind": "File",
-            "content": {
-                "id": 10,
-                "name": "File 2.tar",
-                "size": 10,
-                "date_time": {
-                    "accessed": "2022-10-20T11:54:09.568Z",
-                    "modified": "2022-10-20T11:54:09.568Z",
-                    "created": "2022-10-20T11:54:09.568Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 11,
-                "name": "File 3.tar.gz",
-                "size": 10,
-                "date_time": {
-                    "accessed": "2022-09-02T02:14:33.537Z",
-                    "modified": "2022-09-02T02:14:33.537Z",
-                    "created": "2022-09-02T02:14:33.537Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 12,
-                "name": "File 4.txt",
-                "size": 4,
-                "date_time": {
-                    "accessed": "2021-12-23T04:34:48.395Z",
-                    "modified": "2021-12-23T04:34:48.395Z",
-                    "created": "2021-12-23T04:34:48.395Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 13,
-                "name": "File 5.png",
-                "size": 10,
-                "date_time": {
-                    "accessed": "2020-03-06T12:33:34.691Z",
-                    "modified": "2020-03-06T12:33:34.691Z",
-                    "created": "2020-03-06T12:33:34.691Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 14,
-                "name": "File 6.jpeg",
-                "size": 10,
-                "date_time": {
-                    "accessed": "2021-05-21T13:20:12.861Z",
-                    "modified": "2021-05-21T13:20:12.861Z",
-                    "created": "2021-05-21T13:20:12.861Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 15,
-                "name": "File 7.mp4",
-                "size": 5,
-                "date_time": {
-                    "accessed": "2023-04-09T13:23:21.395Z",
-                    "modified": "2023-04-09T13:23:21.395Z",
-                    "created": "2023-04-09T13:23:21.395Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 16,
-                "name": "File 8.mkv",
-                "size": 7,
-                "date_time": {
-                    "accessed": "2021-05-23T15:01:59.495Z",
-                    "modified": "2021-05-23T15:01:59.495Z",
-                    "created": "2021-05-23T15:01:59.495Z"
-                }
-            }
+        "inner": {
+            "tag": "Directory",
+            "entries": {}
         }
-    ],
+    },
     "pinned": [
         {
-            "kind": "Directory",
-            "content": {
-                "id": 1,
-                "name": "Directory 1",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2021-02-02T19:17:40.862Z",
-                    "modified": "2021-02-02T19:17:40.862Z",
-                    "created": "2021-02-02T19:17:40.862Z"
+            "name": "Consectetuer.png",
+            "id": 21,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 11,
+                    "month": 10,
+                    "hour": 5,
+                    "minute": 48,
+                    "second": 47
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 3,
+                    "month": 10,
+                    "hour": 0,
+                    "minute": 13,
+                    "second": 39
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 13,
+                    "month": 8,
+                    "hour": 21,
+                    "minute": 15,
+                    "second": 45
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 10105354364
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 2,
-                "name": "Directory 2",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2023-11-13T15:09:55.494Z",
-                    "modified": "2023-11-13T15:09:55.494Z",
-                    "created": "2023-11-13T15:09:55.494Z"
+            "name": "Praesent.tiff",
+            "id": 78,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 8,
+                    "month": 9,
+                    "hour": 19,
+                    "minute": 2,
+                    "second": 52
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 8,
+                    "month": 6,
+                    "hour": 15,
+                    "minute": 45,
+                    "second": 57
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 21,
+                    "month": 2,
+                    "hour": 2,
+                    "minute": 1,
+                    "second": 19
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 9035852395
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 3,
-                "name": "Directory 3",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2020-01-14T13:55:39.210Z",
-                    "modified": "2020-01-14T13:55:39.210Z",
-                    "created": "2020-01-14T13:55:39.210Z"
+            "name": "Ipsum.gif",
+            "id": 40,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 8,
+                    "month": 4,
+                    "hour": 3,
+                    "minute": 3,
+                    "second": 19
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 5,
+                    "month": 6,
+                    "hour": 0,
+                    "minute": 9,
+                    "second": 47
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 9,
+                    "month": 12,
+                    "hour": 10,
+                    "minute": 34,
+                    "second": 49
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 6840641796
             }
         },
         {
-            "kind": "Directory",
-            "content": {
-                "id": 4,
-                "name": "Directory 4",
-                "entries": [],
-                "date_time": {
-                    "accessed": "2023-01-01T12:33:44.165Z",
-                    "modified": "2023-01-01T12:33:44.165Z",
-                    "created": "2023-01-01T12:33:44.165Z"
+            "name": "Mauris.xls",
+            "id": 4,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 1,
+                    "month": 9,
+                    "hour": 21,
+                    "minute": 58,
+                    "second": 17
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 12,
+                    "month": 12,
+                    "hour": 4,
+                    "minute": 44,
+                    "second": 33
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 18,
+                    "month": 3,
+                    "hour": 10,
+                    "minute": 9,
+                    "second": 22
                 }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 700408540
             }
         },
         {
-            "kind": "File",
-            "content": {
-                "id": 5,
-                "name": "File 5.png",
-                "size": 10,
-                "date_time": {
-                    "accessed": "2020-03-06T12:33:34.691Z",
-                    "modified": "2020-03-06T12:33:34.691Z",
-                    "created": "2020-03-06T12:33:34.691Z"
+            "name": "VenenatisTristique.mp3",
+            "id": 25,
+            "path": [],
+            "fileTimes": {
+                "accessed": {
+                    "year": 2023,
+                    "day": 19,
+                    "month": 10,
+                    "hour": 1,
+                    "minute": 46,
+                    "second": 9
+                },
+                "modified": {
+                    "year": 2023,
+                    "day": 30,
+                    "month": 1,
+                    "hour": 22,
+                    "minute": 39,
+                    "second": 57
+                },
+                "created": {
+                    "year": 2023,
+                    "day": 31,
+                    "month": 7,
+                    "hour": 19,
+                    "minute": 36,
+                    "second": 12
                 }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 6,
-                "name": "File 6.jpeg",
-                "size": 10,
-                "date_time": {
-                    "accessed": "2021-05-21T13:20:12.861Z",
-                    "modified": "2021-05-21T13:20:12.861Z",
-                    "created": "2021-05-21T13:20:12.861Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 7,
-                "name": "File 7.mp4",
-                "size": 5,
-                "date_time": {
-                    "accessed": "2023-04-09T13:23:21.395Z",
-                    "modified": "2023-04-09T13:23:21.395Z",
-                    "created": "2023-04-09T13:23:21.395Z"
-                }
-            }
-        },
-        {
-            "kind": "File",
-            "content": {
-                "id": 8,
-                "name": "File 8.mkv",
-                "size": 7,
-                "date_time": {
-                    "accessed": "2021-05-23T15:01:59.495Z",
-                    "modified": "2021-05-23T15:01:59.495Z",
-                    "created": "2021-05-23T15:01:59.495Z"
-                }
+            },
+            "inner": {
+                "tag": "File",
+                "size": 9396640854
             }
         }
     ]

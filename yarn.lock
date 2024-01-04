@@ -773,6 +773,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/luxon@npm:^3.3.7":
+  version: 3.3.7
+  resolution: "@types/luxon@npm:3.3.7"
+  checksum: 97026557e92bcba308a5592f981591cd200d493fc8997874d79acecf6a2ec41debeded3ac5cd80c371ef7f6f56cc0d1be0a5aca846e03d3e6b4a2be37256fe2f
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.10.6":
+  version: 20.10.6
+  resolution: "@types/node@npm:20.10.6"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: ada40e4ccbda3697dca88f8d13f4c996c493be6fbc15f5f5d3b91096d56bd700786a2c148a92a2b4c5d1f133379e63f754a786b3aebfc6a7d09fc7ea16dc017b
+  languageName: node
+  linkType: hard
+
 "@types/postcss-js@npm:^4.0.0":
   version: 4.0.4
   resolution: "@types/postcss-js@npm:4.0.4"
@@ -2398,6 +2414,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^3.4.4":
+  version: 3.4.4
+  resolution: "luxon@npm:3.4.4"
+  checksum: 36c1f99c4796ee4bfddf7dc94fa87815add43ebc44c8934c924946260a58512f0fd2743a629302885df7f35ccbd2d13f178c15df046d0e3b6eb71db178f1c60c
+  languageName: node
+  linkType: hard
+
 "make-fetch-happen@npm:^13.0.0":
   version: 13.0.0
   resolution: "make-fetch-happen@npm:13.0.0"
@@ -3124,6 +3147,8 @@ __metadata:
     "@fontsource/space-grotesk": ^5.0.16
     "@tauri-apps/api": ^1.5.3
     "@trivago/prettier-plugin-sort-imports": ^4.3.0
+    "@types/luxon": ^3.3.7
+    "@types/node": ^20.10.6
     "@types/react": ^18.2.43
     "@types/react-dom": ^18.2.17
     "@typescript-eslint/eslint-plugin": ^6.14.0
@@ -3135,6 +3160,7 @@ __metadata:
     eslint-plugin-react-refresh: ^0.4.5
     lightningcss: ^1.22.1
     lucide-react: ^0.303.0
+    luxon: ^3.4.4
     postcss: ^8.4.32
     prettier: 3.1.1
     radash: ^11.0.0
@@ -3455,6 +3481,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: f61375590b3162599f0f0d5b8737877ac0a7bc52761dbb585d67e7b8753a3a4c42d9a554c4cc929f591ffcf3a2b0602f65ae3ce74714fd5652623a816862b610
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
   languageName: node
   linkType: hard
 

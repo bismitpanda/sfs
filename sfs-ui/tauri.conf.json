@@ -65,7 +65,19 @@
                 "width": 1280,
                 "minHeight": 600,
                 "minWidth": 1000,
-                "center": true
+                "center": true,
+                "visible": false,
+                "label": "main"
+            },
+            {
+                "width": 480,
+                "height": 200,
+                "decorations": false,
+                "transparent": true,
+                "url": "login.html",
+                "label": "login",
+                "center": true,
+                "resizable": false
             }
         ]
     }

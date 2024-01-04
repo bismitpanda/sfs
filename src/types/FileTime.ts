@@ -1,4 +1,4 @@
-export interface DateTime {
+export interface FileTime {
     year: number;
     month: number;
     day: number;

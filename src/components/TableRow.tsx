@@ -1,12 +1,12 @@
 import { LucideIcon } from "lucide-react";
+import { DateTime } from "luxon";
 
 import { useSelectedContext } from "../context";
-import { Record } from "../types";
-import { humanTime } from "../utils";
+import { FileTime, Record } from "../types";
 
 export const TableRow: React.FC<{
     record: Record;
-    date: number;
+    date: FileTime;
     size: string;
     icon: LucideIcon;
 }> = ({ record, date, size, icon: Icon }) => {
@@ -24,10 +24,14 @@ export const TableRow: React.FC<{
                     }`}
                 />
                 <Icon size={18} strokeWidth={1} />
-                {record.content.name}
+                {record.name}
             </span>
             <span>{size}</span>
-            <span>{humanTime(date)}</span>
+            <span>
+                {DateTime.fromObject(date, { zone: "utc" })
+                    .setZone("local")
+                    .toRelative()}
+            </span>
         </>
     );
 };

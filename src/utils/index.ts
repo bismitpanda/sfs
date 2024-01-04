@@ -1,6 +1,6 @@
 export { getIcon } from "./getIcon";
 export { humanFileSize } from "./humanFileSize";
-export { humanTime } from "./humanTime";
+export { getTimeString } from "./getTimeString";
 
 export const dirActionColor = "#ffaa5c";
 export const infoColor = "#8fd0ff";

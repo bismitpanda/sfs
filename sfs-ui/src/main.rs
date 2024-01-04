@@ -3,26 +3,40 @@
 use std::sync::Mutex;
 
 use libsfs::{Record, RecordTable};
-use tauri::{Manager, RunEvent, State};
+use tauri::{AppHandle, Manager, RunEvent, State, Window};
+
+struct AppState {
+    record_table: Mutex<RecordTable>,
+}
+
+#[tauri::command]
+fn login(password: String, window: Window, handle: AppHandle) {
+    handle.manage(AppState {
+        record_table: Mutex::new(RecordTable::init(&password)),
+    });
+
+    window.get_window("login").unwrap().close().unwrap();
+    window.get_window("main").unwrap().show().unwrap();
+}
 
 #[tauri::command]
 fn delete(records: Vec<Record>, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
     for record in records {
-        record_table.delete_record(&record.name());
+        record_table.delete_record(&record.name);
     }
 }
 
 #[tauri::command]
 fn unpin(record: Record, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.unpin(record.id());
+    record_table.unpin(record.id);
 }
 
 #[tauri::command]
 fn pin(record: Record, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.pin(record.id());
+    record_table.pin(record.id);
 }
 
 #[tauri::command]
@@ -37,20 +51,10 @@ fn create_directory(name: &str, state: State<AppState>) -> Record {
     record_table.create_record(name, None)
 }
 
-struct AppState {
-    record_table: Mutex<RecordTable>,
-}
-
 fn main() {
     let app = tauri::Builder::default()
-        .setup(|app_handle| {
-            app_handle.manage(AppState {
-                record_table: Mutex::new(RecordTable::init("user_key")),
-            });
-
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
+            login,
             delete,
             pin,
             unpin,
@@ -73,5 +77,5 @@ fn main() {
                 app_handle.exit(0);
             }
         }
-    })
+    });
 }

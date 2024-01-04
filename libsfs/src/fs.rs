@@ -24,18 +24,15 @@ use crate::{
 )]
 #[archive(check_bytes)]
 pub struct FileRecord {
-    id: usize,
-    name: String,
     #[serde(skip)]
     checksum: u64,
     #[serde(skip)]
     offset: usize,
     #[serde(skip)]
-    len: usize,
     size: usize,
     #[serde(skip)]
     nonce: [u8; 12],
-    date_time: FileTimes,
+    len: usize,
 }
 
 #[derive(
@@ -43,9 +40,6 @@ pub struct FileRecord {
 )]
 #[archive(check_bytes)]
 pub struct DirectoryRecord {
-    id: usize,
-    name: String,
-    date_time: FileTimes,
     entries: HashMap<String, usize>,
 }
 
@@ -54,28 +48,50 @@ pub struct DirectoryRecord {
 )]
 #[archive(check_bytes)]
 pub struct SymlinkRecord {
-    id: usize,
-    name: String,
-    date_time: FileTimes,
     reference_record_id: usize,
     is_file: bool,
 }
 
 #[derive(
-    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    serde::Serialize,
+    serde::Deserialize,
+    Clone,
+    Default,
 )]
-#[serde(tag = "kind", content = "content")]
+#[serde(tag = "tag")]
 #[archive(check_bytes)]
-pub enum Record {
+pub enum RecordInner {
+    #[default]
     Empty,
     File(FileRecord),
     Directory(DirectoryRecord),
     Symlink(SymlinkRecord),
 }
 
+#[derive(
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    serde::Serialize,
+    serde::Deserialize,
+    Clone,
+    Default,
+)]
+#[archive(check_bytes)]
+pub struct Record {
+    pub id: usize,
+    pub name: String,
+    pub path: Vec<String>,
+    file_times: FileTimes,
+    inner: RecordInner,
+}
+
 impl Record {
     fn as_file(&self) -> &FileRecord {
-        let Self::File(file) = self else {
+        let RecordInner::File(file) = &self.inner else {
             unreachable!()
         };
 
@@ -83,29 +99,19 @@ impl Record {
     }
 
     pub fn as_directory(&self) -> &DirectoryRecord {
-        let Self::Directory(directory) = self else {
+        let RecordInner::Directory(directory) = &self.inner else {
             unreachable!()
         };
 
         directory
     }
 
-    pub fn name(&self) -> String {
-        match self {
-            Self::Directory(dir) => dir.name.clone(),
-            Self::File(file) => file.name.clone(),
-            Self::Symlink(symlink) => symlink.name.clone(),
-            Self::Empty => String::new(),
-        }
-    }
+    pub fn as_directory_mut(&mut self) -> &mut DirectoryRecord {
+        let RecordInner::Directory(directory) = &mut self.inner else {
+            unreachable!()
+        };
 
-    pub const fn id(&self) -> usize {
-        match self {
-            Self::Directory(dir) => dir.id,
-            Self::File(file) => file.id,
-            Self::Symlink(symlink) => symlink.id,
-            Self::Empty => 0,
-        }
+        directory
     }
 }
 
@@ -115,9 +121,7 @@ pub struct RecordTable {
     compressor: Encoder,
     decompressor: Decoder,
     backend: StdFile,
-
-    curr_dir: DirectoryRecord,
-
+    curr_dir: Record,
     meta: Meta,
     crypt: Crypt,
 }
@@ -130,9 +134,7 @@ struct Crypt {
     store_nonce: [u8; 12],
 }
 
-#[derive(
-    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize,
-)]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]
 #[archive(check_bytes)]
 pub struct Meta {
     entries: Vec<Record>,
@@ -164,11 +166,14 @@ impl RecordTable {
         let store_nonce = Aes256Gcm::generate_nonce(OsRng);
         let store_key = Aes256Gcm::generate_key(OsRng);
         let config = Config::new();
-        let root_record = DirectoryRecord {
+        let root_record = Record {
             id: 0,
             name: String::new(),
-            date_time: filetime::now(),
-            entries: HashMap::default(),
+            path: vec![String::new()],
+            file_times: filetime::now(),
+            inner: RecordInner::Directory(DirectoryRecord {
+                entries: HashMap::default(),
+            }),
         };
 
         Self {
@@ -184,7 +189,7 @@ impl RecordTable {
             curr_dir: root_record.clone(),
             config,
             meta: Meta {
-                entries: Vec::from([Record::Directory(root_record)]),
+                entries: vec![root_record],
                 free_fragments: Vec::new(),
                 empty_records: Vec::new(),
                 end_offset: 0,
@@ -225,7 +230,7 @@ impl RecordTable {
                 .read(true)
                 .open(&config.storage)
                 .unwrap(),
-            curr_dir: meta.entries[0].as_directory().clone(),
+            curr_dir: meta.entries[0].clone(),
             config,
             meta,
             crypt,
@@ -233,15 +238,15 @@ impl RecordTable {
     }
 
     pub fn get_size(&self, record: &Record) -> usize {
-        match record {
-            Record::Empty => 0,
-            Record::File(file) => file.size,
-            Record::Directory(dir) => dir
+        match &record.inner {
+            RecordInner::Empty => 0,
+            RecordInner::File(file) => file.size,
+            RecordInner::Directory(dir) => dir
                 .entries
                 .values()
                 .map(|&record_id| self.get_size(&self.meta.entries[record_id]))
                 .sum(),
-            Record::Symlink(symlink) => {
+            RecordInner::Symlink(symlink) => {
                 let record = &self.meta.entries[symlink.reference_record_id];
 
                 if symlink.is_file {
@@ -321,7 +326,7 @@ impl RecordTable {
 
 impl RecordTable {
     pub fn create_record(&mut self, name: &str, contents: Option<Vec<u8>>) -> Record {
-        let record = if let Some(contents) = contents {
+        let inner = if let Some(contents) = contents {
             let checksum = xxh3_64(&contents);
             let mut nonce = [0; 12];
             OsRng.fill_bytes(&mut nonce);
@@ -356,23 +361,25 @@ impl RecordTable {
                 .unwrap();
             self.backend.write_all(&compressed).unwrap();
 
-            Record::File(FileRecord {
-                id: 0,
-                name: name.to_string(),
+            RecordInner::File(FileRecord {
                 checksum,
-                nonce,
-                size,
-                len,
                 offset,
-                date_time: filetime::now(),
+                size,
+                nonce,
+                len,
             })
         } else {
-            Record::Directory(DirectoryRecord {
-                id: 0,
-                name: name.to_string(),
-                date_time: filetime::now(),
+            RecordInner::Directory(DirectoryRecord {
                 entries: HashMap::new(),
             })
+        };
+
+        let record = Record {
+            id: 0,
+            name: name.to_string(),
+            path: self.curr_dir.path.clone(),
+            file_times: filetime::now(),
+            inner,
         };
 
         let record_id = if let Some(id) = self.meta.empty_records.pop() {
@@ -385,19 +392,18 @@ impl RecordTable {
             self.meta.entries.len() - 1
         };
 
-        self.curr_dir.entries.insert(name.to_string(), record_id);
-        match self.meta.entries.get_mut(record_id).unwrap() {
-            Record::Symlink(symlink) => symlink.id = record_id,
-            Record::Directory(dir) => dir.id = record_id,
-            Record::File(file) => file.id = record_id,
-            Record::Empty => {}
-        }
+        self.curr_dir
+            .as_directory_mut()
+            .entries
+            .insert(name.to_string(), record_id);
+
+        self.meta.entries.get_mut(record_id).unwrap().id = record_id;
 
         record
     }
 
     pub fn read_file_record(&mut self, name: &str) -> Vec<u8> {
-        let record = self.meta.entries[self.curr_dir.entries[name]].clone();
+        let record = self.meta.entries[self.curr_dir.as_directory().entries[name]].clone();
 
         let file_record = record.as_file();
         let mut buf = vec![0; file_record.len];
@@ -420,7 +426,7 @@ impl RecordTable {
     }
 
     pub fn read_directory_record(&self, name: &str) -> Vec<Record> {
-        let record = self.meta.entries[self.curr_dir.entries[name]].as_directory();
+        let record = self.meta.entries[self.curr_dir.as_directory().entries[name]].as_directory();
 
         record
             .entries
@@ -430,7 +436,7 @@ impl RecordTable {
     }
 
     pub fn update_record(&mut self, name: &str, contents: &[u8]) {
-        let record = self.meta.entries[self.curr_dir.entries[name]].as_file();
+        let record = self.meta.entries[self.curr_dir.as_directory().entries[name]].as_file();
 
         if record.len > contents.len() {
             todo!()
@@ -438,14 +444,19 @@ impl RecordTable {
     }
 
     pub fn delete_record(&mut self, name: &str) {
-        let record_id = self.curr_dir.entries.remove(name).unwrap();
+        let record_id = self
+            .curr_dir
+            .as_directory_mut()
+            .entries
+            .remove(name)
+            .unwrap();
 
-        let record = std::mem::replace(&mut self.meta.entries[record_id], Record::Empty);
+        let record = std::mem::take(&mut self.meta.entries[record_id]);
         self.meta.empty_records.push(record_id);
 
         self.meta.pinned.remove(&record_id);
 
-        if let Record::File(file_record) = record {
+        if let RecordInner::File(file_record) = record.inner {
             self.backend
                 .seek(SeekFrom::Start(file_record.offset.try_into().unwrap()))
                 .unwrap();

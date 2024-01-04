@@ -114,7 +114,7 @@ const MASK_128: u128 = 0xff_ffff_ffff;
 #[derive(Clone, Copy)]
 pub struct FileTime(u64);
 
-#[derive(Clone, Copy, rkyv::Archive, rkyv::Deserialize, rkyv::Serialize)]
+#[derive(Clone, Copy, rkyv::Archive, rkyv::Deserialize, rkyv::Serialize, Default)]
 #[archive(check_bytes)]
 pub struct FileTimes(u128);
 

@@ -36,17 +36,17 @@ export const Sidebar: React.FC = () => {
                                     key={idx}
                                 >
                                     <span className="flex flex-row gap-3">
-                                        {record.kind === "File" ? (
+                                        {record.inner.tag === "File" ? (
                                             ((Icon: LucideIcon) => (
                                                 <Icon
                                                     size={18}
                                                     strokeWidth={1}
                                                 />
-                                            ))(getIcon(record.content.name))
+                                            ))(getIcon(record.name))
                                         ) : (
                                             <Folder size={18} strokeWidth={1} />
                                         )}{" "}
-                                        {record.content.name}
+                                        {record.name}
                                     </span>
                                     <span
                                         className="group-hover:opacity-70 opacity-0 hover:bg-[#383838] active:!scale-[0.95] p-[10px] rounded-md transition duration-200"

@@ -1,7 +1,7 @@
-import { DateTime } from ".";
+import { FileTime } from ".";
 
 export interface FileTimes {
-    accessed: DateTime;
-    modified: DateTime;
-    created: DateTime;
+    accessed: FileTime;
+    modified: FileTime;
+    created: FileTime;
 }

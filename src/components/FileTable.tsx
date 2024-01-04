@@ -19,14 +19,14 @@ export const FileTable: React.FC = () => {
     } = useAppStateContext();
 
     const getRow = (record: Record) => {
-        switch (record.kind) {
+        switch (record.inner.tag) {
             case "File":
                 return (
                     <TableRow
                         record={record}
-                        date={Date.parse(record.content.date_time.modified)}
-                        size={humanFileSize(record.content.size)}
-                        icon={getIcon(record.content.name)}
+                        date={record.fileTimes.modified}
+                        size={humanFileSize(record.inner.size)}
+                        icon={getIcon(record.name)}
                     />
                 );
 
@@ -34,11 +34,9 @@ export const FileTable: React.FC = () => {
                 return (
                     <TableRow
                         record={record}
-                        date={Date.parse(record.content.date_time.modified)}
+                        date={record.fileTimes.modified}
                         size="-"
-                        icon={
-                            record.content.name === ".git" ? FolderGit2 : Folder
-                        }
+                        icon={record.name === ".git" ? FolderGit2 : Folder}
                     />
                 );
 
@@ -46,10 +44,10 @@ export const FileTable: React.FC = () => {
                 return (
                     <TableRow
                         record={record}
-                        date={Date.parse(record.content.date_time.modified)}
+                        date={record.fileTimes.modified}
                         size="-"
                         icon={
-                            record.content.is_file ? FileSymlink : FolderSymlink
+                            record.inner.is_file ? FileSymlink : FolderSymlink
                         }
                     />
                 );
@@ -116,9 +114,7 @@ export const FileTable: React.FC = () => {
                                               record,
                                           ])
                                 }
-                                onDoubleClick={() =>
-                                    console.log(record.content.name)
-                                }
+                                onDoubleClick={() => console.log(record.name)}
                             >
                                 {getRow(record)}
                             </div>

@@ -1,8 +1,10 @@
-import type { DirectoryRecord } from "./DirectoryRecord";
-import type { FileRecord } from "./FileRecord";
-import { SymlinkRecord } from "./SymlinkRecord";
+import { FileTimes } from "./FileTimes";
+import { RecordInner } from "./RecordInner";
 
-export type Record =
-    | { kind: "File"; content: FileRecord }
-    | { kind: "Directory"; content: DirectoryRecord }
-    | { kind: "Symlink"; content: SymlinkRecord };
+export interface Record {
+    id: number;
+    name: string;
+    path: string[];
+    fileTimes: FileTimes;
+    inner: RecordInner;
+}
