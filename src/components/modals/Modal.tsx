@@ -7,9 +7,9 @@ export const Modal: React.FC<{
     <>
         <div className={`modal ${state ? "!opacity-100 !visible" : ""}`}>
             <div className="modal-overlay" onClick={close}></div>
-            <div className="modal-content flex flex-col gap-5 bg-[#1a1a1a] w-full items-stretch">
+            <div className="modal-content flex flex-col gap-5 bg-[#1a1a1a] w-full items-stretch pt-8">
                 <div
-                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-xl"
+                    className="btn btn-xs btn-circle btn-ghost absolute right-0.5 top-0.5 text-xl"
                     onClick={close}
                 >
                     &times;

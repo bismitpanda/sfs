@@ -13,6 +13,7 @@ export const LoginScreen: React.FC = () => {
                 className="input input-block"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
+                autoFocus
             />
             <div className="flex flex-row w-full justify-end items-center gap-3">
                 <button className="btn" onClick={() => exit(0)}>

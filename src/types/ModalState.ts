@@ -1,5 +1,5 @@
-import { ModalEnum } from "./ModalEnum";
+import { ModalEnum, Record } from ".";
 
 export interface ModalState {
-    openModal: (modal: ModalEnum) => void;
+    openModal: (modal: ModalEnum, record?: Record) => void;
 }

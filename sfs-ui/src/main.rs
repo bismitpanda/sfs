@@ -22,24 +22,24 @@ fn login(password: String, window: Window, handle: AppHandle) -> Result<(), Erro
 }
 
 #[tauri::command]
-fn delete(records: Vec<Record>, state: State<AppState>) -> Result<(), Error> {
-    for record in records {
-        state.record_table.lock().unwrap().delete(&record.name)?;
+fn delete(records: Vec<usize>, state: State<AppState>) -> Result<(), Error> {
+    for record_id in records {
+        state.record_table.lock().unwrap().delete(record_id)?;
     }
 
     Ok(())
 }
 
 #[tauri::command]
-fn unpin(record: Record, state: State<AppState>) {
+fn unpin(record_id: usize, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.unpin(record.id);
+    record_table.unpin(record_id);
 }
 
 #[tauri::command]
-fn pin(record: Record, state: State<AppState>) {
+fn pin(record_id: usize, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.pin(record.id);
+    record_table.pin(record_id);
 }
 
 #[tauri::command]
@@ -54,6 +54,28 @@ fn create_directory(name: &str, state: State<AppState>) -> Result<Record, Error>
     record_table.create(name, None)
 }
 
+#[tauri::command]
+fn import(files: Vec<String>, state: State<AppState>) -> Result<Vec<Record>, Error> {
+    let mut record_table = state.record_table.lock().unwrap();
+
+    for file in files {
+        let data = std::fs::read(&file)?;
+        record_table.create(&file, Some(data))?;
+    }
+
+    Ok(Vec::new())
+}
+
+#[tauri::command]
+fn export(record: usize, file: String, state: State<AppState>) -> Result<(), Error> {
+    let mut record_table = state.record_table.lock().unwrap();
+    let data = record_table.read_file(record)?;
+
+    std::fs::write(file, data)?;
+
+    Ok(())
+}
+
 fn main() {
     let app = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -62,7 +84,9 @@ fn main() {
             pin,
             unpin,
             create_file,
-            create_directory
+            create_directory,
+            import,
+            export
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");

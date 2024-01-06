@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-import { useAppStateContext } from "../../context";
+import { useAppStateContext } from "../../hooks";
 import { ActionType, ModalProps } from "../../types";
 import { Modal } from "./Modal";
 
@@ -11,6 +11,7 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
     return (
         <Modal state={state} close={close} title="New Directory">
             <input
+                autoFocus
                 className="input input-block"
                 type="text"
                 name="directoryNameInput"

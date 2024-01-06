@@ -416,8 +416,8 @@ impl RecordTable {
         Ok(record)
     }
 
-    pub fn read_file(&mut self, name: &str) -> Result<Vec<u8>> {
-        let record = self.meta.entries[self.curr_dir.as_directory()?.entries[name]].clone();
+    pub fn read_file(&mut self, record_id: usize) -> Result<Vec<u8>> {
+        let record = self.meta.entries[record_id].clone();
 
         let file_record = record.as_file()?;
         let mut buf = vec![0; file_record.len];
@@ -435,7 +435,7 @@ impl RecordTable {
         }
 
         Err(Error::CorruptedData {
-            name: name.to_string(),
+            name: record.name.clone(),
             id: record.id,
         })
     }
@@ -461,18 +461,17 @@ impl RecordTable {
         Ok(())
     }
 
-    pub fn delete(&mut self, name: &str) -> Result<()> {
-        let record_id = self
-            .curr_dir
-            .as_directory_mut()?
-            .entries
-            .remove(name)
-            .context(NotFoundError { name })?;
-
+    pub fn delete(&mut self, record_id: usize) -> Result<()> {
         let record = std::mem::take(&mut self.meta.entries[record_id]);
         self.meta.empty_records.push(record_id);
 
         self.meta.pinned.remove(&record_id);
+
+        self.curr_dir
+            .as_directory_mut()?
+            .entries
+            .remove(&record.name)
+            .context(NotFoundError { name: &record.name })?;
 
         if let RecordInner::File(file_record) = record.inner {
             self.backend

@@ -1,13 +1,22 @@
-import { useAppStateContext, useSelectedContext } from "../../context";
-import { ModalProps } from "../../types";
+import { useAppStateContext, useSelectedContext } from "../../hooks";
+import { ModalProps, Record } from "../../types";
 import { getTimeString } from "../../utils";
 import { Modal } from "./Modal";
 
-export const InfoModal: React.FC<ModalProps> = ({ close, state }) => {
+export const InfoModal: React.FC<ModalProps & { record?: Record }> = ({
+    close,
+    state,
+    record,
+}) => {
     const { appState } = useAppStateContext();
     const { selected } = useSelectedContext();
 
-    const record = selected[0] || appState.currDirRecord;
+    record =
+        record !== undefined
+            ? record
+            : selected.length > 0
+              ? selected[0]
+              : appState.currDirRecord;
 
     return (
         <Modal close={close} state={state} title="Info">

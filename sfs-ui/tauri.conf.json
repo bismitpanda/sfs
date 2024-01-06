@@ -13,8 +13,11 @@
         "allowlist": {
             "all": false,
             "process": {
-                "all": false,
                 "exit": true
+            },
+            "dialog": {
+                "open": true,
+                "save": true
             }
         },
         "bundle": {

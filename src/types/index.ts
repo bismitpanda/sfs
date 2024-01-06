@@ -7,3 +7,6 @@ export { ModalEnum } from "./ModalEnum";
 export type { Record } from "./Record";
 export type { SelectedState } from "./SelectedState";
 export type { FileTime } from "./FileTime";
+export type { MenuItemType } from "./MenuItemType";
+export type { AlertProps } from "./AlertProps";
+export type { AlertType } from "./AlertType";

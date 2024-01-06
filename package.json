@@ -12,6 +12,7 @@
     "dependencies": {
         "@fontsource/space-grotesk": "^5.0.16",
         "@tauri-apps/api": "^1.5.3",
+        "framer-motion": "^10.17.9",
         "lucide-react": "^0.303.0",
         "luxon": "^3.4.4",
         "radash": "^11.0.0",

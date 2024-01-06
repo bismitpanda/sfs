@@ -172,7 +172,7 @@
             }
         },
         {
-            "name": "LobortisConvallisTortor.ppt",
+            "name": "LobortisConvallisTortor",
             "id": 17,
             "fileTimes": {
                 "accessed": {
@@ -206,7 +206,7 @@
             }
         },
         {
-            "name": "TristiqueTortorEu.ppt",
+            "name": "TristiqueTortorEu",
             "id": 65,
             "fileTimes": {
                 "accessed": {
@@ -240,7 +240,7 @@
             }
         },
         {
-            "name": "SapienSapien.xls",
+            "name": "SapienSapien",
             "id": 5,
             "fileTimes": {
                 "accessed": {
@@ -274,7 +274,7 @@
             }
         },
         {
-            "name": "PedeJustoEu.mov",
+            "name": "PedeJustoEu",
             "id": 30,
             "fileTimes": {
                 "accessed": {
@@ -308,7 +308,7 @@
             }
         },
         {
-            "name": "SemperInterdumMauris.xls",
+            "name": "SemperInterdumMauris",
             "id": 95,
             "fileTimes": {
                 "accessed": {
@@ -343,7 +343,7 @@
         }
     ],
     "currDirRecord": {
-        "name": "LobortisConvallisTortor.ppt",
+        "name": "LobortisConvallisTortor",
         "id": 17,
         "fileTimes": {
             "accessed": {

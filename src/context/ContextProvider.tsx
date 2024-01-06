@@ -1,5 +1,4 @@
-import { invoke } from "@tauri-apps/api";
-import { useCallback, useReducer, useState } from "react";
+import { useReducer, useState } from "react";
 
 import {
     DeleteModal,
@@ -9,7 +8,8 @@ import {
     PropertiesModal,
     SettingsModal,
 } from "../components/modals";
-import { Action, ActionType, AppState, ModalEnum, Record } from "../types";
+import { useAsyncDispatch } from "../hooks";
+import { AppState, ModalEnum, Record } from "../types";
 import { AppStateContext } from "./AppStateContext";
 import { ModalContext } from "./ModalContext";
 import { SelectedContext } from "./SelectedContext";
@@ -29,55 +29,65 @@ export const ContextProvider: React.FC<{
         info: false,
         delete: false,
     };
-    const [modals, setModals] = useState(defaultModals);
+    const [modals, setModals] = useState<{
+        values: {
+            settings: boolean;
+            properties: boolean;
+            newFile: boolean;
+            newDirectory: boolean;
+            info: boolean;
+            delete: boolean;
+        };
+        record?: Record;
+    }>({
+        values: defaultModals,
+    });
+
     const [appState, dispatch] = useReducer(appStateReducer, initialAppState);
 
-    const closeModal = () => setModals(defaultModals);
-    const asyncDispatch = useCallback(async (action: Action) => {
-        switch (action.type) {
-            case ActionType.CREATE_FILE: {
-                const record = await invoke<Record>("create_file", {
-                    name: action.payload,
-                });
-                dispatch({ type: ActionType.CREATED_FILE, payload: record });
-                break;
-            }
+    const closeModal = () =>
+        setModals({ values: defaultModals, record: undefined });
 
-            case ActionType.CREATE_DIRECTORY: {
-                const record = await invoke<Record>("create_directory", {
-                    name: action.payload,
-                });
-                dispatch({ type: ActionType.CREATED_FILE, payload: record });
-                break;
-            }
-
-            default:
-                dispatch(action);
-                break;
-        }
-    }, []);
+    const asyncDispatch = useAsyncDispatch(dispatch);
 
     return (
         <AppStateContext.Provider value={{ appState, dispatch: asyncDispatch }}>
             <SelectedContext.Provider value={{ selected, setSelected }}>
                 <ModalContext.Provider
                     value={{
-                        openModal: (modal: ModalEnum) =>
-                            setModals({ ...defaultModals, [modal]: true }),
+                        openModal: (modal: ModalEnum, record?: Record) => {
+                            setModals({
+                                values: { ...defaultModals, [modal]: true },
+                                record,
+                            });
+                        },
                     }}
                 >
-                    <SettingsModal state={modals.settings} close={closeModal} />
+                    <SettingsModal
+                        state={modals.values.settings}
+                        close={closeModal}
+                    />
                     <PropertiesModal
-                        state={modals.properties}
+                        state={modals.values.properties}
                         close={closeModal}
                     />
-                    <NewFileModal state={modals.newFile} close={closeModal} />
+                    <NewFileModal
+                        state={modals.values.newFile}
+                        close={closeModal}
+                    />
                     <NewDirectoryModal
-                        state={modals.newDirectory}
+                        state={modals.values.newDirectory}
                         close={closeModal}
                     />
-                    <InfoModal state={modals.info} close={closeModal} />
-                    <DeleteModal state={modals.delete} close={closeModal} />
+                    <InfoModal
+                        record={modals.record}
+                        state={modals.values.info}
+                        close={closeModal}
+                    />
+                    <DeleteModal
+                        state={modals.values.delete}
+                        close={closeModal}
+                    />
                     {children}
                 </ModalContext.Provider>
             </SelectedContext.Provider>

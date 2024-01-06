@@ -1,4 +1,4 @@
-import { useAppStateContext, useSelectedContext } from "../../context";
+import { useAppStateContext, useSelectedContext } from "../../hooks";
 import { ActionType, ModalProps } from "../../types";
 import { Modal } from "./Modal";
 

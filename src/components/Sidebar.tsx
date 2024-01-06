@@ -9,7 +9,7 @@ import {
     PinOff,
 } from "lucide-react";
 
-import { useAppStateContext, useModalContext } from "../context";
+import { useAppStateContext, useModalContext } from "../hooks";
 import { ActionType, ModalEnum } from "../types";
 import { deleteColor, dirActionColor, getIcon, infoColor } from "../utils";
 import { IconButton } from "./IconButton";

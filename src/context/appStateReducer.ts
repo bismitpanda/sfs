@@ -1,34 +1,41 @@
-import { invoke } from "@tauri-apps/api";
-import { isEqual } from "radash";
-
 import { Action, ActionType, AppState } from "../types";
 
-export const appStateReducer = (state: AppState, action: Action) => {
+type AppStateReducer = (state: AppState, action: Action) => AppState;
+
+export const appStateReducer: AppStateReducer = (
+    state: AppState,
+    action: Action,
+) => {
     switch (action.type) {
-        case ActionType.DELETE: {
-            invoke("delete", { records: action.payload });
-            return {
-                ...state,
-                records: state.records.filter(
-                    (record) => !action.payload.includes(record),
-                ),
-            };
+        case ActionType.DELETED: {
+            if (action.payload) {
+                const [alertText, ids] = action.payload;
+                return {
+                    ...state,
+                    records: state.records.filter(
+                        (record) => !ids.some((id) => record.id === id),
+                    ),
+                    pinned: state.pinned.filter(
+                        (record) => !ids.some((id) => record.id === id),
+                    ),
+                };
+            } else {
+                return state;
+            }
         }
 
-        case ActionType.PIN: {
-            invoke("pin", { record: action.payload });
+        case ActionType.PINNED: {
             return {
                 ...state,
                 pinned: [...state.pinned, action.payload],
             };
         }
 
-        case ActionType.UNPIN: {
-            invoke("unpin", { record: action.payload });
+        case ActionType.UNPINNED: {
             return {
                 ...state,
                 pinned: state.pinned.filter(
-                    (pinned) => !isEqual(pinned, action.payload),
+                    (pinned) => pinned.id !== action.payload,
                 ),
             };
         }
@@ -36,6 +43,9 @@ export const appStateReducer = (state: AppState, action: Action) => {
         case ActionType.CREATED_FILE:
         case ActionType.CREATED_DIRECTORY:
             return { ...state, records: [...state.records, action.payload] };
+
+        case ActionType.IMPORTED:
+            return { ...state, records: [...state.records, ...action.payload] };
 
         default:
             console.warn("Unknown dispatch action", action);
