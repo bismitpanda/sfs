@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::sync::Mutex;
+use std::{path::PathBuf, sync::Mutex};
 
 use libsfs::{errors::Error, Record, RecordTable};
 use tauri::{AppHandle, Manager, RunEvent, State, Window};
@@ -18,6 +18,11 @@ fn login(password: String, window: Window, handle: AppHandle) -> Result<(), Erro
     window.get_window("login").unwrap().close().unwrap();
     window.get_window("main").unwrap().show().unwrap();
 
+    Ok(())
+}
+
+#[tauri::command]
+fn initialize() -> Result<(), Error> {
     Ok(())
 }
 
@@ -56,20 +61,22 @@ fn create_directory(name: &str, state: State<AppState>) -> Result<Record, Error>
 
 #[tauri::command]
 fn import(files: Vec<String>, state: State<AppState>) -> Result<Vec<Record>, Error> {
-    let mut record_table = state.record_table.lock().unwrap();
+    let mut imported = Vec::with_capacity(files.len());
 
-    for file in files {
-        let data = std::fs::read(&file)?;
-        record_table.create(&file, Some(data))?;
+    for path in files {
+        let data = std::fs::read(&path)?;
+        imported.push(state.record_table.lock().unwrap().create(
+            PathBuf::from(&path).file_name().unwrap().to_str().unwrap(),
+            Some(data),
+        )?);
     }
 
-    Ok(Vec::new())
+    Ok(imported)
 }
 
 #[tauri::command]
 fn export(record: usize, file: String, state: State<AppState>) -> Result<(), Error> {
-    let mut record_table = state.record_table.lock().unwrap();
-    let data = record_table.read_file(record)?;
+    let data = state.record_table.lock().unwrap().read_file(record)?;
 
     std::fs::write(file, data)?;
 
@@ -80,6 +87,7 @@ fn main() {
     let app = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             login,
+            initialize,
             delete,
             pin,
             unpin,

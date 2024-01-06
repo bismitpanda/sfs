@@ -1,4 +1,4 @@
-import { Action, ActionType, AppState } from "../types";
+import { Action, ActionType, AppState } from "./types";
 
 type AppStateReducer = (state: AppState, action: Action) => AppState;
 
@@ -9,7 +9,7 @@ export const appStateReducer: AppStateReducer = (
     switch (action.type) {
         case ActionType.DELETED: {
             if (action.payload) {
-                const [alertText, ids] = action.payload;
+                const ids = action.payload;
                 return {
                     ...state,
                     records: state.records.filter(

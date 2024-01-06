@@ -9,7 +9,6 @@ import {
     PinOff,
     Trash2,
 } from "lucide-react";
-import { isEqual } from "radash";
 
 import {
     useAppStateContext,
@@ -25,8 +24,8 @@ export const Navbar: React.FC = () => {
     const { openModal } = useModalContext();
     const { dispatch, appState } = useAppStateContext();
 
-    const isPinned = appState.pinned.some((record) =>
-        isEqual(record, appState.currDirRecord),
+    const isPinned = appState.pinned.some(
+        (record) => record.id === appState.currDirRecord.id,
     );
 
     return (

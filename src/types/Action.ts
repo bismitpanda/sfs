@@ -3,7 +3,7 @@ import { Record } from "./Record";
 
 export type Action =
     | { type: ActionType.DELETE; payload: Record[] }
-    | { type: ActionType.DELETED; payload?: [string, number[]] }
+    | { type: ActionType.DELETED; payload: number[] }
     | { type: ActionType.PIN; payload: Record }
     | { type: ActionType.PINNED; payload: Record }
     | { type: ActionType.UNPIN; payload: Record }
@@ -15,4 +15,4 @@ export type Action =
     | { type: ActionType.IMPORT }
     | { type: ActionType.IMPORTED; payload: Record[] }
     | { type: ActionType.EXPORT; payload: Record }
-    | { type: ActionType.EXPORTED; payload?: string };
+    | { type: ActionType.EXPORTED };

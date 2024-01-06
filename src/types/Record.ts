@@ -4,6 +4,6 @@ import { RecordInner } from "./RecordInner";
 export interface Record {
     id: number;
     name: string;
-    fileTimes: FileTimes;
+    file_times: FileTimes;
     inner: RecordInner;
 }

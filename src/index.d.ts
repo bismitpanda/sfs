@@ -30,12 +30,17 @@ type LoginInvokeType = (
     args: { password: string },
 ) => Promise<void>;
 
+type InitInvokeType = (
+    cmd: "initialize",
+) => Promise<{ currDirRecord: Record; records: Record[]; pinned: Record[] }>;
+
 type InvokeType = DeleteInvokeType &
     PinInvokeType &
     CreateInvokeType &
     ImportInvokeType &
     ExportInvokeType &
-    LoginInvokeType;
+    LoginInvokeType &
+    InitInvokeType;
 
 declare module "@tauri-apps/api" {
     const invoke: InvokeType;

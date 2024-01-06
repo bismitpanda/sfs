@@ -1,6 +1,5 @@
 import { LucideIcon } from "lucide-react";
 import { DateTime } from "luxon";
-import { isEqual } from "radash";
 
 import { useSelectedContext } from "../hooks";
 import { FileTime, Record } from "../types";
@@ -21,7 +20,7 @@ export const TableRow: React.FC<{
                     disabled
                     type="checkbox"
                     className={`checkbox checkbox-sm pl-3 transition-opacity duration-200 ${
-                        selected.some((obj) => isEqual(obj, record))
+                        selected.some((obj) => obj.id === record.id)
                             ? "opacity-50"
                             : "!opacity-0"
                     }`}

@@ -11,7 +11,6 @@ import {
     Trash2,
     Upload,
 } from "lucide-react";
-import { isEqual } from "radash";
 import { MouseEvent, useEffect, useState } from "react";
 
 import {
@@ -41,7 +40,7 @@ export const FileTable: React.FC = () => {
                 return (
                     <TableRow
                         record={record}
-                        date={record.fileTimes.modified}
+                        date={record.file_times.modified}
                         size={humanFileSize(record.inner.size)}
                         icon={getIcon(record.name)}
                     />
@@ -51,7 +50,7 @@ export const FileTable: React.FC = () => {
                 return (
                     <TableRow
                         record={record}
-                        date={record.fileTimes.modified}
+                        date={record.file_times.modified}
                         size="-"
                         icon={record.name === ".git" ? FolderGit2 : Folder}
                     />
@@ -61,7 +60,7 @@ export const FileTable: React.FC = () => {
                 return (
                     <TableRow
                         record={record}
-                        date={record.fileTimes.modified}
+                        date={record.file_times.modified}
                         size="-"
                         icon={
                             record.inner.is_file ? FileSymlink : FolderSymlink
@@ -97,7 +96,8 @@ export const FileTable: React.FC = () => {
             {
                 label: "Export",
                 icon: Upload,
-                onClick: () => console.log("export"),
+                onClick: () =>
+                    dispatch({ type: ActionType.EXPORT, payload: record }),
             },
             {
                 label: "Delete",
@@ -111,10 +111,7 @@ export const FileTable: React.FC = () => {
             {
                 label: "Info",
                 icon: Info,
-                onClick: () => {
-                    console.log(record);
-                    openModal(ModalEnum.INFO, record);
-                },
+                onClick: () => openModal(ModalEnum.INFO, record),
             },
         ];
     };
@@ -129,7 +126,7 @@ export const FileTable: React.FC = () => {
         document.addEventListener("click", handleClick);
 
         return () => document.removeEventListener("click", handleClick);
-    });
+    }, []);
 
     return (
         <>
@@ -198,23 +195,20 @@ export const FileTable: React.FC = () => {
                                     key={idx}
                                     className={`
                                     ${
-                                        selected.some((obj) =>
-                                            isEqual(obj, record),
+                                        selected.some(
+                                            (obj) => obj.id === record.id,
                                         )
                                             ? "bg-[#282828] after:bottom-0"
                                             : "after:-bottom-[1px]"
                                     } last:hover:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-[#282828] active:bg-[#222222] after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-[#282828] after:left-[30px] transition-all duration-200`}
                                     onClick={() =>
-                                        selected.some((obj) =>
-                                            isEqual(obj, record),
+                                        selected.some(
+                                            (obj) => obj.id === record.id,
                                         )
                                             ? setSelected((selected) =>
                                                   selected.filter(
-                                                      (selectedRecord) =>
-                                                          !isEqual(
-                                                              selectedRecord,
-                                                              record,
-                                                          ),
+                                                      (obj) =>
+                                                          obj.id !== record.id,
                                                   ),
                                               )
                                             : setSelected((selected) => [

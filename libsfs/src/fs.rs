@@ -31,10 +31,10 @@ pub struct FileRecord {
     #[serde(skip)]
     offset: usize,
     #[serde(skip)]
-    size: usize,
+    len: usize,
     #[serde(skip)]
     nonce: [u8; 12],
-    len: usize,
+    size: usize,
 }
 
 #[derive(
@@ -379,9 +379,9 @@ impl RecordTable {
             RecordInner::File(FileRecord {
                 checksum,
                 offset,
-                size,
-                nonce,
                 len,
+                nonce,
+                size,
             })
         } else {
             RecordInner::Directory(DirectoryRecord {
@@ -413,7 +413,10 @@ impl RecordTable {
 
         self.meta.entries[record_id].id = record_id;
 
-        Ok(record)
+        Ok(Record {
+            id: record_id,
+            ..record
+        })
     }
 
     pub fn read_file(&mut self, record_id: usize) -> Result<Vec<u8>> {

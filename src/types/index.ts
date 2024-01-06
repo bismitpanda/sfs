@@ -9,4 +9,4 @@ export type { SelectedState } from "./SelectedState";
 export type { FileTime } from "./FileTime";
 export type { MenuItemType } from "./MenuItemType";
 export type { AlertProps } from "./AlertProps";
-export type { AlertType } from "./AlertType";
+export { AlertType } from "./AlertType";

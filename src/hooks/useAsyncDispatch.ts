@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api";
 import { open, save } from "@tauri-apps/api/dialog";
 import { Dispatch, useCallback } from "react";
+import { toast } from "react-toastify";
 
 import { Action, ActionType } from "../types";
 
@@ -9,68 +10,106 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
         async (action: Action) => {
             switch (action.type) {
                 case ActionType.DELETE: {
-                    try {
-                        await invoke("delete", {
+                    const display =
+                        action.payload.length > 1
+                            ? ` ${action.payload.length} files`
+                            : ` "${action.payload[0]?.name}"`;
+
+                    await toast.promise(
+                        invoke("delete", {
                             records: action.payload.map((record) => record.id),
-                        });
-                        dispatch({
-                            type: ActionType.DELETED,
-                            payload: [
-                                `Successfully deleted ${
-                                    action.payload.length > 1
-                                        ? ` ${action.payload.length} files`
-                                        : ` "${action.payload[0]?.name}"`
-                                }
-                            ?`,
-                                action.payload.map((record) => record.id),
-                            ],
-                        });
-                    } catch {
-                        dispatch({
-                            type: ActionType.DELETED,
-                        });
-                    }
+                        }).then(() =>
+                            dispatch({
+                                type: ActionType.DELETED,
+                                payload: action.payload.map(
+                                    (record) => record.id,
+                                ),
+                            }),
+                        ),
+                        {
+                            pending: `Deleting ${display}`,
+                            success: `Successfully deleted ${display}`,
+                            error: `Couldn't delete ${display}`,
+                        },
+                    );
+
                     break;
                 }
 
                 case ActionType.PIN: {
-                    await invoke("pin", { record: action.payload.id });
-                    dispatch({
-                        type: ActionType.PINNED,
-                        payload: action.payload,
-                    });
+                    await toast.promise(
+                        invoke("pin", { record: action.payload.id }).then(() =>
+                            dispatch({
+                                type: ActionType.PINNED,
+                                payload: action.payload,
+                            }),
+                        ),
+                        {
+                            pending: `Pinning ${action.payload.name}`,
+                            error: `Couldn't pin ${action.payload.name}`,
+                            success: `Pinned ${action.payload.name}`,
+                        },
+                    );
+
                     break;
                 }
 
                 case ActionType.UNPIN: {
-                    await invoke("unpin", { record: action.payload.id });
-                    dispatch({
-                        type: ActionType.UNPINNED,
-                        payload: action.payload.id,
-                    });
+                    await toast.promise(
+                        invoke("unpin", { record: action.payload.id }).then(
+                            () =>
+                                dispatch({
+                                    type: ActionType.UNPINNED,
+                                    payload: action.payload.id,
+                                }),
+                        ),
+                        {
+                            pending: `Removing pin`,
+                            error: `Couldn't unpin ${action.payload.name}`,
+                            success: `Removed pin`,
+                        },
+                    );
+
                     break;
                 }
 
                 case ActionType.CREATE_FILE: {
-                    const record = await invoke("create_file", {
-                        name: action.payload,
-                    });
+                    await toast.promise(
+                        invoke("create_file", {
+                            name: action.payload,
+                        }).then((record) =>
+                            dispatch({
+                                type: ActionType.CREATED_FILE,
+                                payload: record,
+                            }),
+                        ),
+                        {
+                            pending: `Creating file "${action.payload}"`,
+                            success: `Created file "${action.payload}"`,
+                            error: `Couldn't create file "${action.payload}"`,
+                        },
+                    );
 
-                    dispatch({
-                        type: ActionType.CREATED_FILE,
-                        payload: record,
-                    });
                     break;
                 }
 
                 case ActionType.CREATE_DIRECTORY: {
-                    const record = await invoke("create_directory", {
-                        name: action.payload,
-                    });
-                    dispatch({
-                        type: ActionType.CREATED_DIRECTORY,
-                        payload: record,
-                    });
+                    await toast.promise(
+                        invoke("create_directory", {
+                            name: action.payload,
+                        }).then((record) =>
+                            dispatch({
+                                type: ActionType.CREATED_DIRECTORY,
+                                payload: record,
+                            }),
+                        ),
+                        {
+                            pending: `Creating directory "${action.payload}"`,
+                            success: `Created directory "${action.payload}"`,
+                            error: `Couldn't create directory "${action.payload}"`,
+                        },
+                    );
+
                     break;
                 }
 
@@ -81,16 +120,31 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     });
 
                     if (imported !== null) {
-                        const records = await invoke("import", {
-                            files: Array.isArray(imported)
-                                ? imported
-                                : [imported],
-                        });
+                        const files = Array.isArray(imported)
+                            ? imported
+                            : [imported];
 
-                        dispatch({
-                            type: ActionType.IMPORTED,
-                            payload: records,
-                        });
+                        await toast.promise(
+                            invoke("import", {
+                                files,
+                            }).then((records) =>
+                                dispatch({
+                                    type: ActionType.IMPORTED,
+                                    payload: records,
+                                }),
+                            ),
+                            {
+                                pending: `Importing ${files.length} ${
+                                    files.length > 1 ? "files" : "file"
+                                }`,
+                                success: `Imported ${files.length} ${
+                                    files.length > 1 ? "files" : "file"
+                                }`,
+                                error: `Couldn't import ${files.length} ${
+                                    files.length > 1 ? "files" : "file"
+                                }`,
+                            },
+                        );
                     }
 
                     break;
@@ -100,15 +154,21 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     const file = await save({ title: "Save file" });
 
                     if (file !== null) {
-                        await invoke("export", {
-                            record: action.payload.id,
-                            file,
-                        });
-
-                        dispatch({
-                            type: ActionType.EXPORTED,
-                            payload: `Successfully exported ${action.payload.name}`,
-                        });
+                        await toast.promise(
+                            invoke("export", {
+                                record: action.payload.id,
+                                file,
+                            }).then(() =>
+                                dispatch({
+                                    type: ActionType.EXPORTED,
+                                }),
+                            ),
+                            {
+                                pending: `Exporting "${action.payload.name}"`,
+                                success: `Exported "${action.payload.name}"`,
+                                error: `Couldn't export "${action.payload.name}"`,
+                            },
+                        );
                     }
 
                     break;

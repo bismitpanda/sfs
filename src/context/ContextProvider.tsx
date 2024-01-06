@@ -1,5 +1,6 @@
 import { useReducer, useState } from "react";
 
+import { appStateReducer } from "../appStateReducer";
 import {
     DeleteModal,
     InfoModal,
@@ -13,7 +14,6 @@ import { AppState, ModalEnum, Record } from "../types";
 import { AppStateContext } from "./AppStateContext";
 import { ModalContext } from "./ModalContext";
 import { SelectedContext } from "./SelectedContext";
-import { appStateReducer } from "./appStateReducer";
 
 export const ContextProvider: React.FC<{
     children: React.ReactNode;
