@@ -1,4 +1,10 @@
+import { useAppStateContext } from "@hooks/useAppStateContext";
+import { useModalContext } from "@hooks/useModalContext";
 import { exit } from "@tauri-apps/api/process";
+import { ActionType } from "@type/ActionType";
+import { ModalEnum } from "@type/ModalEnum";
+import { deleteColor, dirActionColor, infoColor } from "@utils/colors";
+import { getIcon } from "@utils/getIcon";
 import {
     Cog,
     Folder,
@@ -9,9 +15,6 @@ import {
     PinOff,
 } from "lucide-react";
 
-import { useAppStateContext, useModalContext } from "../hooks";
-import { ActionType, ModalEnum } from "../types";
-import { deleteColor, dirActionColor, getIcon, infoColor } from "../utils";
 import { IconButton } from "./IconButton";
 
 export const Sidebar: React.FC = () => {

@@ -1,7 +1,8 @@
+import { useAppStateContext } from "@hooks/useAppStateContext";
+import { ActionType } from "@type/ActionType";
+import { ModalProps } from "@type/ModalProps";
 import { useRef } from "react";
 
-import { useAppStateContext } from "../../hooks";
-import { ActionType, ModalProps } from "../../types";
 import { Modal } from "./Modal";
 
 export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {

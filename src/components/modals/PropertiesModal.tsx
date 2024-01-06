@@ -1,4 +1,5 @@
-import { ModalProps } from "../../types";
+import { ModalProps } from "@type/ModalProps";
+
 import { Modal } from "./Modal";
 
 export const PropertiesModal: React.FC<ModalProps> = ({ close, state }) => (

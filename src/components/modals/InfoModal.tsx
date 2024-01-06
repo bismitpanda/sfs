@@ -1,6 +1,9 @@
-import { useAppStateContext, useSelectedContext } from "../../hooks";
-import { ModalProps, Record } from "../../types";
-import { getTimeString } from "../../utils";
+import { useAppStateContext } from "@hooks/useAppStateContext";
+import { useSelectedContext } from "@hooks/useSelectedContext";
+import { ModalProps } from "@type/ModalProps";
+import { Record } from "@type/Record";
+import { getTimeString } from "@utils/getTimeString";
+
 import { Modal } from "./Modal";
 
 export const InfoModal: React.FC<ModalProps & { record?: Record }> = ({

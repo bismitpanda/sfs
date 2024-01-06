@@ -1,6 +1,5 @@
+import { MenuItemType } from "@type/MenuItemType";
 import { MouseEvent, useRef } from "react";
-
-import { MenuItemType } from "../types";
 
 export const ContextMenu: React.FC<{
     open: boolean;

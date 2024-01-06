@@ -1,4 +1,4 @@
-import { AlertType } from ".";
+import { AlertType } from "./AlertType";
 
 export interface AlertProps {
     content: string;

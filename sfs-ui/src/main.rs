@@ -3,26 +3,54 @@
 use std::{path::PathBuf, sync::Mutex};
 
 use libsfs::{errors::Error, Record, RecordTable};
+use serde::Serialize;
 use tauri::{AppHandle, Manager, RunEvent, State, Window};
 
 struct AppState {
     record_table: Mutex<RecordTable>,
 }
 
-#[tauri::command]
-fn login(password: String, window: Window, handle: AppHandle) -> Result<(), Error> {
-    handle.manage(AppState {
-        record_table: Mutex::new(RecordTable::init(&password)?),
-    });
-
-    window.get_window("login").unwrap().close().unwrap();
-    window.get_window("main").unwrap().show().unwrap();
-
-    Ok(())
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct InitMeta {
+    curr_dir_record: Record,
+    records: Vec<Record>,
+    pinned: Vec<Record>,
 }
 
 #[tauri::command]
-fn initialize() -> Result<(), Error> {
+fn login(password: String, window: Window, handle: AppHandle) -> Result<(), Error> {
+    let record_table = RecordTable::init(&password)?;
+    let meta = record_table.meta();
+
+    handle.manage(AppState {
+        record_table: Mutex::new(record_table),
+    });
+
+    window.get_window("login").unwrap().close().unwrap();
+
+    let main_window = window.get_window("main").unwrap();
+    main_window
+        .emit(
+            "initialize",
+            InitMeta {
+                curr_dir_record: meta.entries[0].clone(),
+                records: meta.entries[0]
+                    .as_directory()?
+                    .entries
+                    .values()
+                    .map(|id| meta.entries[*id].clone())
+                    .collect(),
+                pinned: meta
+                    .pinned
+                    .iter()
+                    .map(|id| meta.entries[*id].clone())
+                    .collect(),
+            },
+        )
+        .unwrap();
+    main_window.show().unwrap();
+
     Ok(())
 }
 
@@ -36,15 +64,15 @@ fn delete(records: Vec<usize>, state: State<AppState>) -> Result<(), Error> {
 }
 
 #[tauri::command]
-fn unpin(record_id: usize, state: State<AppState>) {
+fn unpin(record: usize, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.unpin(record_id);
+    record_table.unpin(record);
 }
 
 #[tauri::command]
-fn pin(record_id: usize, state: State<AppState>) {
+fn pin(record: usize, state: State<AppState>) {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.pin(record_id);
+    record_table.pin(record);
 }
 
 #[tauri::command]
@@ -87,7 +115,6 @@ fn main() {
     let app = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             login,
-            initialize,
             delete,
             pin,
             unpin,

@@ -20,4 +20,14 @@ export default defineConfig({
     esbuild: {
         legalComments: "eof",
     },
+    resolve: {
+        alias: {
+            "@modals": resolve(__dirname, "./src/components/modals"),
+            "@components": resolve(__dirname, "./src/components"),
+            "@context": resolve(__dirname, "./src/context"),
+            "@type": resolve(__dirname, "./src/types"),
+            "@utils": resolve(__dirname, "./src/utils"),
+            "@hooks": resolve(__dirname, "./src/hooks"),
+        },
+    },
 });

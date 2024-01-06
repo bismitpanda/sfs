@@ -1,6 +1,5 @@
+import { FileTime } from "@type/FileTime";
 import { DateTime } from "luxon";
-
-import { FileTime } from "../types";
 
 export const getTimeString = (dt: FileTime) => {
     return DateTime.fromObject(dt, { zone: "utc" })

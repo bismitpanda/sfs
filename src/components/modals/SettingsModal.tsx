@@ -1,4 +1,5 @@
-import { ModalProps } from "../../types";
+import { ModalProps } from "@type/ModalProps";
+
 import { PathInput } from "../inputs";
 import { Modal } from "./Modal";
 

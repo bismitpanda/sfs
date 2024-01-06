@@ -1,16 +1,16 @@
+import { useAsyncDispatch } from "@hooks/useAsyncDispatch";
+import { DeleteModal } from "@modals/DeleteModal";
+import { InfoModal } from "@modals/InfoModal";
+import { NewDirectoryModal } from "@modals/NewDirectoryModal";
+import { NewFileModal } from "@modals/NewFileModal";
+import { PropertiesModal } from "@modals/PropertiesModal";
+import { SettingsModal } from "@modals/SettingsModal";
+import { AppState } from "@type/AppState";
+import { ModalEnum } from "@type/ModalEnum";
+import { Record } from "@type/Record";
 import { useReducer, useState } from "react";
 
 import { appStateReducer } from "../appStateReducer";
-import {
-    DeleteModal,
-    InfoModal,
-    NewDirectoryModal,
-    NewFileModal,
-    PropertiesModal,
-    SettingsModal,
-} from "../components/modals";
-import { useAsyncDispatch } from "../hooks";
-import { AppState, ModalEnum, Record } from "../types";
 import { AppStateContext } from "./AppStateContext";
 import { ModalContext } from "./ModalContext";
 import { SelectedContext } from "./SelectedContext";

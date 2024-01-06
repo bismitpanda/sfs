@@ -1,8 +1,8 @@
+import { useSelectedContext } from "@hooks/useSelectedContext";
+import { FileTime } from "@type/FileTime";
+import { Record } from "@type/Record";
 import { LucideIcon } from "lucide-react";
 import { DateTime } from "luxon";
-
-import { useSelectedContext } from "../hooks";
-import { FileTime, Record } from "../types";
 
 export const TableRow: React.FC<{
     record: Record;

@@ -1,6 +1,6 @@
+import { Action } from "@type/Action";
+import { AppState } from "@type/AppState";
 import { Dispatch, createContext } from "react";
-
-import { Action, AppState } from "../types";
 
 export const AppStateContext = createContext<{
     appState: AppState;

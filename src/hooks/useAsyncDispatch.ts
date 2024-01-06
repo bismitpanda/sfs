@@ -1,9 +1,9 @@
 import { invoke } from "@tauri-apps/api";
 import { open, save } from "@tauri-apps/api/dialog";
+import { Action } from "@type/Action";
+import { ActionType } from "@type/ActionType";
 import { Dispatch, useCallback } from "react";
 import { toast } from "react-toastify";
-
-import { Action, ActionType } from "../types";
 
 export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
     useCallback(

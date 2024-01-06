@@ -1,6 +1,7 @@
+import { ModalEnum } from "@type/ModalEnum";
+import { ModalState } from "@type/ModalState";
+import { Record } from "@type/Record";
 import { createContext } from "react";
-
-import { ModalEnum, ModalState, Record } from "../types";
 
 const initialState: ModalState = {
     openModal: (_: ModalEnum, __?: Record) => {},

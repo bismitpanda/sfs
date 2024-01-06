@@ -1,5 +1,8 @@
-import { useAppStateContext, useSelectedContext } from "../../hooks";
-import { ActionType, ModalProps } from "../../types";
+import { useAppStateContext } from "@hooks/useAppStateContext";
+import { useSelectedContext } from "@hooks/useSelectedContext";
+import { ActionType } from "@type/ActionType";
+import { ModalProps } from "@type/ModalProps";
+
 import { Modal } from "./Modal";
 
 export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {

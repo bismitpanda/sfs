@@ -1,3 +1,8 @@
+import { useAppStateContext } from "@hooks/useAppStateContext";
+import { useModalContext } from "@hooks/useModalContext";
+import { useSelectedContext } from "@hooks/useSelectedContext";
+import { ActionType } from "@type/ActionType";
+import { ModalEnum } from "@type/ModalEnum";
 import {
     Download,
     FilePlus,
@@ -11,12 +16,11 @@ import {
 } from "lucide-react";
 
 import {
-    useAppStateContext,
-    useModalContext,
-    useSelectedContext,
-} from "../hooks";
-import { ActionType, ModalEnum } from "../types";
-import { createColor, deleteColor, dirActionColor, infoColor } from "../utils";
+    createColor,
+    deleteColor,
+    dirActionColor,
+    infoColor,
+} from "../utils/colors";
 import { IconButton } from "./IconButton";
 
 export const Navbar: React.FC = () => {

@@ -1,6 +1,5 @@
+import { Record } from "@type/Record";
 import { Dispatch, SetStateAction } from "react";
-
-import { Record } from ".";
 
 export interface SelectedState {
     selected: Record[];

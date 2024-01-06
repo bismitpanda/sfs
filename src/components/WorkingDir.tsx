@@ -1,6 +1,5 @@
+import { useAppStateContext } from "@hooks/useAppStateContext";
 import { Home } from "lucide-react";
-
-import { useAppStateContext } from "../hooks";
 
 export const WorkingDir: React.FC = () => {
     const {

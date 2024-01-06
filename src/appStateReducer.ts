@@ -1,4 +1,6 @@
-import { Action, ActionType, AppState } from "./types";
+import { Action } from "@type/Action";
+import { ActionType } from "@type/ActionType";
+import { AppState } from "@type/AppState";
 
 type AppStateReducer = (state: AppState, action: Action) => AppState;
 

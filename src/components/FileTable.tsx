@@ -1,3 +1,12 @@
+import { useAppStateContext } from "@hooks/useAppStateContext";
+import { useModalContext } from "@hooks/useModalContext";
+import { useSelectedContext } from "@hooks/useSelectedContext";
+import { ActionType } from "@type/ActionType";
+import { MenuItemType } from "@type/MenuItemType";
+import { ModalEnum } from "@type/ModalEnum";
+import { Record } from "@type/Record";
+import { getIcon } from "@utils/getIcon";
+import { humanFileSize } from "@utils/humanFileSize";
 import {
     ArrowDownUp,
     ClipboardCopy,
@@ -7,19 +16,13 @@ import {
     FolderSymlink,
     Info,
     Pencil,
+    Pin,
     SendHorizonal,
     Trash2,
     Upload,
 } from "lucide-react";
 import { MouseEvent, useEffect, useState } from "react";
 
-import {
-    useAppStateContext,
-    useModalContext,
-    useSelectedContext,
-} from "../hooks";
-import { ActionType, MenuItemType, ModalEnum, Record } from "../types";
-import { getIcon, humanFileSize } from "../utils";
 import { ContextMenu } from "./ContextMenu";
 import { TableRow } from "./TableRow";
 
@@ -113,20 +116,30 @@ export const FileTable: React.FC = () => {
                 icon: Info,
                 onClick: () => openModal(ModalEnum.INFO, record),
             },
+            {
+                label: "Pin",
+                icon: Pin,
+                onClick: () => () => {
+                    dispatch({
+                        type: ActionType.PIN,
+                        payload: record,
+                    });
+                },
+            },
         ];
     };
 
-    const handleClick = () => {
-        if (menuState.open) {
-            closeMenu();
-        }
-    };
-
     useEffect(() => {
+        const handleClick = () => {
+            if (menuState.open) {
+                closeMenu();
+            }
+        };
+
         document.addEventListener("click", handleClick);
 
         return () => document.removeEventListener("click", handleClick);
-    }, []);
+    }, [menuState.open]);
 
     return (
         <>

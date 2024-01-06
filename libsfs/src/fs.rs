@@ -18,11 +18,17 @@ use xxhash_rust::xxh3::xxh3_64;
 use crate::{
     config::Config,
     errors::{Error, FsError, NotFoundError, Result},
-    filetime::{self, FileTimes},
+    filetime,
 };
 
 #[derive(
-    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    serde::Serialize,
+    serde::Deserialize,
+    Clone,
+    Debug,
 )]
 #[archive(check_bytes)]
 pub struct FileRecord {
@@ -38,15 +44,27 @@ pub struct FileRecord {
 }
 
 #[derive(
-    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    serde::Serialize,
+    serde::Deserialize,
+    Clone,
+    Debug,
 )]
 #[archive(check_bytes)]
 pub struct DirectoryRecord {
-    entries: HashMap<String, usize>,
+    pub entries: HashMap<String, usize>,
 }
 
 #[derive(
-    rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, serde::Serialize, serde::Deserialize, Clone,
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    serde::Serialize,
+    serde::Deserialize,
+    Clone,
+    Debug,
 )]
 #[archive(check_bytes)]
 pub struct SymlinkRecord {
@@ -62,6 +80,7 @@ pub struct SymlinkRecord {
     serde::Deserialize,
     Clone,
     Default,
+    Debug,
 )]
 #[serde(tag = "tag")]
 #[archive(check_bytes)]
@@ -81,12 +100,13 @@ pub enum RecordInner {
     serde::Deserialize,
     Clone,
     Default,
+    Debug,
 )]
 #[archive(check_bytes)]
 pub struct Record {
     pub id: usize,
     pub name: String,
-    file_times: FileTimes,
+    file_times: filetime::FileTimes,
     inner: RecordInner,
 }
 
@@ -128,7 +148,7 @@ pub struct RecordTable {
     compressor: Encoder,
     decompressor: Decoder,
     backend: StdFile,
-    curr_dir: Record,
+    curr_dir_id: usize,
     meta: Meta,
     crypt: Crypt,
 }
@@ -141,14 +161,14 @@ struct Crypt {
     store_nonce: [u8; 12],
 }
 
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone)]
 #[archive(check_bytes)]
 pub struct Meta {
-    entries: Vec<Record>,
+    pub entries: Vec<Record>,
     free_fragments: Vec<(usize, Vec<usize>)>,
     empty_records: Vec<usize>,
     end_offset: usize,
-    pinned: HashSet<usize>,
+    pub pinned: HashSet<usize>,
 }
 
 impl RecordTable {
@@ -173,7 +193,7 @@ impl RecordTable {
         let config = Config::new();
         let root_record = Record {
             id: 0,
-            name: String::new(),
+            name: "/".to_string(),
             file_times: filetime::now(),
             inner: RecordInner::Directory(DirectoryRecord {
                 entries: HashMap::default(),
@@ -192,7 +212,7 @@ impl RecordTable {
                 .context(FsError {
                     path: config.storage.to_string_lossy(),
                 })?,
-            curr_dir: root_record.clone(),
+            curr_dir_id: 0,
             config,
             meta: Meta {
                 entries: vec![root_record],
@@ -237,11 +257,15 @@ impl RecordTable {
                 .context(FsError {
                     path: config.storage.to_string_lossy(),
                 })?,
-            curr_dir: meta.entries[0].clone(),
+            curr_dir_id: 0,
             config,
             meta,
             crypt,
         })
+    }
+
+    pub fn meta(&self) -> Meta {
+        self.meta.clone()
     }
 
     pub fn get_size(&self, record: &Record) -> Result<usize> {
@@ -335,6 +359,14 @@ impl RecordTable {
     pub fn unpin(&mut self, record_id: usize) {
         self.meta.pinned.remove(&record_id);
     }
+
+    pub fn curr_dir(&self) -> &Record {
+        &self.meta.entries[self.curr_dir_id]
+    }
+
+    pub fn curr_dir_mut(&mut self) -> &mut Record {
+        &mut self.meta.entries[self.curr_dir_id]
+    }
 }
 
 impl RecordTable {
@@ -406,7 +438,7 @@ impl RecordTable {
             self.meta.entries.len() - 1
         };
 
-        self.curr_dir
+        self.curr_dir_mut()
             .as_directory_mut()?
             .entries
             .insert(name.to_string(), record_id);
@@ -445,7 +477,7 @@ impl RecordTable {
 
     pub fn read_directory(&self, name: &str) -> Result<Vec<Record>> {
         let record =
-            self.meta.entries[self.curr_dir.as_directory()?.entries[name]].as_directory()?;
+            self.meta.entries[self.curr_dir().as_directory()?.entries[name]].as_directory()?;
 
         Ok(record
             .entries
@@ -455,7 +487,7 @@ impl RecordTable {
     }
 
     pub fn update(&mut self, name: &str, contents: &[u8]) -> Result<()> {
-        let record = self.meta.entries[self.curr_dir.as_directory()?.entries[name]].as_file()?;
+        let record = self.meta.entries[self.curr_dir().as_directory()?.entries[name]].as_file()?;
 
         if record.len > contents.len() {
             todo!()
@@ -470,7 +502,7 @@ impl RecordTable {
 
         self.meta.pinned.remove(&record_id);
 
-        self.curr_dir
+        self.curr_dir_mut()
             .as_directory_mut()?
             .entries
             .remove(&record.name)
@@ -507,13 +539,14 @@ impl RecordTable {
     }
 
     pub fn send(&mut self, name: &str, to: &[String]) -> Result<()> {
-        let mut record = self.meta.entries[self
-            .curr_dir
+        let record_id = self
+            .curr_dir_mut()
             .as_directory_mut()?
             .entries
             .remove(name)
-            .context(NotFoundError { name })?]
-        .clone();
+            .context(NotFoundError { name })?;
+
+        let mut record = self.meta.entries[record_id].clone();
 
         let [prev @ .., last] = to else {
             unreachable!()
