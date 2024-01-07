@@ -15,4 +15,5 @@ export type Action =
     | { type: ActionType.IMPORT }
     | { type: ActionType.IMPORTED; payload: Record[] }
     | { type: ActionType.EXPORT; payload: Record }
-    | { type: ActionType.EXPORTED };
+    | { type: ActionType.DROP; payload: string[] }
+    | { type: ActionType.DROPPED; payload: Record[] };

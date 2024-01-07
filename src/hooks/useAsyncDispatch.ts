@@ -158,11 +158,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             invoke("export", {
                                 record: action.payload.id,
                                 file,
-                            }).then(() =>
-                                dispatch({
-                                    type: ActionType.EXPORTED,
-                                }),
-                            ),
+                            }),
                             {
                                 pending: `Exporting "${action.payload.name}"`,
                                 success: `Exported "${action.payload.name}"`,
@@ -170,6 +166,34 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             },
                         );
                     }
+
+                    break;
+                }
+
+                case ActionType.DROP: {
+                    const files = action.payload;
+
+                    await toast.promise(
+                        invoke("import", {
+                            files,
+                        }).then((records) =>
+                            dispatch({
+                                type: ActionType.DROPPED,
+                                payload: records,
+                            }),
+                        ),
+                        {
+                            pending: `Importing ${files.length} ${
+                                files.length > 1 ? "files" : "file"
+                            }`,
+                            success: `Imported ${files.length} ${
+                                files.length > 1 ? "files" : "file"
+                            }`,
+                            error: `Couldn't import ${files.length} ${
+                                files.length > 1 ? "files" : "file"
+                            }`,
+                        },
+                    );
 
                     break;
                 }

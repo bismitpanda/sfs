@@ -2,7 +2,7 @@
 // ||..........++++++++++----------
 // -- accessed  modified  created
 
-use std::{fmt::Debug, time::SystemTime};
+use std::time::SystemTime;
 
 use serde::{
     de::{Error, MapAccess, Visitor},
@@ -15,7 +15,7 @@ const FIVE_BITS_MASK: u64 = 0x1f;
 const FOUR_BITS_MASK: u64 = 0xf;
 const FOURTEEN_BITS_MASK: u64 = 0x3fff;
 
-#[derive(Serialize, Deserialize, Clone, Copy, Debug)]
+#[derive(Serialize, Deserialize, Clone, Copy)]
 struct DateTime {
     year: u64,
     month: u64,
@@ -238,16 +238,4 @@ pub fn now() -> FileTimes {
         DateTime::now().into(),
         DateTime::now().into(),
     )
-}
-
-impl Debug for FileTimes {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(
-            f,
-            "accessed: {:?}\nmodified: {:?}\ncreated: {:?}",
-            DateTime::from(self.accessed()),
-            DateTime::from(self.modified()),
-            DateTime::from(self.created())
-        )
-    }
 }

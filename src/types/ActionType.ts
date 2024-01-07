@@ -12,5 +12,6 @@ export enum ActionType {
     IMPORT,
     IMPORTED,
     EXPORT,
-    EXPORTED,
+    DROP,
+    DROPPED,
 }

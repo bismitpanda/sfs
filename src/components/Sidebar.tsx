@@ -26,8 +26,8 @@ export const Sidebar: React.FC = () => {
 
     return (
         <>
-            <aside className="sidebar h-screen justify-start bg-[#1a1a1a]">
-                <section className="sidebar-content">
+            <aside className="sidebar h-[calc(100vh-32px)] justify-start bg-[#151515]">
+                <section className="sidebar-content pt-0">
                     <div className="w-full h-full py-4 text-sm text-[#aaa] flex flex-col">
                         <h2 className="px-4">Pinned</h2>
                         <div className="divider mt-0 px-4"></div>

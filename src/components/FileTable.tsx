@@ -14,6 +14,7 @@ import {
     Folder,
     FolderGit2,
     FolderSymlink,
+    Frown,
     Info,
     Pencil,
     Pin,
@@ -119,7 +120,7 @@ export const FileTable: React.FC = () => {
             {
                 label: "Pin",
                 icon: Pin,
-                onClick: () => () => {
+                onClick: () => {
                     dispatch({
                         type: ActionType.PIN,
                         payload: record,
@@ -150,15 +151,20 @@ export const FileTable: React.FC = () => {
                 closeMenu={closeMenu}
             />
             <div
-                className={`grid grid-row-2 w-full max-h-[calc(100%-104px)] ${
-                    appState.records.length === 0 ? "" : "bg-[#1a1a1a]"
+                className={`grid grid-row-2 w-full max-h-[calc(100%-110px)] ${
+                    appState.records.length === 0 ? "" : "bg-[#111]"
                 } rounded-lg text-sm text-[#aaa]`}
             >
                 {appState.records.length === 0 ? (
-                    <div>Empty Directory</div>
+                    <div className="flex flex-col items-center justify-center gap-10 pt-20">
+                        <Frown size={260} strokeWidth={1} color="#444" />
+                        <h2 className="text-3xl text-[#444]">
+                            Seems lonely here...
+                        </h2>
+                    </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-[50%_15%_auto] py-3 bg-inherit border-b-[3px] border-b-[#111] rounded-t-md">
+                        <div className="grid grid-cols-[50%_15%_auto] py-3 bg-inherit border-b-[3px] border-b-[#0a0a0a] rounded-t-md">
                             <div className="flex flex-row gap-1 pl-3">
                                 <input
                                     checked={
@@ -211,9 +217,9 @@ export const FileTable: React.FC = () => {
                                         selected.some(
                                             (obj) => obj.id === record.id,
                                         )
-                                            ? "bg-[#282828] after:bottom-0"
+                                            ? "bg-[#222] after:bottom-0"
                                             : "after:-bottom-[1px]"
-                                    } last:hover:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-[#282828] active:bg-[#222222] after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-[#282828] after:left-[30px] transition-all duration-200`}
+                                    } last:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-[#222] active:bg-[#1a1a1a] after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-[#222] after:left-[30px] transition-all duration-200`}
                                     onClick={() =>
                                         selected.some(
                                             (obj) => obj.id === record.id,

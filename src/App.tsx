@@ -1,6 +1,8 @@
+import { DropZone } from "@components/DropZone";
 import { FileTable } from "@components/FileTable";
 import { Navbar } from "@components/Navbar";
 import { Sidebar } from "@components/Sidebar";
+import { TitleBar } from "@components/TitleBar";
 import { WorkingDir } from "@components/WorkingDir";
 import { ContextProvider } from "@context/ContextProvider";
 import { listen } from "@tauri-apps/api/event";
@@ -14,7 +16,7 @@ const App: React.FC = () => {
     const [appState, setAppState] = useState<AppState | null>(null);
 
     useEffect(() => {
-        listen("initialize", ({ payload }) => {
+        const unlisten = listen("initialize", ({ payload }) => {
             const state = payload as {
                 currDirRecord: Record;
                 records: Record[];
@@ -22,20 +24,26 @@ const App: React.FC = () => {
             };
             setAppState({ ...state, workingDir: [] });
         });
+
+        return () => {
+            unlisten.then((f) => f());
+        };
     }, []);
 
     return (
-        <>
+        <div>
+            <TitleBar />
             {appState && (
                 <ContextProvider initialAppState={appState}>
-                    <div className="flex flex-row items-start">
+                    <div className="flex flex-row items-start mt-8">
                         <Sidebar />
-                        <div className="flex grow flex-col w-full h-[100vh] py-4 px-5 gap-4">
+                        <div className="flex grow flex-col w-full h-[calc(100vh-32px)] py-4 px-5 gap-4">
                             <Navbar />
                             <WorkingDir />
                             <FileTable />
                         </div>
                     </div>
+                    <DropZone />
                     <ToastContainer
                         position="top-right"
                         autoClose={1500}
@@ -50,7 +58,7 @@ const App: React.FC = () => {
                     />
                 </ContextProvider>
             )}
-        </>
+        </div>
     );
 };
 

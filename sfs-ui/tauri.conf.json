@@ -18,6 +18,17 @@
             "dialog": {
                 "open": true,
                 "save": true
+            },
+            "window": {
+                "all": false,
+                "close": true,
+                "hide": true,
+                "show": true,
+                "maximize": true,
+                "minimize": true,
+                "unmaximize": true,
+                "unminimize": true,
+                "startDragging": true
             }
         },
         "bundle": {
@@ -70,7 +81,8 @@
                 "minWidth": 1000,
                 "center": true,
                 "visible": false,
-                "label": "main"
+                "label": "main",
+                "decorations": false
             },
             {
                 "width": 480,

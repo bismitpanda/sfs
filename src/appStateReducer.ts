@@ -47,10 +47,16 @@ export const appStateReducer: AppStateReducer = (
             return { ...state, records: [...state.records, action.payload] };
 
         case ActionType.IMPORTED:
+        case ActionType.DROPPED:
             return { ...state, records: [...state.records, ...action.payload] };
 
         default:
-            console.warn("Unknown dispatch action", action);
+            console.warn(
+                "Unknown dispatch action: ",
+                ActionType[action.type],
+                "payload: ",
+                action.type !== ActionType.IMPORT ? action.payload : "none",
+            );
             return state;
     }
 };

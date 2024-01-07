@@ -1,34 +1,47 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { ActionType } from "@type/ActionType";
 import { ModalProps } from "@type/ModalProps";
-import { useRef } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
 import { Modal } from "./Modal";
 
 export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
     const { dispatch } = useAppStateContext();
-    const directoryNameRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [name, setName] = useState("");
+
+    const handleKeyDown = (ev: KeyboardEvent) => {
+        if (ev.key === "Enter" && name !== "") {
+            dispatch({
+                type: ActionType.CREATE_DIRECTORY,
+                payload: name,
+            });
+            close();
+        }
+    };
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
 
     return (
         <Modal state={state} close={close} title="New Directory">
             <input
-                autoFocus
                 className="input input-block"
                 type="text"
                 name="directoryNameInput"
-                ref={directoryNameRef}
+                ref={inputRef}
                 placeholder="Enter Directory name"
+                onKeyDown={handleKeyDown}
+                onChange={(ev) => setName(ev.target.value)}
             />
             <button
-                className="btn bg-[#56df74] bg-opacity-60 text-black"
+                className="btn bg-[#56df74] w-10 bg-opacity-60 text-black"
                 onClick={() => {
-                    if (
-                        directoryNameRef.current !== null &&
-                        directoryNameRef.current.value !== ""
-                    ) {
+                    if (name !== "") {
                         dispatch({
                             type: ActionType.CREATE_DIRECTORY,
-                            payload: directoryNameRef.current.value,
+                            payload: name,
                         });
                         close();
                     }

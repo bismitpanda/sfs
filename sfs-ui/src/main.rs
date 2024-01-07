@@ -30,22 +30,14 @@ fn login(password: String, window: Window, handle: AppHandle) -> Result<(), Erro
     window.get_window("login").unwrap().close().unwrap();
 
     let main_window = window.get_window("main").unwrap();
+    let (curr_dir_record, records, pinned) = meta.init_data()?;
     main_window
         .emit(
             "initialize",
             InitMeta {
-                curr_dir_record: meta.entries[0].clone(),
-                records: meta.entries[0]
-                    .as_directory()?
-                    .entries
-                    .values()
-                    .map(|id| meta.entries[*id].clone())
-                    .collect(),
-                pinned: meta
-                    .pinned
-                    .iter()
-                    .map(|id| meta.entries[*id].clone())
-                    .collect(),
+                curr_dir_record,
+                records,
+                pinned,
             },
         )
         .unwrap();
@@ -128,18 +120,16 @@ fn main() {
 
     app.run(|app_handle, event| {
         if let RunEvent::ExitRequested { api, .. } = event {
-            {
-                api.prevent_exit();
-                app_handle
-                    .state::<AppState>()
-                    .record_table
-                    .lock()
-                    .unwrap()
-                    .close()
-                    .unwrap();
+            api.prevent_exit();
+            app_handle
+                .state::<AppState>()
+                .record_table
+                .lock()
+                .unwrap()
+                .close()
+                .unwrap();
 
-                app_handle.exit(0);
-            }
+            app_handle.exit(0);
         }
     });
 }

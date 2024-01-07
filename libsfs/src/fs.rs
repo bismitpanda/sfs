@@ -11,6 +11,7 @@ use aes_gcm::{
 };
 use argon2::Argon2;
 use itertools::Itertools;
+use rkyv::{Archive, Deserialize, Serialize};
 use snafu::{OptionExt, ResultExt};
 use snap::raw::{Decoder, Encoder};
 use xxhash_rust::xxh3::xxh3_64;
@@ -21,15 +22,7 @@ use crate::{
     filetime,
 };
 
-#[derive(
-    rkyv::Archive,
-    rkyv::Serialize,
-    rkyv::Deserialize,
-    serde::Serialize,
-    serde::Deserialize,
-    Clone,
-    Debug,
-)]
+#[derive(Archive, Serialize, Deserialize, serde::Serialize, serde::Deserialize, Clone)]
 #[archive(check_bytes)]
 pub struct FileRecord {
     #[serde(skip)]
@@ -43,45 +36,20 @@ pub struct FileRecord {
     size: usize,
 }
 
-#[derive(
-    rkyv::Archive,
-    rkyv::Serialize,
-    rkyv::Deserialize,
-    serde::Serialize,
-    serde::Deserialize,
-    Clone,
-    Debug,
-)]
+#[derive(Archive, Serialize, Deserialize, serde::Serialize, serde::Deserialize, Clone)]
 #[archive(check_bytes)]
 pub struct DirectoryRecord {
-    pub entries: HashMap<String, usize>,
+    entries: HashMap<String, usize>,
 }
 
-#[derive(
-    rkyv::Archive,
-    rkyv::Serialize,
-    rkyv::Deserialize,
-    serde::Serialize,
-    serde::Deserialize,
-    Clone,
-    Debug,
-)]
+#[derive(Archive, Serialize, Deserialize, serde::Serialize, serde::Deserialize, Clone)]
 #[archive(check_bytes)]
 pub struct SymlinkRecord {
     reference_record_id: usize,
     is_file: bool,
 }
 
-#[derive(
-    rkyv::Archive,
-    rkyv::Serialize,
-    rkyv::Deserialize,
-    serde::Serialize,
-    serde::Deserialize,
-    Clone,
-    Default,
-    Debug,
-)]
+#[derive(Archive, Serialize, Deserialize, serde::Serialize, serde::Deserialize, Clone, Default)]
 #[serde(tag = "tag")]
 #[archive(check_bytes)]
 pub enum RecordInner {
@@ -92,16 +60,7 @@ pub enum RecordInner {
     Symlink(SymlinkRecord),
 }
 
-#[derive(
-    rkyv::Archive,
-    rkyv::Serialize,
-    rkyv::Deserialize,
-    serde::Serialize,
-    serde::Deserialize,
-    Clone,
-    Default,
-    Debug,
-)]
+#[derive(Archive, Serialize, Deserialize, serde::Serialize, serde::Deserialize, Clone, Default)]
 #[archive(check_bytes)]
 pub struct Record {
     pub id: usize,
@@ -164,11 +123,31 @@ struct Crypt {
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone)]
 #[archive(check_bytes)]
 pub struct Meta {
-    pub entries: Vec<Record>,
+    entries: Vec<Record>,
     free_fragments: Vec<(usize, Vec<usize>)>,
     empty_records: Vec<usize>,
     end_offset: usize,
-    pub pinned: HashSet<usize>,
+    pinned: HashSet<usize>,
+}
+
+impl Meta {
+    pub fn init_data(&self) -> Result<(Record, Vec<Record>, Vec<Record>)> {
+        let root_record = self.entries[0].clone();
+
+        let records = root_record
+            .as_directory()?
+            .entries
+            .values()
+            .map(|id| self.entries[*id].clone())
+            .collect();
+        let pinned = self
+            .pinned
+            .iter()
+            .map(|id| self.entries[*id].clone())
+            .collect();
+
+        Ok((root_record, records, pinned))
+    }
 }
 
 impl RecordTable {

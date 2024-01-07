@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api";
 import { exit } from "@tauri-apps/api/process";
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
 export const LoginScreen: React.FC = () => {
     const [password, setPassword] = useState("");
@@ -11,6 +11,12 @@ export const LoginScreen: React.FC = () => {
         }
     };
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
+
     return (
         <div className="rounded-3xl bg-[#161616] h-screen w-screen p-5 flex flex-col gap-5 items-center">
             <h2 className="text-xl">Enter Password</h2>
@@ -19,7 +25,7 @@ export const LoginScreen: React.FC = () => {
                 className="input input-block"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
-                autoFocus
+                ref={inputRef}
                 onKeyDown={handleKeyDown}
             />
             <div className="flex flex-row w-full justify-end items-center gap-3">
