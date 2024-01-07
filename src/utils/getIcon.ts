@@ -21,6 +21,9 @@ export const getIcon = (name: string) => {
     const ext = name.split(".").at(-1);
     let icon;
     switch (ext) {
+        case "doc":
+        case "pdf":
+        case "docx":
         case "txt":
             icon = FileText;
             break;

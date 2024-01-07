@@ -7,7 +7,6 @@ import {
     Download,
     FilePlus,
     FolderPlus,
-    FolderSearch2,
     FolderUp,
     Info,
     Pin,
@@ -33,8 +32,14 @@ export const Navbar: React.FC = () => {
     );
 
     return (
-        <div className="navbar bg-dark-100 shadow-none rounded-lg">
+        <div className="navbar bg-dark-200 shadow-none rounded-lg">
             <div className="navbar-start gap-3">
+                <IconButton
+                    icon={Info}
+                    color={infoColor}
+                    tooltipBot="Info"
+                    onClick={() => openModal(ModalEnum.INFO)}
+                />
                 <IconButton
                     icon={isPinned ? PinOff : Pin}
                     color={dirActionColor}
@@ -65,12 +70,11 @@ export const Navbar: React.FC = () => {
                     onClick={() => openModal(ModalEnum.NEW_FILE)}
                 />
                 <IconButton
-                    icon={FolderSearch2}
-                    color={infoColor}
-                    tooltipBot="Search"
+                    icon={Download}
+                    color={createColor}
+                    tooltipBot="Import"
+                    onClick={() => dispatch({ type: ActionType.IMPORT })}
                 />
-            </div>
-            <div className="navbar-end gap-3">
                 <span
                     className={`${
                         selected.length > 0 ? "opacity-100" : "opacity-0"
@@ -83,18 +87,6 @@ export const Navbar: React.FC = () => {
                         onClick={() => openModal(ModalEnum.DELETE)}
                     />
                 </span>
-                <IconButton
-                    icon={Info}
-                    color={infoColor}
-                    tooltipBot="Info"
-                    onClick={() => openModal(ModalEnum.INFO)}
-                />
-                <IconButton
-                    icon={Download}
-                    color={createColor}
-                    tooltipBot="Import"
-                    onClick={() => dispatch({ type: ActionType.IMPORT })}
-                />
             </div>
         </div>
     );

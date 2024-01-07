@@ -9,7 +9,7 @@ import { listen } from "@tauri-apps/api/event";
 import { AppState } from "@type/AppState";
 import { Record } from "@type/Record";
 import { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
 const App: React.FC = () => {
@@ -46,15 +46,14 @@ const App: React.FC = () => {
                     <DropZone />
                     <ToastContainer
                         position="top-right"
-                        autoClose={1500}
-                        hideProgressBar={false}
-                        newestOnTop={false}
+                        autoClose={1000}
+                        hideProgressBar
                         closeOnClick
-                        rtl={false}
                         pauseOnFocusLoss
                         draggable
                         pauseOnHover
                         theme="dark"
+                        transition={Slide}
                     />
                 </ContextProvider>
             )}

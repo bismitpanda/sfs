@@ -32,7 +32,7 @@ export const DropZone: React.FC = () => {
         return () => {
             unlisten.then((f) => f());
         };
-    }, []);
+    }, [dispatch]);
 
     return (
         <div

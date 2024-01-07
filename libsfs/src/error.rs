@@ -1,5 +1,6 @@
 use std::convert::Infallible;
 
+use argon2::password_hash;
 use rkyv::{
     bytecheck::StructCheckError,
     de::deserializers::SharedDeserializeMapError,
@@ -28,6 +29,9 @@ pub enum Error {
 
     #[snafu(display("argon2 hash error"), context(false))]
     Argon2 { source: argon2::Error },
+
+    #[snafu(display("argon2 password hash error"), context(false))]
+    PasswordHash { source: password_hash::Error },
 
     #[snafu(display("io error: {source}"), context(false))]
     Io { source: std::io::Error },

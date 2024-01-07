@@ -1,5 +1,5 @@
-mod config;
-pub mod errors;
+pub mod config;
+pub mod error;
 mod filetime;
 mod fs;
 
@@ -7,12 +7,14 @@ pub use fs::*;
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use crate::RecordTable;
 
     #[ignore]
     #[test]
     fn test_crud() {
-        let mut sfs = RecordTable::init("user_key").unwrap();
+        let mut sfs = RecordTable::init("user_key", &PathBuf::from(".")).unwrap();
 
         let dir1 = sfs.create("dir1", None).unwrap();
         let file1 = sfs

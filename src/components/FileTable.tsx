@@ -18,6 +18,7 @@ import {
     Info,
     Pencil,
     Pin,
+    PinOff,
     SendHorizonal,
     Trash2,
     Upload,
@@ -81,6 +82,8 @@ export const FileTable: React.FC = () => {
         });
 
     const getItems = (record: Record) => {
+        const isPinned = appState.pinned.some((obj) => obj.id === record.id);
+
         return [
             {
                 label: "Copy",
@@ -117,16 +120,27 @@ export const FileTable: React.FC = () => {
                 icon: Info,
                 onClick: () => openModal(ModalEnum.INFO, record),
             },
-            {
-                label: "Pin",
-                icon: Pin,
-                onClick: () => {
-                    dispatch({
-                        type: ActionType.PIN,
-                        payload: record,
-                    });
-                },
-            },
+            isPinned
+                ? {
+                      label: "Unpin",
+                      icon: PinOff,
+                      onClick: () => {
+                          dispatch({
+                              type: ActionType.UNPIN,
+                              payload: record,
+                          });
+                      },
+                  }
+                : {
+                      label: "Pin",
+                      icon: Pin,
+                      onClick: () => {
+                          dispatch({
+                              type: ActionType.PIN,
+                              payload: record,
+                          });
+                      },
+                  },
         ];
     };
 
@@ -152,7 +166,7 @@ export const FileTable: React.FC = () => {
             />
             <div
                 className={`grid grid-row-2 w-full max-h-[calc(100%-110px)] ${
-                    appState.records.length === 0 ? "" : "bg-dark-100"
+                    appState.records.length === 0 ? "" : "bg-dark-200"
                 } rounded-lg text-sm text-dark-900`}
             >
                 {appState.records.length === 0 ? (

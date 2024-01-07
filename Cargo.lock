@@ -2688,6 +2688,7 @@ dependencies = [
 name = "sfs-ui"
 version = "0.1.0"
 dependencies = [
+ "argon2",
  "libsfs",
  "serde",
  "serde_json",

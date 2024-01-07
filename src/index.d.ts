@@ -30,12 +30,18 @@ type LoginInvokeType = (
     args: { password: string },
 ) => Promise<void>;
 
+type CheckPasswordInvokeType = (
+    cmd: "check_password",
+    args: { password: string },
+) => Promise<void>;
+
 type InvokeType = DeleteInvokeType &
     PinInvokeType &
     CreateInvokeType &
     ImportInvokeType &
     ExportInvokeType &
-    LoginInvokeType;
+    LoginInvokeType &
+    CheckPasswordInvokeType;
 declare module "@tauri-apps/api" {
     const invoke: InvokeType;
 }

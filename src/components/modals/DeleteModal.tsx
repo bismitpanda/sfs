@@ -21,7 +21,7 @@ export const DeleteModal: React.FC<ModalProps> = ({ close, state }) => {
                     Cancel
                 </button>
                 <button
-                    className="btn bg-error"
+                    className="btn bg-red1"
                     onClick={() => {
                         dispatch({
                             type: ActionType.DELETE,

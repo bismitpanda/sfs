@@ -1,8 +1,6 @@
 ## Immediate
 
 -   Animated icons
--   Immediate pin in context menu
--   Colored directory icon
 -   Handle incorrect password
 
 ## Long Term

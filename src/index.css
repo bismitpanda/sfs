@@ -44,7 +44,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 
     overscroll-behavior: none;
-    background-color: #101010;
 }
 
 ::-webkit-scrollbar {

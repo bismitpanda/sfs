@@ -82,7 +82,8 @@
                 "center": true,
                 "visible": false,
                 "label": "main",
-                "decorations": false
+                "decorations": false,
+                "url": "main.html"
             },
             {
                 "width": 480,

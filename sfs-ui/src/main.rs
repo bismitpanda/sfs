@@ -2,9 +2,10 @@
 
 use std::{path::PathBuf, sync::Mutex};
 
-use libsfs::{errors::Error, Record, RecordTable};
+use argon2::{Argon2, PasswordHash, PasswordVerifier};
+use libsfs::{config::Config, error::Result, Record, RecordTable};
 use serde::Serialize;
-use tauri::{AppHandle, Manager, RunEvent, State, Window};
+use tauri::{api::path, AppHandle, Manager, RunEvent, State, Window};
 
 struct AppState {
     record_table: Mutex<RecordTable>,
@@ -19,8 +20,21 @@ struct InitMeta {
 }
 
 #[tauri::command]
-fn login(password: String, window: Window, handle: AppHandle) -> Result<(), Error> {
-    let record_table = RecordTable::init(&password)?;
+fn check_password(password: String) -> Result<()> {
+    let key_path = Config::new(&path::home_dir().unwrap().join(".sfs"))?.key;
+
+    if key_path.exists() {
+        let key_contents = std::fs::read_to_string(key_path)?;
+        let parsed_hash = PasswordHash::new(&key_contents)?;
+        Ok(Argon2::default().verify_password(password.as_bytes(), &parsed_hash)?)
+    } else {
+        Ok(())
+    }
+}
+
+#[tauri::command]
+fn login(password: String, window: Window, handle: AppHandle) -> Result<()> {
+    let record_table = RecordTable::init(&password, &path::home_dir().unwrap().join(".sfs"))?;
     let meta = record_table.meta();
 
     handle.manage(AppState {
@@ -47,7 +61,7 @@ fn login(password: String, window: Window, handle: AppHandle) -> Result<(), Erro
 }
 
 #[tauri::command]
-fn delete(records: Vec<usize>, state: State<AppState>) -> Result<(), Error> {
+fn delete(records: Vec<usize>, state: State<AppState>) -> Result<()> {
     for record_id in records {
         state.record_table.lock().unwrap().delete(record_id)?;
     }
@@ -68,19 +82,19 @@ fn pin(record: usize, state: State<AppState>) {
 }
 
 #[tauri::command]
-fn create_file(name: &str, state: State<AppState>) -> Result<Record, Error> {
+fn create_file(name: &str, state: State<AppState>) -> Result<Record> {
     let mut record_table = state.record_table.lock().unwrap();
     record_table.create(name, Some(Vec::new()))
 }
 
 #[tauri::command]
-fn create_directory(name: &str, state: State<AppState>) -> Result<Record, Error> {
+fn create_directory(name: &str, state: State<AppState>) -> Result<Record> {
     let mut record_table = state.record_table.lock().unwrap();
     record_table.create(name, None)
 }
 
 #[tauri::command]
-fn import(files: Vec<String>, state: State<AppState>) -> Result<Vec<Record>, Error> {
+fn import(files: Vec<String>, state: State<AppState>) -> Result<Vec<Record>> {
     let mut imported = Vec::with_capacity(files.len());
 
     for path in files {
@@ -95,7 +109,7 @@ fn import(files: Vec<String>, state: State<AppState>) -> Result<Vec<Record>, Err
 }
 
 #[tauri::command]
-fn export(record: usize, file: String, state: State<AppState>) -> Result<(), Error> {
+fn export(record: usize, file: String, state: State<AppState>) -> Result<()> {
     let data = state.record_table.lock().unwrap().read_file(record)?;
 
     std::fs::write(file, data)?;
@@ -106,6 +120,7 @@ fn export(record: usize, file: String, state: State<AppState>) -> Result<(), Err
 fn main() {
     let app = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            check_password,
             login,
             delete,
             pin,

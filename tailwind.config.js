@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: ["./index.html", "./login.html", "./src/**/*.{js,ts,jsx,tsx}"],
+    content: ["./*.html", "./src/**/*.{js,ts,jsx,tsx}"],
     darkMode: "class",
     theme: {
         extend: {
@@ -17,11 +17,9 @@ export default {
                     800: "#484848",
                     900: "#aaa",
                 },
+                green1: "#56df74",
+                red1: "#ff5a5a",
             },
-        },
-        colors: {
-            success: "#56df74",
-            error: "#ff5a5a",
         },
     },
     plugins: [require("rippleui")],

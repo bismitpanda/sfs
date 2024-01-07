@@ -2,14 +2,14 @@ use std::{
     collections::{HashMap, HashSet},
     fs::File as StdFile,
     io::{Read, Seek, SeekFrom, Write},
-    path::PathBuf,
+    path::Path,
 };
 
 use aes_gcm::{
     aead::{rand_core::RngCore, Aead, OsRng},
     AeadCore, Aes256Gcm, Key, KeyInit,
 };
-use argon2::Argon2;
+use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use itertools::Itertools;
 use rkyv::{Archive, Deserialize, Serialize};
 use snafu::{OptionExt, ResultExt};
@@ -18,7 +18,7 @@ use xxhash_rust::xxh3::xxh3_64;
 
 use crate::{
     config::Config,
-    errors::{Error, FsError, NotFoundError, Result},
+    error::{Error, FsError, NotFoundError, Result},
     filetime,
 };
 
@@ -151,25 +151,38 @@ impl Meta {
 }
 
 impl RecordTable {
-    pub fn init(user_key: &str) -> Result<Self> {
-        if PathBuf::from("sfs.db").exists() {
-            Self::open(user_key)
+    pub fn init(user_key: &str, base: &Path) -> Result<Self> {
+        if base.exists() {
+            Self::open(user_key, base)
         } else {
-            Self::new(user_key)
+            std::fs::create_dir_all(base).context(FsError {
+                path: base.display().to_string(),
+            })?;
+
+            Self::new(user_key, base)
         }
     }
 
-    fn new(user_key: &str) -> Result<Self> {
+    fn new(user_key: &str, base: &Path) -> Result<Self> {
+        let config = Config::new(base)?;
+        let verify_salt = SaltString::generate(&mut OsRng);
+
         let mut salt = [0; 16];
         OsRng.fill_bytes(&mut salt);
 
         let mut out = [0; 32];
         Argon2::default().hash_password_into(user_key.as_bytes(), &salt, &mut out)?;
 
+        std::fs::write(
+            &config.key,
+            Argon2::default()
+                .hash_password(user_key.as_bytes(), &verify_salt)?
+                .to_string(),
+        )?;
+
         let store_cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(&out));
         let store_nonce = Aes256Gcm::generate_nonce(OsRng);
         let store_key = Aes256Gcm::generate_key(OsRng);
-        let config = Config::new();
         let root_record = Record {
             id: 0,
             name: "/".to_string(),
@@ -208,8 +221,8 @@ impl RecordTable {
         })
     }
 
-    fn open(user_key: &str) -> Result<Self> {
-        let config = Config::new();
+    fn open(user_key: &str, base: &Path) -> Result<Self> {
+        let config = Config::new(base)?;
 
         let meta = rkyv::from_bytes::<Meta>(&std::fs::read(&config.meta).context(FsError {
             path: config.meta.to_string_lossy(),
@@ -245,6 +258,10 @@ impl RecordTable {
 
     pub fn meta(&self) -> Meta {
         self.meta.clone()
+    }
+
+    pub fn config(&self) -> Config {
+        self.config.clone()
     }
 
     pub fn get_size(&self, record: &Record) -> Result<usize> {

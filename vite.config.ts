@@ -12,7 +12,7 @@ export default defineConfig({
         cssMinify: "lightningcss",
         rollupOptions: {
             input: {
-                index: resolve(__dirname, "index.html"),
+                main: resolve(__dirname, "main.html"),
                 login: resolve(__dirname, "login.html"),
             },
         },

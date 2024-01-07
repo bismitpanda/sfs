@@ -40,7 +40,7 @@ export const TitleBar: React.FC = () => {
                 {isMaximized ? <Minimize size={16} /> : <Maximize size={16} />}
             </div>
             <div
-                className="inline-flex justify-center items-center w-8 h-8 hover:bg-error"
+                className="inline-flex justify-center items-center w-8 h-8 hover:bg-red1"
                 onClick={() => appWindow.close()}
             >
                 <X size={16} />
