@@ -35,20 +35,22 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
                 onKeyDown={handleKeyDown}
                 onChange={(ev) => setName(ev.target.value)}
             />
-            <button
-                className="btn bg-green1 w-10 bg-opacity-60 text-black"
-                onClick={() => {
-                    if (name !== "") {
-                        dispatch({
-                            type: ActionType.CREATE_DIRECTORY,
-                            payload: name,
-                        });
-                        close();
-                    }
-                }}
-            >
-                Create
-            </button>
+            <span className="w-full flex flex-row justify-end">
+                <button
+                    className="btn bg-green1 w-fit bg-opacity-60 text-black"
+                    onClick={() => {
+                        if (name !== "") {
+                            dispatch({
+                                type: ActionType.CREATE_DIRECTORY,
+                                payload: name,
+                            });
+                            close();
+                        }
+                    }}
+                >
+                    Create
+                </button>
+            </span>
         </Modal>
     );
 };

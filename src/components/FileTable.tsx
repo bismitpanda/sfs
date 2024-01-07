@@ -1,6 +1,7 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { useModalContext } from "@hooks/useModalContext";
 import { useSelectedContext } from "@hooks/useSelectedContext";
+import { invoke } from "@tauri-apps/api";
 import { ActionType } from "@type/ActionType";
 import { MenuItemType } from "@type/MenuItemType";
 import { ModalEnum } from "@type/ModalEnum";
@@ -249,9 +250,16 @@ export const FileTable: React.FC = () => {
                                                   record,
                                               ])
                                     }
-                                    onDoubleClick={() =>
-                                        console.log(record.name)
-                                    }
+                                    onDoubleClick={async () => {
+                                        if (
+                                            record.name.split(".").at(-1) ===
+                                            "png"
+                                        ) {
+                                            await invoke("open_photo", {
+                                                record: record.id,
+                                            });
+                                        }
+                                    }}
                                     onContextMenu={(ev) => {
                                         ev.preventDefault();
                                         menuState.open

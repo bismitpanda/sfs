@@ -27,7 +27,7 @@
             "@hooks/*": ["./src/hooks/*"]
         }
     },
-    "include": ["src"],
+    "include": ["src", "windows/*"],
     "references": [
         {
             "path": "./tsconfig.node.json"

@@ -1,121 +1,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{path::PathBuf, sync::Mutex};
+mod commands;
 
-use argon2::{Argon2, PasswordHash, PasswordVerifier};
-use libsfs::{config::Config, error::Result, Record, RecordTable};
-use serde::Serialize;
-use tauri::{api::path, AppHandle, Manager, RunEvent, State, Window};
-
-struct AppState {
-    record_table: Mutex<RecordTable>,
-}
-
-#[derive(Serialize, Clone)]
-#[serde(rename_all = "camelCase")]
-struct InitMeta {
-    curr_dir_record: Record,
-    records: Vec<Record>,
-    pinned: Vec<Record>,
-}
-
-#[tauri::command]
-fn check_password(password: String) -> Result<()> {
-    let key_path = Config::new(&path::home_dir().unwrap().join(".sfs"))?.key;
-
-    if key_path.exists() {
-        let key_contents = std::fs::read_to_string(key_path)?;
-        let parsed_hash = PasswordHash::new(&key_contents)?;
-        Ok(Argon2::default().verify_password(password.as_bytes(), &parsed_hash)?)
-    } else {
-        Ok(())
-    }
-}
-
-#[tauri::command]
-fn login(password: String, window: Window, handle: AppHandle) -> Result<()> {
-    let record_table = RecordTable::init(&password, &path::home_dir().unwrap().join(".sfs"))?;
-    let meta = record_table.meta();
-
-    handle.manage(AppState {
-        record_table: Mutex::new(record_table),
-    });
-
-    window.get_window("login").unwrap().close().unwrap();
-
-    let main_window = window.get_window("main").unwrap();
-    let (curr_dir_record, records, pinned) = meta.init_data()?;
-    main_window
-        .emit(
-            "initialize",
-            InitMeta {
-                curr_dir_record,
-                records,
-                pinned,
-            },
-        )
-        .unwrap();
-    main_window.show().unwrap();
-
-    Ok(())
-}
-
-#[tauri::command]
-fn delete(records: Vec<usize>, state: State<AppState>) -> Result<()> {
-    for record_id in records {
-        state.record_table.lock().unwrap().delete(record_id)?;
-    }
-
-    Ok(())
-}
-
-#[tauri::command]
-fn unpin(record: usize, state: State<AppState>) {
-    let mut record_table = state.record_table.lock().unwrap();
-    record_table.unpin(record);
-}
-
-#[tauri::command]
-fn pin(record: usize, state: State<AppState>) {
-    let mut record_table = state.record_table.lock().unwrap();
-    record_table.pin(record);
-}
-
-#[tauri::command]
-fn create_file(name: &str, state: State<AppState>) -> Result<Record> {
-    let mut record_table = state.record_table.lock().unwrap();
-    record_table.create(name, Some(Vec::new()))
-}
-
-#[tauri::command]
-fn create_directory(name: &str, state: State<AppState>) -> Result<Record> {
-    let mut record_table = state.record_table.lock().unwrap();
-    record_table.create(name, None)
-}
-
-#[tauri::command]
-fn import(files: Vec<String>, state: State<AppState>) -> Result<Vec<Record>> {
-    let mut imported = Vec::with_capacity(files.len());
-
-    for path in files {
-        let data = std::fs::read(&path)?;
-        imported.push(state.record_table.lock().unwrap().create(
-            PathBuf::from(&path).file_name().unwrap().to_str().unwrap(),
-            Some(data),
-        )?);
-    }
-
-    Ok(imported)
-}
-
-#[tauri::command]
-fn export(record: usize, file: String, state: State<AppState>) -> Result<()> {
-    let data = state.record_table.lock().unwrap().read_file(record)?;
-
-    std::fs::write(file, data)?;
-
-    Ok(())
-}
+use commands::*;
+use tauri::{http::ResponseBuilder, Manager, RunEvent};
 
 fn main() {
     let app = tauri::Builder::default()
@@ -128,8 +16,26 @@ fn main() {
             create_file,
             create_directory,
             import,
-            export
+            export,
+            open_photo
         ])
+        .register_uri_scheme_protocol("photo", move |app, request| {
+            let data = app
+                .state::<AppState>()
+                .record_table
+                .lock()
+                .unwrap()
+                .read_file(1)?;
+
+            dbg!(&request);
+
+            ResponseBuilder::new()
+                .header("Origin", "*")
+                .mimetype("image/png")
+                .header("Content-Length", data.len())
+                .status(200)
+                .body(data)
+        })
         .build(tauri::generate_context!())
         .expect("error while running tauri application");
 

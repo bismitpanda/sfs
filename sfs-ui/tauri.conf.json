@@ -65,7 +65,7 @@
             }
         },
         "security": {
-            "csp": null
+            "csp": "default-src 'self'; img-src photo://*;"
         },
         "updater": {
             "active": false
@@ -83,7 +83,8 @@
                 "visible": false,
                 "label": "main",
                 "decorations": false,
-                "url": "main.html"
+                "url": "main.html",
+                "contentProtected": true
             },
             {
                 "width": 480,
@@ -93,7 +94,8 @@
                 "url": "login.html",
                 "label": "login",
                 "center": true,
-                "resizable": false
+                "resizable": false,
+                "focus": true
             }
         ]
     }

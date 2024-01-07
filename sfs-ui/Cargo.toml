@@ -30,8 +30,11 @@ tauri = { version = "1.5.4", features = [
 ] }
 argon2 = { version = "0.5.2", features = ["std"] }
 libsfs = { path = "../libsfs" }
+url = "2.5.0"
+
 
 [features]
+default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 

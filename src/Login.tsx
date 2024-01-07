@@ -3,9 +3,6 @@ import { invoke } from "@tauri-apps/api";
 import { exit } from "@tauri-apps/api/process";
 import React from "react";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom/client";
-
-import "../index.css";
 
 export const LoginScreen: React.FC = () => {
     const [password, setPassword] = useState("");
@@ -66,9 +63,3 @@ export const LoginScreen: React.FC = () => {
         </div>
     );
 };
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <LoginScreen />
-    </React.StrictMode>,
-);

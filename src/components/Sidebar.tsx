@@ -1,6 +1,6 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { useModalContext } from "@hooks/useModalContext";
-import { exit } from "@tauri-apps/api/process";
+import { appWindow } from "@tauri-apps/api/window";
 import { ActionType } from "@type/ActionType";
 import { ModalEnum } from "@type/ModalEnum";
 import { deleteColor, dirActionColor, infoColor } from "@utils/colors";
@@ -72,7 +72,7 @@ export const Sidebar: React.FC = () => {
                     </div>
                 </section>
                 <section className="sidebar-footer justify-end h-fit p-4">
-                    <div className="navbar bg-dark-200 shadow-none rounded-lg">
+                    <div className="navbar bg-dark-100 shadow-none rounded-lg">
                         <div className="navbar-start justify-between">
                             <IconButton
                                 icon={Cog}
@@ -95,7 +95,7 @@ export const Sidebar: React.FC = () => {
                                 icon={LogOut}
                                 color={deleteColor}
                                 tooltipTop="Exit"
-                                onClick={() => exit(0)}
+                                onClick={() => appWindow.close()}
                             />
                         </div>
                     </div>

@@ -8,14 +8,18 @@ export default defineConfig({
     server: {
         port: 3333,
     },
+    root: "windows",
     build: {
         cssMinify: "lightningcss",
         rollupOptions: {
             input: {
-                main: resolve(__dirname, "main.html"),
-                login: resolve(__dirname, "login.html"),
+                main: resolve(__dirname, "windows/main.html"),
+                login: resolve(__dirname, "windows/login.html"),
+                photo: resolve(__dirname, "windows/photo.html"),
             },
         },
+        outDir: "../dist",
+        emptyOutDir: true,
     },
     esbuild: {
         legalComments: "eof",
