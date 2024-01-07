@@ -33,14 +33,14 @@ export const ContextMenu: React.FC<{
                 <div
                     id="ctxmenu"
                     ref={contextMenuRef}
-                    className={`absolute bg-[#262626] p-1 rounded-lg ${
+                    className={`absolute bg-dark-500 p-1 rounded-lg ${
                         open ? "flex flex-col gap-1" : "hidden"
                     } z-50`}
                     style={{ top: `${y}px`, left: `${x}px` }}
                 >
                     {items.map(({ label, icon: Icon, onClick }, i) => (
                         <button
-                            className="hover:bg-[#333] py-2 pl-5 pr-10 rounded-md active:scale-95 transition"
+                            className="hover:bg-dark-600 py-2 pl-5 pr-10 rounded-md active:scale-95 transition"
                             key={i}
                             onClick={() => {
                                 onClick();

@@ -33,7 +33,7 @@ export const Navbar: React.FC = () => {
     );
 
     return (
-        <div className="navbar bg-[#111] shadow-none rounded-lg">
+        <div className="navbar bg-dark-100 shadow-none rounded-lg">
             <div className="navbar-start gap-3">
                 <IconButton
                     icon={isPinned ? PinOff : Pin}

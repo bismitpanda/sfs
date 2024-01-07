@@ -18,7 +18,7 @@ export const LoginScreen: React.FC = () => {
     }, []);
 
     return (
-        <div className="rounded-3xl bg-[#161616] h-screen w-screen p-5 flex flex-col gap-5 items-center">
+        <div className="rounded-3xl bg-dark-200 h-screen w-screen p-5 flex flex-col gap-5 items-center">
             <h2 className="text-xl">Enter Password</h2>
             <input
                 type="password"

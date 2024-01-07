@@ -36,7 +36,7 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
                 onChange={(ev) => setName(ev.target.value)}
             />
             <button
-                className="btn bg-[#56df74] w-10 bg-opacity-60 text-black"
+                className="btn bg-success w-10 bg-opacity-60 text-black"
                 onClick={() => {
                     if (name !== "") {
                         dispatch({
