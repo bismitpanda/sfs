@@ -20,4 +20,6 @@ export type Action =
     | {
           type: ActionType.RENAME | ActionType.RENAMED;
           payload: { newName: string; oldName: string };
-      };
+      }
+    | { type: ActionType.REQUEST_RECORDS; payload: Record }
+    | { type: ActionType.HANDLE_RESPONSE; payload: Record[] };

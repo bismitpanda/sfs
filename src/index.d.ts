@@ -43,6 +43,11 @@ type RenameInvokeType = (
     },
 ) => Promise<void>;
 
+type RequestInvokeType = (
+    cmd: "request",
+    args: { record: number },
+) => Promise<Record[]>;
+
 type InvokeType = DeleteInvokeType &
     PinInvokeType &
     CreateInvokeType &
@@ -50,7 +55,8 @@ type InvokeType = DeleteInvokeType &
     ExportInvokeType &
     LoginInvokeType &
     CheckPasswordInvokeType &
-    RenameInvokeType;
+    RenameInvokeType &
+    RequestInvokeType;
 declare module "@tauri-apps/api" {
     const invoke: InvokeType;
 }

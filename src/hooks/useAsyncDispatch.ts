@@ -198,7 +198,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     break;
                 }
 
-                case ActionType.RENAME:
+                case ActionType.RENAME: {
                     await invoke("rename", { ...action.payload });
                     dispatch({
                         type: ActionType.RENAMED,
@@ -206,6 +206,18 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     });
                     toast.success("Renamed file");
                     break;
+                }
+
+                case ActionType.REQUEST_RECORDS: {
+                    const records = await invoke("request", {
+                        record: action.payload.id,
+                    });
+                    dispatch({
+                        type: ActionType.HANDLE_RESPONSE,
+                        payload: records,
+                    });
+                    break;
+                }
 
                 default:
                     dispatch(action);
