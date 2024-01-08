@@ -33,7 +33,8 @@ pub fn check_password(password: String) -> Result<()> {
 #[tauri::command]
 pub fn login(password: String, window: Window, handle: AppHandle) -> Result<()> {
     let record_table = RecordTable::init(&password, &path::home_dir().unwrap().join(".sfs"))?;
-    let (curr_dir_record, records, pinned) = record_table.init_data()?;
+    let (curr_dir_record, records) = record_table.get_dir_entries(0)?;
+    let pinned = record_table.get_pinned();
 
     handle.manage(AppState {
         record_table: Mutex::new(record_table),

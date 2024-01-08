@@ -328,7 +328,7 @@ impl RecordTable {
             .cipher
             .encrypt(&self.crypt.meta_nonce.into(), meta.as_slice())?;
 
-        std::fs::write(&self.config.meta, &meta).context(FsError {
+        std::fs::write(&self.config.meta, meta).context(FsError {
             path: self.config.meta.to_string_lossy(),
         })?;
         std::fs::write(&self.config.crypt, &crypt).context(FsError {
@@ -582,23 +582,11 @@ impl RecordTable {
         Ok(())
     }
 
-    pub fn init_data(&self) -> Result<(Record, Vec<Record>, Vec<Record>)> {
-        let root_record = self.meta.entries[0].clone();
-
-        let records = root_record
-            .as_directory()?
-            .entries
-            .values()
-            .map(|id| self.meta.entries[*id].clone())
-            .collect();
-
-        let pinned = self
-            .meta
+    pub fn get_pinned(&self) -> Vec<Record> {
+        self.meta
             .pinned
             .iter()
             .map(|id| self.meta.entries[*id].clone())
-            .collect();
-
-        Ok((root_record, records, pinned))
+            .collect()
     }
 }
