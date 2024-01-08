@@ -118,6 +118,7 @@ struct Crypt {
     user_salt: [u8; 16],
     store_key: Vec<u8>,
     store_nonce: [u8; 12],
+    meta_nonce: [u8; 12],
 }
 
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone)]
@@ -162,6 +163,8 @@ impl RecordTable {
 
         let store_cipher = Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(&out));
         let store_nonce = Aes256Gcm::generate_nonce(OsRng);
+        let meta_nonce = Aes256Gcm::generate_nonce(OsRng);
+
         let store_key = Aes256Gcm::generate_key(OsRng);
         let root_record = Record {
             id: 0,
@@ -196,6 +199,7 @@ impl RecordTable {
             crypt: Crypt {
                 store_key: store_cipher.encrypt(&store_nonce, store_key.as_slice())?,
                 store_nonce: store_nonce.into(),
+                meta_nonce: meta_nonce.into(),
                 user_salt: salt,
             },
         })
@@ -203,10 +207,6 @@ impl RecordTable {
 
     fn open(user_key: &str, base: &Path) -> Result<Self> {
         let config = Config::new(base)?;
-
-        let meta = rkyv::from_bytes::<Meta>(&std::fs::read(&config.meta).context(FsError {
-            path: config.meta.to_string_lossy(),
-        })?)?;
         let crypt = rkyv::from_bytes::<Crypt>(&std::fs::read(&config.crypt).context(FsError {
             path: config.crypt.to_string_lossy(),
         })?)?;
@@ -218,8 +218,18 @@ impl RecordTable {
         let store_key =
             store_cipher.decrypt(&crypt.store_nonce.into(), crypt.store_key.as_slice())?;
 
+        let cipher = Aes256Gcm::new(store_key.as_slice().into());
+
+        let meta_file_data = std::fs::read(&config.meta).context(FsError {
+            path: config.meta.to_string_lossy(),
+        })?;
+
+        let meta_data = cipher.decrypt(&crypt.meta_nonce.into(), meta_file_data.as_slice())?;
+
+        let meta = rkyv::from_bytes::<Meta>(&meta_data)?;
+
         Ok(Self {
-            cipher: Aes256Gcm::new(store_key.as_slice().into()),
+            cipher,
             compressor: Encoder::new(),
             decompressor: Decoder::new(),
             backend: StdFile::options()
@@ -313,6 +323,10 @@ impl RecordTable {
     pub fn close(&self) -> Result<()> {
         let meta = rkyv::to_bytes::<_, 1024>(&self.meta)?;
         let crypt = rkyv::to_bytes::<_, 1024>(&self.crypt)?;
+
+        let meta = self
+            .cipher
+            .encrypt(&self.crypt.meta_nonce.into(), meta.as_slice())?;
 
         std::fs::write(&self.config.meta, &meta).context(FsError {
             path: self.config.meta.to_string_lossy(),
