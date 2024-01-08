@@ -20,6 +20,12 @@ fn main() {
             rename,
             request
         ])
+        .setup(|_app| {
+            #[cfg(debug_assertions)]
+            _app.get_window("main").unwrap().open_devtools();
+
+            Ok(())
+        })
         .build(tauri::generate_context!())
         .expect("error while running tauri application");
 

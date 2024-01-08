@@ -1,7 +1,7 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { ActionType } from "@type/ActionType";
 import { ModalProps } from "@type/ModalProps";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useRef, useState } from "react";
 
 import { Modal } from "./Modal";
 
@@ -16,17 +16,26 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
                 type: ActionType.CREATE_DIRECTORY,
                 payload: name,
             });
-            setName("");
-            close();
+            newClose();
         }
     };
 
-    useEffect(() => {
+    const onChangeState = () => {
         inputRef.current?.focus();
-    }, []);
+    };
+
+    const newClose = () => {
+        setName("");
+        close();
+    };
 
     return (
-        <Modal state={state} close={close} title="New Directory">
+        <Modal
+            state={state}
+            close={newClose}
+            title="New Directory"
+            onChangeState={onChangeState}
+        >
             <input
                 className="input input-block"
                 type="text"
@@ -35,6 +44,7 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
                 placeholder="Enter Directory name"
                 onKeyDown={handleKeyDown}
                 onChange={(ev) => setName(ev.target.value)}
+                value={name}
             />
             <span className="w-full flex flex-row justify-end">
                 <button
@@ -45,7 +55,7 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
                                 type: ActionType.CREATE_DIRECTORY,
                                 payload: name,
                             });
-                            close();
+                            newClose();
                         }
                     }}
                 >

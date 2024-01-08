@@ -133,6 +133,38 @@ pub struct Meta {
 }
 
 impl RecordTable {
+    pub fn config(&self) -> Config {
+        self.config.clone()
+    }
+
+    pub fn pin(&mut self, record_id: usize) {
+        self.meta.pinned.insert(record_id);
+    }
+
+    pub fn unpin(&mut self, record_id: usize) {
+        self.meta.pinned.remove(&record_id);
+    }
+
+    pub fn curr_dir(&self) -> &Record {
+        &self.meta.entries[self.curr_dir_id]
+    }
+
+    pub fn curr_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
+        self.meta.entries[self.curr_dir_id].as_directory_mut()
+    }
+
+    pub fn get_dir_entries(&self, id: usize) -> Result<(Record, Vec<Record>)> {
+        Ok((
+            self.meta.entries[id].clone(),
+            self.meta.entries[id]
+                .as_directory()?
+                .entries
+                .values()
+                .map(|id| self.meta.entries[*id].clone())
+                .collect(),
+        ))
+    }
+
     pub fn init(user_key: &str, base: &Path) -> Result<Self> {
         if base.exists() {
             Self::open(user_key, base)
@@ -225,17 +257,14 @@ impl RecordTable {
             path: config.meta.to_string_lossy(),
         })?;
 
-        let mut decompressor = Decoder::new();
-
         let meta_data = cipher.decrypt(&crypt.meta_nonce.into(), meta_file_data.as_slice())?;
-        let meta_data = decompressor.decompress_vec(&meta_data)?;
 
         let meta = rkyv::from_bytes::<Meta>(&meta_data)?;
 
         Ok(Self {
             cipher,
             compressor: Encoder::new(),
-            decompressor,
+            decompressor: Decoder::new(),
             backend: StdFile::options()
                 .write(true)
                 .read(true)
@@ -250,8 +279,22 @@ impl RecordTable {
         })
     }
 
-    pub fn config(&self) -> Config {
-        self.config.clone()
+    pub fn close(&mut self) -> Result<()> {
+        let meta = rkyv::to_bytes::<_, 1024>(&self.meta)?;
+        let crypt = rkyv::to_bytes::<_, 1024>(&self.crypt)?;
+
+        let meta = self
+            .cipher
+            .encrypt(&self.crypt.meta_nonce.into(), meta.as_slice())?;
+
+        std::fs::write(&self.config.meta, meta).context(FsError {
+            path: self.config.meta.to_string_lossy(),
+        })?;
+        std::fs::write(&self.config.crypt, &crypt).context(FsError {
+            path: self.config.crypt.to_string_lossy(),
+        })?;
+
+        Ok(())
     }
 
     pub fn get_size(&self, record: &Record) -> Result<usize> {
@@ -322,54 +365,6 @@ impl RecordTable {
 
         self.meta.free_fragments = fragments.into_iter().collect::<Vec<_>>();
         self.meta.free_fragments.sort_unstable();
-    }
-
-    pub fn close(&mut self) -> Result<()> {
-        let meta = rkyv::to_bytes::<_, 1024>(&self.meta)?;
-        let crypt = rkyv::to_bytes::<_, 1024>(&self.crypt)?;
-
-        let meta = self
-            .cipher
-            .encrypt(&self.crypt.meta_nonce.into(), meta.as_slice())?;
-
-        let meta = self.compressor.compress_vec(&meta)?;
-
-        std::fs::write(&self.config.meta, meta).context(FsError {
-            path: self.config.meta.to_string_lossy(),
-        })?;
-        std::fs::write(&self.config.crypt, &crypt).context(FsError {
-            path: self.config.crypt.to_string_lossy(),
-        })?;
-
-        Ok(())
-    }
-
-    pub fn pin(&mut self, record_id: usize) {
-        self.meta.pinned.insert(record_id);
-    }
-
-    pub fn unpin(&mut self, record_id: usize) {
-        self.meta.pinned.remove(&record_id);
-    }
-
-    pub fn curr_dir(&self) -> &Record {
-        &self.meta.entries[self.curr_dir_id]
-    }
-
-    pub fn curr_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
-        self.meta.entries[self.curr_dir_id].as_directory_mut()
-    }
-
-    pub fn get_dir_entries(&self, id: usize) -> Result<(Record, Vec<Record>)> {
-        Ok((
-            self.meta.entries[id].clone(),
-            self.meta.entries[id]
-                .as_directory()?
-                .entries
-                .values()
-                .map(|id| self.meta.entries[*id].clone())
-                .collect(),
-        ))
     }
 
     pub fn create(&mut self, name: &str, contents: Option<Vec<u8>>) -> Result<Record> {
