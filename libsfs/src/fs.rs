@@ -33,6 +33,8 @@ pub struct FileRecord {
     len: usize,
     #[serde(skip)]
     nonce: [u8; 12],
+    #[serde(skip)]
+    is_compressed: bool,
     size: usize,
 }
 
@@ -224,14 +226,17 @@ impl RecordTable {
             path: config.meta.to_string_lossy(),
         })?;
 
+        let mut decompressor = Decoder::new();
+
         let meta_data = cipher.decrypt(&crypt.meta_nonce.into(), meta_file_data.as_slice())?;
+        let meta_data = decompressor.decompress_vec(&meta_data)?;
 
         let meta = rkyv::from_bytes::<Meta>(&meta_data)?;
 
         Ok(Self {
             cipher,
             compressor: Encoder::new(),
-            decompressor: Decoder::new(),
+            decompressor,
             backend: StdFile::options()
                 .write(true)
                 .read(true)
@@ -320,13 +325,15 @@ impl RecordTable {
         self.meta.free_fragments.sort_unstable();
     }
 
-    pub fn close(&self) -> Result<()> {
+    pub fn close(&mut self) -> Result<()> {
         let meta = rkyv::to_bytes::<_, 1024>(&self.meta)?;
         let crypt = rkyv::to_bytes::<_, 1024>(&self.crypt)?;
 
         let meta = self
             .cipher
             .encrypt(&self.crypt.meta_nonce.into(), meta.as_slice())?;
+
+        let meta = self.compressor.compress_vec(&meta)?;
 
         std::fs::write(&self.config.meta, meta).context(FsError {
             path: self.config.meta.to_string_lossy(),
@@ -376,7 +383,11 @@ impl RecordTable {
 
             let enc = self.cipher.encrypt(&nonce.into(), contents.as_slice())?;
             let compressed = self.compressor.compress_vec(&enc)?;
-            let len = compressed.len();
+            let (len, is_compressed) = if compressed.len() < enc.len() {
+                (compressed.len(), true)
+            } else {
+                (enc.len(), false)
+            };
 
             let free_pos = self
                 .meta
@@ -409,6 +420,7 @@ impl RecordTable {
                 offset,
                 len,
                 nonce,
+                is_compressed,
                 size,
             })
         } else {
@@ -455,7 +467,12 @@ impl RecordTable {
             .seek(SeekFrom::Start(file_record.offset as u64))?;
         self.backend.read_exact(&mut buf)?;
 
-        let decompressed = self.decompressor.decompress_vec(&buf)?;
+        let decompressed = if file_record.is_compressed {
+            self.decompressor.decompress_vec(&buf)?
+        } else {
+            buf
+        };
+
         let contents = self
             .cipher
             .decrypt(&file_record.nonce.into(), decompressed.as_slice())?;
@@ -479,16 +496,6 @@ impl RecordTable {
             .map(|&id| self.meta.entries[id].clone())
             .collect_vec())
     }
-
-    // pub fn update(&mut self, name: &str, contents: &[u8]) -> Result<()> {
-    //     let record = self.meta.entries[self.curr_dir().as_directory()?.entries[name]].as_file()?;
-
-    //     if record.len > contents.len() {
-    //         todo!()
-    //     }
-
-    //     Ok(())
-    // }
 
     pub fn delete(&mut self, record_id: usize) -> Result<()> {
         let record = std::mem::take(&mut self.meta.entries[record_id]);
@@ -542,6 +549,7 @@ impl RecordTable {
         let [prev @ .., last] = to else {
             unreachable!()
         };
+
         record.name = last.clone();
         record.file_times = filetime::now();
 
