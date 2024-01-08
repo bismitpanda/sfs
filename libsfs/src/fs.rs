@@ -10,7 +10,6 @@ use aes_gcm::{
     AeadCore, Aes256Gcm, Key, KeyInit,
 };
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
-use itertools::Itertools;
 use rkyv::{Archive, Deserialize, Serialize};
 use snafu::{OptionExt, ResultExt};
 use snap::raw::{Decoder, Encoder};
@@ -282,7 +281,7 @@ impl RecordTable {
             .free_fragments
             .iter()
             .flat_map(|(size, offsets)| offsets.iter().map(|offset| (*offset, *size)))
-            .collect_vec();
+            .collect::<Vec<_>>();
 
         free_fragments.sort_unstable();
 
@@ -321,7 +320,7 @@ impl RecordTable {
                 .or_insert_with(|| vec![off]);
         }
 
-        self.meta.free_fragments = fragments.into_iter().collect_vec();
+        self.meta.free_fragments = fragments.into_iter().collect::<Vec<_>>();
         self.meta.free_fragments.sort_unstable();
     }
 
@@ -494,7 +493,7 @@ impl RecordTable {
             .entries
             .values()
             .map(|&id| self.meta.entries[id].clone())
-            .collect_vec())
+            .collect())
     }
 
     pub fn delete(&mut self, record_id: usize) -> Result<()> {

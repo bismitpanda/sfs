@@ -13,7 +13,6 @@ rust-version = "1.75"
 tauri-build = { version = "1.5.1", features = [] }
 
 [dependencies]
-serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.5.4", features = [
     "window-show",
@@ -30,7 +29,6 @@ tauri = { version = "1.5.4", features = [
 ] }
 argon2 = { version = "0.5.2", features = ["std"] }
 libsfs = { path = "../libsfs" }
-url = "2.5.0"
 
 
 [features]

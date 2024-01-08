@@ -742,12 +742,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56ce8c6da7551ec6c462cbaf3bfbc75131ebbfa1c944aeaa9dab51ca1c5f0c3b"
 
 [[package]]
-name = "either"
-version = "1.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"
-
-[[package]]
 name = "embed-resource"
 version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1464,15 +1458,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "itertools"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25db6b064527c5d482d0423354fcd07a89a2dfe07b67892e62411946db7f07b0"
-dependencies = [
- "either",
-]
-
-[[package]]
 name = "itoa"
 version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1590,7 +1575,6 @@ version = "0.1.0"
 dependencies = [
  "aes-gcm",
  "argon2",
- "itertools",
  "rkyv",
  "serde",
  "snafu",
@@ -2691,10 +2675,8 @@ dependencies = [
  "argon2",
  "libsfs",
  "serde",
- "serde_json",
  "tauri",
  "tauri-build",
- "url",
 ]
 
 [[package]]
