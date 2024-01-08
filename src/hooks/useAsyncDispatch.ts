@@ -200,6 +200,10 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
 
                 case ActionType.RENAME:
                     await invoke("rename", { ...action.payload });
+                    dispatch({
+                        type: ActionType.RENAMED,
+                        payload: action.payload,
+                    });
                     toast.success("Renamed file");
                     break;
 

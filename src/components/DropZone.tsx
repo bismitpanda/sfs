@@ -43,7 +43,7 @@ export const DropZone: React.FC = () => {
             }`}
         >
             <div className="h-20 w-20">
-                <Plus size={72} />
+                <Plus size={100} />
             </div>
         </div>
     );

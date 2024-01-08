@@ -9,6 +9,21 @@ export const appStateReducer: AppStateReducer = (
     action: Action,
 ) => {
     switch (action.type) {
+        case ActionType.DELETE:
+        case ActionType.PIN:
+        case ActionType.UNPIN:
+        case ActionType.CREATE_FILE:
+        case ActionType.CREATE_DIRECTORY:
+        case ActionType.IMPORT:
+        case ActionType.EXPORT:
+        case ActionType.DROP:
+        case ActionType.RENAME:
+            console.error(
+                "Should have been handle by async dispatcher: ",
+                ActionType[action.type],
+            );
+            return state;
+
         case ActionType.DELETED: {
             if (action.payload) {
                 const ids = action.payload;
@@ -50,13 +65,23 @@ export const appStateReducer: AppStateReducer = (
         case ActionType.DROPPED:
             return { ...state, records: [...state.records, ...action.payload] };
 
+        case ActionType.RENAMED:
+            return {
+                ...state,
+                pinned: state.pinned.map((record) =>
+                    record.name === action.payload.oldName
+                        ? { ...record, name: action.payload.newName }
+                        : record,
+                ),
+                records: state.records.map((record) =>
+                    record.name === action.payload.oldName
+                        ? { ...record, name: action.payload.newName }
+                        : record,
+                ),
+            };
+
         default:
-            console.warn(
-                "Unknown dispatch action: ",
-                ActionType[action.type],
-                "payload: ",
-                action.type !== ActionType.IMPORT ? action.payload : "none",
-            );
+            console.warn("Unknown dispatch action: ", action);
             return state;
     }
 };

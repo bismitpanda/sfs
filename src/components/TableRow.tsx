@@ -3,7 +3,6 @@ import { FileTime } from "@type/FileTime";
 import { Record } from "@type/Record";
 import { LucideIcon } from "lucide-react";
 import { DateTime } from "luxon";
-import { useEffect, useRef } from "react";
 
 export const TableRow: React.FC<{
     record: Record;
@@ -14,33 +13,6 @@ export const TableRow: React.FC<{
     onInput: (value: string) => void;
 }> = ({ record, date, size, icon: Icon, editing, onInput }) => {
     const { selected } = useSelectedContext();
-    const spanRef = useRef<HTMLSpanElement>(null);
-
-    const replaceCaret = (el: HTMLElement | null) => {
-        if (!el) return;
-
-        const target = document.createTextNode("");
-        el.appendChild(target);
-
-        const isTargetFocused = document.activeElement === el;
-        if (target !== null && target.nodeValue !== null && isTargetFocused) {
-            const sel = window.getSelection();
-            if (sel !== null) {
-                const range = document.createRange();
-                range.setStart(target, target.nodeValue.length);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-            }
-
-            if (el instanceof HTMLElement) el.focus();
-        }
-    };
-
-    useEffect(() => {
-        spanRef.current?.focus();
-        replaceCaret(spanRef.current);
-    }, []);
 
     return (
         <>
@@ -55,9 +27,11 @@ export const TableRow: React.FC<{
                             : "!opacity-0"
                     }`}
                 />
-                <Icon size={18} strokeWidth={1} />
+                <span className="h-5 w-5">
+                    <Icon size={18} strokeWidth={1} />
+                </span>
                 <span
-                    ref={spanRef}
+                    className="text-ellipsis mr-2"
                     contentEditable={editing}
                     suppressContentEditableWarning
                     onInput={(ev) =>

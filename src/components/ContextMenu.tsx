@@ -1,19 +1,17 @@
 import { MenuItemType } from "@type/MenuItemType";
-import { MouseEvent, useRef } from "react";
+import { useRef } from "react";
 
 export const ContextMenu: React.FC<{
     open: boolean;
-    ev?: MouseEvent;
+    clientX: number;
+    clientY: number;
+    pageY: number;
+    pageX: number;
     items: MenuItemType[];
     closeMenu: () => void;
-}> = ({ open, ev, items, closeMenu }) => {
+}> = ({ open, clientX, clientY, pageY, pageX, items, closeMenu }) => {
     const contextMenuRef = useRef<HTMLDivElement>(null);
 
-    if (!ev) {
-        return <></>;
-    }
-
-    const { clientX, clientY, pageY, pageX } = ev;
     const { innerHeight, innerWidth } = window;
     const [dy, dx] = contextMenuRef.current
         ? [
@@ -28,32 +26,28 @@ export const ContextMenu: React.FC<{
     };
 
     return (
-        <>
-            {open && (
-                <div
-                    id="ctxmenu"
-                    ref={contextMenuRef}
-                    className={`absolute bg-dark-500 p-1 rounded-lg ${
-                        open ? "flex flex-col gap-1" : "hidden"
-                    } z-50`}
-                    style={{ top: `${y}px`, left: `${x}px` }}
+        <div
+            id="ctxmenu"
+            ref={contextMenuRef}
+            className={`flex flex-col gap-1 absolute bg-dark-500 p-1 rounded-lg transition-opacity duration-300 ${
+                open ? "opacity-100" : "opacity-0"
+            } z-50`}
+            style={{ top: `${y}px`, left: `${x}px` }}
+        >
+            {items.map(({ label, icon: Icon, onClick }, i) => (
+                <button
+                    className="hover:bg-dark-600 py-2 pl-5 pr-10 rounded-md active:scale-95 transition"
+                    key={i}
+                    onClick={() => {
+                        onClick();
+                        closeMenu();
+                    }}
                 >
-                    {items.map(({ label, icon: Icon, onClick }, i) => (
-                        <button
-                            className="hover:bg-dark-600 py-2 pl-5 pr-10 rounded-md active:scale-95 transition"
-                            key={i}
-                            onClick={() => {
-                                onClick();
-                                closeMenu();
-                            }}
-                        >
-                            <span className="flex flex-row gap-4 text-sm">
-                                <Icon size={18} strokeWidth={1} /> {label}
-                            </span>
-                        </button>
-                    ))}
-                </div>
-            )}
-        </>
+                    <span className="flex flex-row gap-4 text-sm">
+                        <Icon size={18} strokeWidth={1} /> {label}
+                    </span>
+                </button>
+            ))}
+        </div>
     );
 };

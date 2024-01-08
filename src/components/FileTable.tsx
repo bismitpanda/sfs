@@ -23,7 +23,7 @@ import {
     Trash2,
     Upload,
 } from "lucide-react";
-import { KeyboardEvent, MouseEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 
 import { ContextMenu } from "./ContextMenu";
 import { TableRow } from "./TableRow";
@@ -38,8 +38,11 @@ export const FileTable: React.FC = () => {
     const [menuState, setMenuState] = useState<{
         open: boolean;
         items: MenuItemType[];
-        ev?: MouseEvent;
-    }>({ open: false, items: [] });
+        clientX: number;
+        clientY: number;
+        pageY: number;
+        pageX: number;
+    }>({ open: false, items: [], clientX: 0, clientY: 0, pageX: 0, pageY: 0 });
 
     const getRow = (record: Record) => {
         const defaultProps = {
@@ -82,10 +85,11 @@ export const FileTable: React.FC = () => {
     };
 
     const closeMenu = () =>
-        setMenuState({
+        setMenuState((state) => ({
+            ...state,
             items: [],
             open: false,
-        });
+        }));
 
     const handleKeyPress = (record: Record, ev: KeyboardEvent) => {
         if (editing !== null && ev.key === "Enter" && record.name !== newName) {
@@ -180,12 +184,7 @@ export const FileTable: React.FC = () => {
 
     return (
         <>
-            <ContextMenu
-                open={menuState.open}
-                items={menuState.items}
-                ev={menuState.ev}
-                closeMenu={closeMenu}
-            />
+            <ContextMenu {...menuState} closeMenu={closeMenu} />
             <div
                 className={`grid grid-row-2 w-full max-h-[calc(100%-110px)] ${
                     appState.records.length === 0 ? "" : "bg-dark-200"
@@ -238,12 +237,7 @@ export const FileTable: React.FC = () => {
                         </div>
                         <div
                             className="overflow-y-auto grid grid-cols-[51%_15%_auto]"
-                            onScroll={() =>
-                                setMenuState({
-                                    items: [],
-                                    open: false,
-                                })
-                            }
+                            onScroll={() => closeMenu()}
                         >
                             {appState.records.map((record, idx) => (
                                 <div
@@ -279,16 +273,11 @@ export const FileTable: React.FC = () => {
                                     }
                                     onContextMenu={(ev) => {
                                         ev.preventDefault();
-                                        menuState.open
-                                            ? setMenuState({
-                                                  items: [],
-                                                  open: false,
-                                              })
-                                            : setMenuState({
-                                                  items: getItems(record),
-                                                  open: true,
-                                                  ev,
-                                              });
+                                        setMenuState({
+                                            items: getItems(record),
+                                            open: true,
+                                            ...ev,
+                                        });
                                     }}
                                 >
                                     {getRow(record)}
