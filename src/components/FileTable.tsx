@@ -276,7 +276,12 @@ export const FileTable: React.FC = () => {
                                         handleOnRowClick(ev, record)
                                     }
                                     onDoubleClick={() =>
-                                        console.log(record.name)
+                                        record.inner.tag === "Directory"
+                                            ? dispatch({
+                                                  type: ActionType.REQUEST_RECORDS,
+                                                  payload: record,
+                                              })
+                                            : console.log(record.name)
                                     }
                                     onContextMenu={(ev) =>
                                         handleOnContextMenu(ev, record)

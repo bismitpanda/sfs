@@ -17,7 +17,8 @@ fn main() {
             create_directory,
             import,
             export,
-            rename
+            rename,
+            request
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");

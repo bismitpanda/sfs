@@ -18,11 +18,13 @@ export const appStateReducer: AppStateReducer = (
         case ActionType.EXPORT:
         case ActionType.DROP:
         case ActionType.RENAME:
+        case ActionType.REQUEST_RECORDS: {
             console.error(
                 "Should have been handle by async dispatcher: ",
                 ActionType[action.type],
             );
             return state;
+        }
 
         case ActionType.DELETED: {
             if (action.payload) {
@@ -58,14 +60,16 @@ export const appStateReducer: AppStateReducer = (
         }
 
         case ActionType.CREATED_FILE:
-        case ActionType.CREATED_DIRECTORY:
+        case ActionType.CREATED_DIRECTORY: {
             return { ...state, records: [...state.records, action.payload] };
+        }
 
         case ActionType.IMPORTED:
-        case ActionType.DROPPED:
+        case ActionType.DROPPED: {
             return { ...state, records: [...state.records, ...action.payload] };
+        }
 
-        case ActionType.RENAMED:
+        case ActionType.RENAMED: {
             return {
                 ...state,
                 pinned: state.pinned.map((record) =>
@@ -79,6 +83,16 @@ export const appStateReducer: AppStateReducer = (
                         : record,
                 ),
             };
+        }
+
+        case ActionType.HANDLE_RESPONSE: {
+            const [currDirRecord, records] = action.payload;
+            const workingDir = [
+                ...state.workingDir,
+                { name: currDirRecord.name, id: currDirRecord.id },
+            ];
+            return { ...state, currDirRecord, records, workingDir };
+        }
 
         default:
             console.warn("Unknown dispatch action: ", action);

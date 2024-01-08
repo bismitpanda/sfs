@@ -33,7 +33,7 @@ pub fn check_password(password: String) -> Result<()> {
 #[tauri::command]
 pub fn login(password: String, window: Window, handle: AppHandle) -> Result<()> {
     let record_table = RecordTable::init(&password, &path::home_dir().unwrap().join(".sfs"))?;
-    let meta = record_table.meta();
+    let (curr_dir_record, records, pinned) = record_table.init_data()?;
 
     handle.manage(AppState {
         record_table: Mutex::new(record_table),
@@ -42,7 +42,6 @@ pub fn login(password: String, window: Window, handle: AppHandle) -> Result<()> 
     window.get_window("login").unwrap().close().unwrap();
 
     let main_window = window.get_window("main").unwrap();
-    let (curr_dir_record, records, pinned) = meta.init_data()?;
     main_window
         .emit(
             "initialize",
@@ -122,4 +121,9 @@ pub fn rename(new_name: String, old_name: String, state: State<AppState>) -> Res
         .lock()
         .unwrap()
         .rename(&old_name, &new_name)
+}
+
+#[tauri::command]
+pub fn request(record: usize, state: State<AppState>) -> Result<(Record, Vec<Record>)> {
+    state.record_table.lock().unwrap().get_dir_entries(record)
 }

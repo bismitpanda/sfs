@@ -130,26 +130,6 @@ pub struct Meta {
     pinned: HashSet<usize>,
 }
 
-impl Meta {
-    pub fn init_data(&self) -> Result<(Record, Vec<Record>, Vec<Record>)> {
-        let root_record = self.entries[0].clone();
-
-        let records = root_record
-            .as_directory()?
-            .entries
-            .values()
-            .map(|id| self.entries[*id].clone())
-            .collect();
-        let pinned = self
-            .pinned
-            .iter()
-            .map(|id| self.entries[*id].clone())
-            .collect();
-
-        Ok((root_record, records, pinned))
-    }
-}
-
 impl RecordTable {
     pub fn init(user_key: &str, base: &Path) -> Result<Self> {
         if base.exists() {
@@ -256,10 +236,6 @@ impl RecordTable {
         })
     }
 
-    pub fn meta(&self) -> Meta {
-        self.meta.clone()
-    }
-
     pub fn config(&self) -> Config {
         self.config.clone()
     }
@@ -363,9 +339,19 @@ impl RecordTable {
     pub fn curr_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
         self.meta.entries[self.curr_dir_id].as_directory_mut()
     }
-}
 
-impl RecordTable {
+    pub fn get_dir_entries(&self, id: usize) -> Result<(Record, Vec<Record>)> {
+        Ok((
+            self.meta.entries[id].clone(),
+            self.meta.entries[id]
+                .as_directory()?
+                .entries
+                .values()
+                .map(|id| self.meta.entries[*id].clone())
+                .collect(),
+        ))
+    }
+
     pub fn create(&mut self, name: &str, contents: Option<Vec<u8>>) -> Result<Record> {
         let inner = if let Some(contents) = contents {
             let checksum = xxh3_64(&contents);
@@ -580,5 +566,25 @@ impl RecordTable {
         self.meta.entries[id].name = new_name.to_owned();
 
         Ok(())
+    }
+
+    pub fn init_data(&self) -> Result<(Record, Vec<Record>, Vec<Record>)> {
+        let root_record = self.meta.entries[0].clone();
+
+        let records = root_record
+            .as_directory()?
+            .entries
+            .values()
+            .map(|id| self.meta.entries[*id].clone())
+            .collect();
+
+        let pinned = self
+            .meta
+            .pinned
+            .iter()
+            .map(|id| self.meta.entries[*id].clone())
+            .collect();
+
+        Ok((root_record, records, pinned))
     }
 }

@@ -16,6 +16,7 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
                 type: ActionType.CREATE_DIRECTORY,
                 payload: name,
             });
+            setName("");
             close();
         }
     };

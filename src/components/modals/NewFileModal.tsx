@@ -16,6 +16,7 @@ export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
                 type: ActionType.CREATE_FILE,
                 payload: name,
             });
+            setName("");
             close();
         }
     };
