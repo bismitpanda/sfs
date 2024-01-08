@@ -14,4 +14,6 @@ export enum ActionType {
     EXPORT,
     DROP,
     DROPPED,
+    RENAME,
+    RENAMED,
 }

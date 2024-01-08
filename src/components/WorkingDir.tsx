@@ -10,13 +10,13 @@ export const WorkingDir: React.FC = () => {
         <div className="breadcrumbs text-sm min-h-5">
             <ul>
                 <li>
-                    <a>
-                        <Home strokeWidth={1} size={15} />
-                    </a>
+                    <span className="hover:bg-dark-300 transition-colors p-1 rounded-md">
+                        <Home strokeWidth={1} size={16} />
+                    </span>
                 </li>
                 {workingDir.map((segment, idx) => (
                     <li key={idx}>
-                        <a>{segment}</a>
+                        <span className="hover:underline">{segment}</span>
                     </li>
                 ))}
             </ul>

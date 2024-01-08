@@ -133,6 +133,7 @@ export const getIcon = (name: string) => {
         case "dll":
         case "out":
         case "app":
+        case "msi":
             icon = FileDigit;
             break;
 

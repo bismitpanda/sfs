@@ -3,7 +3,7 @@ use std::{path::PathBuf, sync::Mutex};
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use libsfs::{config::Config, error::Result, Record, RecordTable};
 use serde::Serialize;
-use tauri::{api::path, AppHandle, Manager, State, Window, WindowBuilder, WindowUrl};
+use tauri::{api::path, AppHandle, Manager, State, Window};
 
 pub struct AppState {
     pub record_table: Mutex<RecordTable>,
@@ -116,18 +116,10 @@ pub fn export(record: usize, file: String, state: State<AppState>) -> Result<()>
 }
 
 #[tauri::command]
-pub async fn open_photo(record: usize, app: AppHandle) -> Result<()> {
-    let photo_viewer_window =
-        WindowBuilder::new(&app, "photo", WindowUrl::App("photo.html".into()))
-            .build()
-            .unwrap();
-
-    let window_handle = photo_viewer_window.app_handle();
-    photo_viewer_window.once("loaded", move |_| {
-        window_handle
-            .emit_to("photo", "image_load", record)
-            .unwrap();
-    });
-
-    Ok(())
+pub fn rename(new_name: String, old_name: String, state: State<AppState>) -> Result<()> {
+    state
+        .record_table
+        .lock()
+        .unwrap()
+        .rename(&old_name, &new_name)
 }

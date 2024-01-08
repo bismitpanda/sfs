@@ -25,82 +25,77 @@ export const Sidebar: React.FC = () => {
     } = useAppStateContext();
 
     return (
-        <>
-            <aside className="sidebar h-[calc(100vh-32px)] justify-start bg-dark-200">
-                <section className="sidebar-content pt-0">
-                    <div className="w-full h-full py-4 text-sm text-dark-900 flex flex-col">
-                        <h2 className="px-4">Pinned</h2>
-                        <div className="divider mt-0 px-4"></div>
+        <aside className="sidebar h-[calc(100vh-32px)] justify-start bg-dark-200">
+            <section className="sidebar-content pt-0">
+                <div className="w-full h-full py-4 text-sm text-dark-900 flex flex-col">
+                    <h2 className="px-4">Pinned</h2>
+                    <div className="divider mt-0 px-4"></div>
 
-                        <div className="overflow-auto">
-                            {pinned.map((record, idx) => (
-                                <div
-                                    className="flex group flex-row justify-between items-center cursor-pointer px-6 py-2 relative hover:bg-dark-500 active:bg-dark-400 after:content-[''] after:absolute after:w-[calc(100%-40px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-dark-500 after:left-[20px] after:-bottom-[1px] transition-colors duration-200"
-                                    key={idx}
+                    <div className="overflow-auto">
+                        {pinned.map((record, idx) => (
+                            <div
+                                className="flex group flex-row justify-between items-center cursor-pointer px-6 py-2 relative hover:bg-dark-500 active:bg-dark-400 after:content-[''] after:absolute after:w-[calc(100%-40px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-dark-500 after:left-[20px] after:-bottom-[1px] transition-colors duration-200"
+                                key={idx}
+                            >
+                                <span className="flex flex-row gap-3">
+                                    {record.inner.tag === "File" ? (
+                                        ((Icon: LucideIcon) => (
+                                            <Icon size={18} strokeWidth={1} />
+                                        ))(getIcon(record.name))
+                                    ) : (
+                                        <Folder size={18} strokeWidth={1} />
+                                    )}{" "}
+                                    {record.name}
+                                </span>
+                                <span
+                                    className="group-hover:opacity-70 opacity-0 hover:bg-dark-700 active:!scale-[0.95] p-[10px] rounded-md transition duration-200"
+                                    onClick={() =>
+                                        dispatch({
+                                            type: ActionType.UNPIN,
+                                            payload: record,
+                                        })
+                                    }
                                 >
-                                    <span className="flex flex-row gap-3">
-                                        {record.inner.tag === "File" ? (
-                                            ((Icon: LucideIcon) => (
-                                                <Icon
-                                                    size={18}
-                                                    strokeWidth={1}
-                                                />
-                                            ))(getIcon(record.name))
-                                        ) : (
-                                            <Folder size={18} strokeWidth={1} />
-                                        )}{" "}
-                                        {record.name}
-                                    </span>
-                                    <span
-                                        className="group-hover:opacity-70 opacity-0 hover:bg-dark-700 active:!scale-[0.95] p-[10px] rounded-md transition duration-200"
-                                        onClick={() =>
-                                            dispatch({
-                                                type: ActionType.UNPIN,
-                                                payload: record,
-                                            })
-                                        }
-                                    >
-                                        <PinOff
-                                            size={16}
-                                            strokeWidth={1}
-                                            color={deleteColor}
-                                        />
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
+                                    <PinOff
+                                        size={16}
+                                        strokeWidth={1}
+                                        color={deleteColor}
+                                    />
+                                </span>
+                            </div>
+                        ))}
                     </div>
-                </section>
-                <section className="sidebar-footer justify-end h-fit p-4">
-                    <div className="navbar bg-dark-100 shadow-none rounded-lg">
-                        <div className="navbar-start justify-between">
-                            <IconButton
-                                icon={Cog}
-                                color={infoColor}
-                                tooltipTop="Settings"
-                                onClick={() => openModal(ModalEnum.SETTINGS)}
-                            />
-                            <IconButton
-                                icon={PieChart}
-                                color={infoColor}
-                                tooltipTop="Properties"
-                                onClick={() => openModal(ModalEnum.PROPERTIES)}
-                            />
-                            <IconButton
-                                icon={FolderClock}
-                                color={dirActionColor}
-                                tooltipTop="Recent"
-                            />
-                            <IconButton
-                                icon={LogOut}
-                                color={deleteColor}
-                                tooltipTop="Exit"
-                                onClick={() => appWindow.close()}
-                            />
-                        </div>
+                </div>
+            </section>
+            <section className="sidebar-footer justify-end h-fit p-4">
+                <div className="navbar bg-dark-100 shadow-none rounded-lg">
+                    <div className="navbar-start justify-between">
+                        <IconButton
+                            icon={Cog}
+                            color={infoColor}
+                            tooltipTop="Settings"
+                            onClick={() => openModal(ModalEnum.SETTINGS)}
+                        />
+                        <IconButton
+                            icon={PieChart}
+                            color={infoColor}
+                            tooltipTop="Properties"
+                            onClick={() => openModal(ModalEnum.PROPERTIES)}
+                        />
+                        <IconButton
+                            icon={FolderClock}
+                            color={dirActionColor}
+                            tooltipTop="Recent"
+                        />
+                        <IconButton
+                            icon={LogOut}
+                            color={deleteColor}
+                            tooltipTop="Exit"
+                            onClick={() => appWindow.close()}
+                        />
                     </div>
-                </section>
-            </aside>
-        </>
+                </div>
+            </section>
+        </aside>
     );
 };

@@ -15,7 +15,6 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, "windows/main.html"),
                 login: resolve(__dirname, "windows/login.html"),
-                photo: resolve(__dirname, "windows/photo.html"),
             },
         },
         outDir: "../dist",

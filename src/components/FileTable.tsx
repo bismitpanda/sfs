@@ -1,7 +1,6 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { useModalContext } from "@hooks/useModalContext";
 import { useSelectedContext } from "@hooks/useSelectedContext";
-import { invoke } from "@tauri-apps/api";
 import { ActionType } from "@type/ActionType";
 import { MenuItemType } from "@type/MenuItemType";
 import { ModalEnum } from "@type/ModalEnum";
@@ -24,7 +23,7 @@ import {
     Trash2,
     Upload,
 } from "lucide-react";
-import { MouseEvent, useEffect, useState } from "react";
+import { KeyboardEvent, MouseEvent, useEffect, useState } from "react";
 
 import { ContextMenu } from "./ContextMenu";
 import { TableRow } from "./TableRow";
@@ -33,6 +32,8 @@ export const FileTable: React.FC = () => {
     const { selected, setSelected } = useSelectedContext();
     const { appState, dispatch } = useAppStateContext();
     const { openModal } = useModalContext();
+    const [editing, setEditing] = useState<number | null>(null);
+    const [newName, setNewName] = useState("");
 
     const [menuState, setMenuState] = useState<{
         open: boolean;
@@ -41,36 +42,40 @@ export const FileTable: React.FC = () => {
     }>({ open: false, items: [] });
 
     const getRow = (record: Record) => {
+        const defaultProps = {
+            record,
+            onInput: setNewName,
+            editing: editing !== null && editing === record.id,
+            date: record.file_times.modified,
+        };
+
         switch (record.inner.tag) {
             case "File":
                 return (
                     <TableRow
-                        record={record}
-                        date={record.file_times.modified}
                         size={humanFileSize(record.inner.size)}
                         icon={getIcon(record.name)}
+                        {...defaultProps}
                     />
                 );
 
             case "Directory":
                 return (
                     <TableRow
-                        record={record}
-                        date={record.file_times.modified}
                         size="-"
                         icon={record.name === ".git" ? FolderGit2 : Folder}
+                        {...defaultProps}
                     />
                 );
 
             case "Symlink":
                 return (
                     <TableRow
-                        record={record}
-                        date={record.file_times.modified}
                         size="-"
                         icon={
                             record.inner.is_file ? FileSymlink : FolderSymlink
                         }
+                        {...defaultProps}
                     />
                 );
         }
@@ -81,6 +86,18 @@ export const FileTable: React.FC = () => {
             items: [],
             open: false,
         });
+
+    const handleKeyPress = (record: Record, ev: KeyboardEvent) => {
+        if (editing !== null && ev.key === "Enter" && record.name !== newName) {
+            dispatch({
+                type: ActionType.RENAME,
+                payload: { newName, oldName: record.name },
+            });
+            setEditing(null);
+        } else if (editing !== null && ev.key === "Escape") {
+            setEditing(null);
+        }
+    };
 
     const getItems = (record: Record) => {
         const isPinned = appState.pinned.some((obj) => obj.id === record.id);
@@ -94,7 +111,7 @@ export const FileTable: React.FC = () => {
             {
                 label: "Rename",
                 icon: Pencil,
-                onClick: () => console.log("rename"),
+                onClick: () => setEditing(record.id),
             },
             {
                 label: "Move To",
@@ -110,11 +127,15 @@ export const FileTable: React.FC = () => {
             {
                 label: "Delete",
                 icon: Trash2,
-                onClick: () =>
+                onClick: () => {
                     dispatch({
                         type: ActionType.DELETE,
                         payload: [record],
-                    }),
+                    });
+                    setSelected((selected) =>
+                        selected.filter((obj) => obj.id !== record.id),
+                    );
+                },
             },
             {
                 label: "Info",
@@ -226,6 +247,9 @@ export const FileTable: React.FC = () => {
                         >
                             {appState.records.map((record, idx) => (
                                 <div
+                                    onKeyDown={(ev) =>
+                                        handleKeyPress(record, ev)
+                                    }
                                     key={idx}
                                     className={`
                                     ${
@@ -250,16 +274,9 @@ export const FileTable: React.FC = () => {
                                                   record,
                                               ])
                                     }
-                                    onDoubleClick={async () => {
-                                        if (
-                                            record.name.split(".").at(-1) ===
-                                            "png"
-                                        ) {
-                                            await invoke("open_photo", {
-                                                record: record.id,
-                                            });
-                                        }
-                                    }}
+                                    onDoubleClick={() =>
+                                        console.log(record.name)
+                                    }
                                     onContextMenu={(ev) => {
                                         ev.preventDefault();
                                         menuState.open

@@ -23,7 +23,7 @@ import {
 import { IconButton } from "./IconButton";
 
 export const Navbar: React.FC = () => {
-    const { selected, setSelected } = useSelectedContext();
+    const { selected } = useSelectedContext();
     const { openModal } = useModalContext();
     const { dispatch, appState } = useAppStateContext();
 
@@ -33,7 +33,26 @@ export const Navbar: React.FC = () => {
 
     return (
         <div className="navbar bg-dark-200 shadow-none rounded-lg">
-            <div className="navbar-start gap-3">
+            <div className="navbar-start">
+                <input
+                    type="text"
+                    className="input input-block input-solid input-sm"
+                    placeholder="Search"
+                />
+            </div>
+            <div className="navbar-end gap-3">
+                <span
+                    className={`${
+                        selected.length > 0 ? "opacity-100" : "opacity-0"
+                    } flex flex-row gap-3 transition-all ease-in-out duration-200`}
+                >
+                    <IconButton
+                        icon={Trash2}
+                        color={deleteColor}
+                        tooltipBot="Delete"
+                        onClick={() => openModal(ModalEnum.DELETE)}
+                    />
+                </span>
                 <IconButton
                     icon={Info}
                     color={infoColor}
@@ -49,7 +68,6 @@ export const Navbar: React.FC = () => {
                             type: isPinned ? ActionType.UNPIN : ActionType.PIN,
                             payload: appState.currDirRecord,
                         });
-                        setSelected([]);
                     }}
                 />
                 <IconButton
@@ -75,18 +93,6 @@ export const Navbar: React.FC = () => {
                     tooltipBot="Import"
                     onClick={() => dispatch({ type: ActionType.IMPORT })}
                 />
-                <span
-                    className={`${
-                        selected.length > 0 ? "opacity-100" : "opacity-0"
-                    } flex flex-row gap-3 transition-all ease-in-out duration-200`}
-                >
-                    <IconButton
-                        icon={Trash2}
-                        color={deleteColor}
-                        tooltipBot="Delete"
-                        onClick={() => openModal(ModalEnum.DELETE)}
-                    />
-                </span>
             </div>
         </div>
     );

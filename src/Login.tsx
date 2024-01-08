@@ -26,7 +26,7 @@ export const LoginScreen: React.FC = () => {
 
     useEffect(() => {
         inputRef.current?.focus();
-    }, []);
+    }, [inputRef]);
 
     return (
         <div className="rounded-3xl bg-dark-200 h-screen w-screen p-5 flex flex-col gap-5 items-center">

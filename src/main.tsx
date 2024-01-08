@@ -6,9 +6,10 @@ import { TitleBar } from "@components/TitleBar";
 import { WorkingDir } from "@components/WorkingDir";
 import { ContextProvider } from "@context/ContextProvider";
 import { listen } from "@tauri-apps/api/event";
+import { appWindow } from "@tauri-apps/api/window";
 import { AppState } from "@type/AppState";
 import { Record } from "@type/Record";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
@@ -30,9 +31,28 @@ const App: React.FC = () => {
         };
     }, []);
 
+    const [isMaximized, setIsMaximized] = useState(false);
+
+    const updateIsMaximized = useCallback(async () => {
+        const maximized = await appWindow.isMaximized();
+        setIsMaximized(maximized);
+    }, []);
+
+    useEffect(() => {
+        updateIsMaximized();
+
+        const unlisten = appWindow.onResized(() => {
+            updateIsMaximized();
+        });
+
+        return () => {
+            unlisten.then((f) => f());
+        };
+    }, [updateIsMaximized]);
+
     return (
         <div>
-            <TitleBar />
+            <TitleBar isMaximized={isMaximized} />
             {appState && (
                 <ContextProvider initialAppState={appState}>
                     <div className="flex flex-row items-start mt-8">

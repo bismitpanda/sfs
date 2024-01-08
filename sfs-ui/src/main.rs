@@ -3,7 +3,7 @@
 mod commands;
 
 use commands::*;
-use tauri::{http::ResponseBuilder, Manager, RunEvent};
+use tauri::{Manager, RunEvent};
 
 fn main() {
     let app = tauri::Builder::default()
@@ -17,25 +17,8 @@ fn main() {
             create_directory,
             import,
             export,
-            open_photo
+            rename
         ])
-        .register_uri_scheme_protocol("photo", move |app, request| {
-            let data = app
-                .state::<AppState>()
-                .record_table
-                .lock()
-                .unwrap()
-                .read_file(1)?;
-
-            dbg!(&request);
-
-            ResponseBuilder::new()
-                .header("Origin", "*")
-                .mimetype("image/png")
-                .header("Content-Length", data.len())
-                .status(200)
-                .body(data)
-        })
         .build(tauri::generate_context!())
         .expect("error while running tauri application");
 

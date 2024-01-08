@@ -21,7 +21,7 @@ mod tests {
             .create("dir1/file1", Some("Hello, World!".as_bytes().to_vec()))
             .unwrap();
 
-        let files = sfs.read_directory("dir1").unwrap();
+        let files = sfs.read_directory(dir1.id).unwrap();
         assert_eq!(sfs.get_size(&files[0]).unwrap(), 13);
 
         let file_data = String::from_utf8(sfs.read_file(file1.id).unwrap()).unwrap();

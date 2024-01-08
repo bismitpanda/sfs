@@ -34,7 +34,6 @@ url = "2.5.0"
 
 
 [features]
-default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 

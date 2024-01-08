@@ -360,8 +360,8 @@ impl RecordTable {
         &self.meta.entries[self.curr_dir_id]
     }
 
-    pub fn curr_dir_mut(&mut self) -> &mut Record {
-        &mut self.meta.entries[self.curr_dir_id]
+    pub fn curr_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
+        self.meta.entries[self.curr_dir_id].as_directory_mut()
     }
 }
 
@@ -434,8 +434,7 @@ impl RecordTable {
             self.meta.entries.len() - 1
         };
 
-        self.curr_dir_mut()
-            .as_directory_mut()?
+        self.curr_dir_mut()?
             .entries
             .insert(name.to_string(), record_id);
 
@@ -471,9 +470,8 @@ impl RecordTable {
         })
     }
 
-    pub fn read_directory(&self, name: &str) -> Result<Vec<Record>> {
-        let record =
-            self.meta.entries[self.curr_dir().as_directory()?.entries[name]].as_directory()?;
+    pub fn read_directory(&self, record_id: usize) -> Result<Vec<Record>> {
+        let record = self.meta.entries[record_id].as_directory()?;
 
         Ok(record
             .entries
@@ -482,15 +480,15 @@ impl RecordTable {
             .collect_vec())
     }
 
-    pub fn update(&mut self, name: &str, contents: &[u8]) -> Result<()> {
-        let record = self.meta.entries[self.curr_dir().as_directory()?.entries[name]].as_file()?;
+    // pub fn update(&mut self, name: &str, contents: &[u8]) -> Result<()> {
+    //     let record = self.meta.entries[self.curr_dir().as_directory()?.entries[name]].as_file()?;
 
-        if record.len > contents.len() {
-            todo!()
-        }
+    //     if record.len > contents.len() {
+    //         todo!()
+    //     }
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 
     pub fn delete(&mut self, record_id: usize) -> Result<()> {
         let record = std::mem::take(&mut self.meta.entries[record_id]);
@@ -498,8 +496,7 @@ impl RecordTable {
 
         self.meta.pinned.remove(&record_id);
 
-        self.curr_dir_mut()
-            .as_directory_mut()?
+        self.curr_dir_mut()?
             .entries
             .remove(&record.name)
             .context(NotFoundError { name: &record.name })?;
@@ -534,15 +531,13 @@ impl RecordTable {
         Ok(())
     }
 
-    pub fn send(&mut self, name: &str, to: &[String]) -> Result<()> {
-        let record_id = self
-            .curr_dir_mut()
-            .as_directory_mut()?
-            .entries
-            .remove(name)
-            .context(NotFoundError { name })?;
-
+    pub fn send(&mut self, record_id: usize, to: &[String]) -> Result<()> {
         let mut record = self.meta.entries[record_id].clone();
+
+        self.curr_dir_mut()?
+            .entries
+            .remove(&record.name)
+            .context(NotFoundError { name: &record.name })?;
 
         let [prev @ .., last] = to else {
             unreachable!()
@@ -569,6 +564,20 @@ impl RecordTable {
             .as_directory_mut()?
             .entries
             .insert(last.clone(), record.id);
+
+        Ok(())
+    }
+
+    pub fn rename(&mut self, old_name: &str, new_name: &str) -> Result<()> {
+        let id = self
+            .curr_dir_mut()?
+            .entries
+            .remove(old_name)
+            .context(NotFoundError { name: old_name })?;
+
+        self.curr_dir_mut()?.entries.insert(new_name.to_owned(), id);
+
+        self.meta.entries[id].name = new_name.to_owned();
 
         Ok(())
     }
