@@ -14,9 +14,9 @@ export const WorkingDir: React.FC = () => {
                         <Home strokeWidth={1} size={16} />
                     </span>
                 </li>
-                {workingDir.map((segment, idx) => (
-                    <li key={idx}>
-                        <span className="hover:underline">{segment}</span>
+                {workingDir.map(({ id, name }) => (
+                    <li key={id}>
+                        <span className="hover:underline">{name}</span>
                     </li>
                 ))}
             </ul>
