@@ -12,8 +12,7 @@ export const appStateReducer: AppStateReducer = (
         case ActionType.DELETE:
         case ActionType.PIN:
         case ActionType.UNPIN:
-        case ActionType.CREATE_FILE:
-        case ActionType.CREATE_DIRECTORY:
+        case ActionType.CREATE:
         case ActionType.IMPORT:
         case ActionType.EXPORT:
         case ActionType.DROP:
@@ -59,8 +58,7 @@ export const appStateReducer: AppStateReducer = (
             };
         }
 
-        case ActionType.CREATED_FILE:
-        case ActionType.CREATED_DIRECTORY: {
+        case ActionType.CREATED: {
             return { ...state, records: [...state.records, action.payload] };
         }
 

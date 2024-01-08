@@ -80,15 +80,9 @@ pub fn pin(record: usize, state: State<AppState>) {
 }
 
 #[tauri::command]
-pub fn create_file(name: &str, state: State<AppState>) -> Result<Record> {
+pub fn create(name: String, file: bool, state: State<AppState>) -> Result<Record> {
     let mut record_table = state.record_table.lock().unwrap();
-    record_table.create(name, Some(Vec::new()))
-}
-
-#[tauri::command]
-pub fn create_directory(name: &str, state: State<AppState>) -> Result<Record> {
-    let mut record_table = state.record_table.lock().unwrap();
-    record_table.create(name, None)
+    record_table.create(&name, file.then(Vec::new))
 }
 
 #[tauri::command]

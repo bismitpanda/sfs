@@ -13,8 +13,8 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
     const handleKeyDown = (ev: KeyboardEvent) => {
         if (ev.key === "Enter" && name !== "") {
             dispatch({
-                type: ActionType.CREATE_DIRECTORY,
-                payload: name,
+                type: ActionType.CREATE,
+                payload: { name, file: false },
             });
             newClose();
         }
@@ -52,8 +52,8 @@ export const NewDirectoryModal: React.FC<ModalProps> = ({ close, state }) => {
                     onClick={() => {
                         if (name !== "") {
                             dispatch({
-                                type: ActionType.CREATE_DIRECTORY,
-                                payload: name,
+                                type: ActionType.CREATE,
+                                payload: { name, file: false },
                             });
                             newClose();
                         }

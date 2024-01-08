@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api";
 import { open, save } from "@tauri-apps/api/dialog";
 import { Action } from "@type/Action";
 import { ActionType } from "@type/ActionType";
+import { Record } from "@type/Record";
 import { Dispatch, useCallback } from "react";
 import { toast } from "react-toastify";
 
@@ -73,40 +74,26 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     break;
                 }
 
-                case ActionType.CREATE_FILE: {
+                case ActionType.CREATE: {
                     await toast.promise(
-                        invoke("create_file", {
-                            name: action.payload,
+                        invoke<Record>("create", {
+                            ...action.payload,
                         }).then((record) =>
                             dispatch({
-                                type: ActionType.CREATED_FILE,
+                                type: ActionType.CREATED,
                                 payload: record,
                             }),
                         ),
                         {
-                            pending: `Creating file "${action.payload}"`,
-                            success: `Created file "${action.payload}"`,
-                            error: `Couldn't create file "${action.payload}"`,
-                        },
-                    );
-
-                    break;
-                }
-
-                case ActionType.CREATE_DIRECTORY: {
-                    await toast.promise(
-                        invoke("create_directory", {
-                            name: action.payload,
-                        }).then((record) =>
-                            dispatch({
-                                type: ActionType.CREATED_DIRECTORY,
-                                payload: record,
-                            }),
-                        ),
-                        {
-                            pending: `Creating directory "${action.payload}"`,
-                            success: `Created directory "${action.payload}"`,
-                            error: `Couldn't create directory "${action.payload}"`,
+                            pending: `Creating ${
+                                action.payload.file ? "file" : "directory"
+                            } "${action.payload.name}"`,
+                            success: `Created ${
+                                action.payload.file ? "file" : "directory"
+                            } "${action.payload.name}"`,
+                            error: `Couldn't ${
+                                action.payload.file ? "file" : "directory"
+                            } "${action.payload.name}"`,
                         },
                     );
 
@@ -125,7 +112,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             : [imported];
 
                         await toast.promise(
-                            invoke("import", {
+                            invoke<Record[]>("import", {
                                 files,
                             }).then((records) =>
                                 dispatch({
@@ -174,7 +161,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     const files = action.payload;
 
                     await toast.promise(
-                        invoke("import", {
+                        invoke<Record[]>("import", {
                             files,
                         }).then((records) =>
                             dispatch({
@@ -209,9 +196,12 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                 }
 
                 case ActionType.REQUEST_RECORDS: {
-                    const records = await invoke("request", {
-                        record: action.payload.id,
-                    });
+                    const records = await invoke<[Record, Record[]]>(
+                        "request",
+                        {
+                            record: action.payload.id,
+                        },
+                    );
                     dispatch({
                         type: ActionType.HANDLE_RESPONSE,
                         payload: records,

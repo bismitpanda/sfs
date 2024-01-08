@@ -13,8 +13,8 @@ export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
     const handleKeyDown = (ev: KeyboardEvent) => {
         if (ev.key === "Enter" && name !== "") {
             dispatch({
-                type: ActionType.CREATE_FILE,
-                payload: name,
+                type: ActionType.CREATE,
+                payload: { name, file: true },
             });
             setName("");
             newClose();
@@ -53,8 +53,8 @@ export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
                     onClick={() => {
                         if (name !== "") {
                             dispatch({
-                                type: ActionType.CREATE_FILE,
-                                payload: name,
+                                type: ActionType.CREATE,
+                                payload: { name, file: true },
                             });
                             newClose();
                         }
