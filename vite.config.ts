@@ -9,6 +9,7 @@ export default defineConfig({
         port: 3333,
     },
     root: "windows",
+    publicDir: "../public",
     build: {
         cssMinify: "lightningcss",
         rollupOptions: {

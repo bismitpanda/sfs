@@ -22,6 +22,7 @@ export const TableRow: React.FC<{
                     disabled
                     type="checkbox"
                     className={`checkbox checkbox-sm pl-3 transition-opacity duration-200 ${
+                        selected.length > 1 &&
                         selected.some((obj) => obj.id === record.id)
                             ? "opacity-50"
                             : "!opacity-0"

@@ -2,9 +2,7 @@ import { useAppStateContext } from "@hooks/useAppStateContext";
 import { Home } from "lucide-react";
 
 export const WorkingDir: React.FC = () => {
-    const {
-        appState: { workingDir },
-    } = useAppStateContext();
+    const { appState } = useAppStateContext();
 
     return (
         <div className="breadcrumbs text-sm min-h-5">
@@ -14,7 +12,7 @@ export const WorkingDir: React.FC = () => {
                         <Home strokeWidth={1} size={16} />
                     </span>
                 </li>
-                {workingDir.map(({ id, name }) => (
+                {appState.workingDir.map(({ id, name }) => (
                     <li key={id}>
                         <span className="hover:underline">{name}</span>
                     </li>

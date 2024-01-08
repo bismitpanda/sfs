@@ -23,7 +23,7 @@ import {
     Trash2,
     Upload,
 } from "lucide-react";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, MouseEvent, useEffect, useState } from "react";
 
 import { ContextMenu } from "./ContextMenu";
 import { TableRow } from "./TableRow";
@@ -91,7 +91,7 @@ export const FileTable: React.FC = () => {
             open: false,
         }));
 
-    const handleKeyPress = (record: Record, ev: KeyboardEvent) => {
+    const handleKeyPress = (ev: KeyboardEvent, record: Record) => {
         if (editing !== null && ev.key === "Enter" && record.name !== newName) {
             dispatch({
                 type: ActionType.RENAME,
@@ -170,6 +170,34 @@ export const FileTable: React.FC = () => {
         ];
     };
 
+    const handleOnRowClick = (ev: MouseEvent, record: Record) =>
+        selected.some((obj) => obj.id === record.id)
+            ? setSelected((selected) =>
+                  selected.filter((obj) => obj.id !== record.id),
+              )
+            : ev.shiftKey || selected.length > 1
+              ? setSelected((selected) => [...selected, record])
+              : setSelected([record]);
+
+    const handleOnContextMenu = (ev: MouseEvent, record: Record) => {
+        ev.preventDefault();
+        setMenuState({
+            items: getItems(record),
+            open: true,
+            ...ev,
+        });
+    };
+
+    const handleOnSelectAllChange = () => {
+        if (selected.length > 1) {
+            setSelected(
+                selected.length < appState.records.length
+                    ? appState.records
+                    : [],
+            );
+        }
+    };
+
     useEffect(() => {
         const handleClick = () => {
             if (menuState.open) {
@@ -208,20 +236,11 @@ export const FileTable: React.FC = () => {
                                     }
                                     type="checkbox"
                                     className={`checkbox checkbox-sm pl-3 mr-11 transition-opacity duration-200 ${
-                                        selected.length > 0
+                                        selected.length > 1
                                             ? "opacity-100"
                                             : "!opacity-0"
                                     }`}
-                                    onChange={() => {
-                                        if (selected.length > 0) {
-                                            setSelected(
-                                                selected.length <
-                                                    appState.records.length
-                                                    ? appState.records
-                                                    : [],
-                                            );
-                                        }
-                                    }}
+                                    onChange={() => handleOnSelectAllChange()}
                                 />
                                 Name
                                 <ArrowDownUp size={14} strokeWidth={1} />
@@ -242,7 +261,7 @@ export const FileTable: React.FC = () => {
                             {appState.records.map((record, idx) => (
                                 <div
                                     onKeyDown={(ev) =>
-                                        handleKeyPress(record, ev)
+                                        handleKeyPress(ev, record)
                                     }
                                     key={idx}
                                     className={`
@@ -253,32 +272,15 @@ export const FileTable: React.FC = () => {
                                             ? "bg-dark-400 after:bottom-0"
                                             : "after:-bottom-[1px]"
                                     } last:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-dark-400 active:bg-dark-300 after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-dark-400 after:left-[30px] transition-all duration-200`}
-                                    onClick={() =>
-                                        selected.some(
-                                            (obj) => obj.id === record.id,
-                                        )
-                                            ? setSelected((selected) =>
-                                                  selected.filter(
-                                                      (obj) =>
-                                                          obj.id !== record.id,
-                                                  ),
-                                              )
-                                            : setSelected((selected) => [
-                                                  ...selected,
-                                                  record,
-                                              ])
+                                    onClick={(ev) =>
+                                        handleOnRowClick(ev, record)
                                     }
                                     onDoubleClick={() =>
                                         console.log(record.name)
                                     }
-                                    onContextMenu={(ev) => {
-                                        ev.preventDefault();
-                                        setMenuState({
-                                            items: getItems(record),
-                                            open: true,
-                                            ...ev,
-                                        });
-                                    }}
+                                    onContextMenu={(ev) =>
+                                        handleOnContextMenu(ev, record)
+                                    }
                                 >
                                     {getRow(record)}
                                 </div>
