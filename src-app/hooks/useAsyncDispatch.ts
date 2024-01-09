@@ -203,6 +203,26 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     break;
                 }
 
+                case ActionType.SERVE: {
+                    await toast.promise(
+                        invoke("serve", { launch: action.payload }).then(() =>
+                            dispatch({ type: ActionType.SERVED }),
+                        ),
+                        {
+                            error: `Couldn't ${
+                                action.payload ? "launch" : "stop"
+                            } server`,
+                            pending: `${
+                                action.payload ? "Launch" : "Stop"
+                            }ing file server`,
+                            success: action.payload
+                                ? "Launched file server 🚀!"
+                                : "Stopped file server",
+                        },
+                    );
+                    break;
+                }
+
                 default:
                     dispatch(action);
                     break;

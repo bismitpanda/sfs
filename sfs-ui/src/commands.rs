@@ -132,3 +132,11 @@ pub fn request(record: usize, state: State<AppState>) -> Result<(Record, Vec<Rec
 pub fn send(record: usize, path: Vec<String>, state: State<AppState>) -> Result<()> {
     state.record_table.lock().unwrap().send(record, &path)
 }
+
+#[tauri::command]
+pub fn serve(launch: bool) {
+    println!(
+        "{} File server",
+        if launch { "Launched" } else { "Stopped" }
+    )
+}

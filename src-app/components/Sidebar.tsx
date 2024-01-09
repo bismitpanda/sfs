@@ -37,6 +37,8 @@ export const Sidebar: React.FC = () => {
             payload: record.id,
         });
 
+    console.log(appState.fileServerRunning);
+
     return (
         <aside className="sidebar h-[calc(100vh-32px)] justify-start bg-dark-200">
             <section className="sidebar-content pt-0">
@@ -88,8 +90,17 @@ export const Sidebar: React.FC = () => {
                             <IconButton
                                 icon={Rocket}
                                 color={dirActionColor}
-                                tooltipTop="Launch File Server"
-                                onClick={() => console.error("todo")}
+                                tooltipTop={`${
+                                    appState.fileServerRunning
+                                        ? "Stop"
+                                        : "Launch"
+                                } File Server`}
+                                onClick={() =>
+                                    dispatch({
+                                        type: ActionType.SERVE,
+                                        payload: !appState.fileServerRunning,
+                                    })
+                                }
                             />
                             {appState.fileServerRunning && (
                                 <span className="flex absolute h-3 w-3 top-0 right-0 -mt-1 -mr-1">

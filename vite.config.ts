@@ -15,6 +15,7 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, "windows/main.html"),
                 login: resolve(__dirname, "windows/login.html"),
+                viewer: resolve(__dirname, "windows/viewer.html"),
             },
         },
         outDir: "../dist",
@@ -25,12 +26,12 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "@modals": resolve(__dirname, "./src/components/modals"),
-            "@components": resolve(__dirname, "./src/components"),
-            "@context": resolve(__dirname, "./src/context"),
-            "@type": resolve(__dirname, "./src/types"),
-            "@utils": resolve(__dirname, "./src/utils"),
-            "@hooks": resolve(__dirname, "./src/hooks"),
+            "@modals": resolve(__dirname, "./src-app/components/modals"),
+            "@components": resolve(__dirname, "./src-app/components"),
+            "@context": resolve(__dirname, "./src-app/context"),
+            "@type": resolve(__dirname, "./src-app/types"),
+            "@utils": resolve(__dirname, "./src-app/utils"),
+            "@hooks": resolve(__dirname, "./src-app/hooks"),
         },
     },
 });

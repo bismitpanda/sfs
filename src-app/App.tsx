@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
-const Main: React.FC = () => {
+const App: React.FC = () => {
     const [appState, setAppState] = useState<AppState | null>(null);
 
     useEffect(() => {
@@ -67,4 +67,4 @@ const Main: React.FC = () => {
     );
 };
 
-export default Main;
+export default App;

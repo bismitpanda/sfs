@@ -18,6 +18,8 @@ export type Action =
     | { type: ActionType.DROPPED; payload: Record[] }
     | { type: ActionType.SET_SELECTED; payload: Record[] }
     | { type: ActionType.SEND; payload: { id: number; path: string[] } }
+    | { type: ActionType.SERVE; payload: boolean }
+    | { type: ActionType.SERVED }
     | {
           type: ActionType.RENAME | ActionType.RENAMED;
           payload: { newName: string; oldName: string };

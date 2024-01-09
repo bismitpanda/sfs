@@ -20,6 +20,7 @@ fn main() {
             rename,
             request,
             send,
+            serve,
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");

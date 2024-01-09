@@ -17,7 +17,9 @@ export const appStateReducer: AppStateReducer = (
         case ActionType.EXPORT:
         case ActionType.DROP:
         case ActionType.RENAME:
-        case ActionType.CHANGE_DIRECTORY: {
+        case ActionType.CHANGE_DIRECTORY:
+        case ActionType.SEND:
+        case ActionType.SERVE: {
             console.error(
                 "Should have been handle by async dispatcher: ",
                 ActionType[action.type],
@@ -99,6 +101,10 @@ export const appStateReducer: AppStateReducer = (
 
         case ActionType.SET_SELECTED: {
             return { ...state, selected: action.payload };
+        }
+
+        case ActionType.SERVED: {
+            return { ...state, fileServerRunning: !state.fileServerRunning };
         }
 
         default:

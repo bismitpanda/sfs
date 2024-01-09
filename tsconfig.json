@@ -19,15 +19,15 @@
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "paths": {
-            "@modals/*": ["src/components/modals/*"],
-            "@components/*": ["src/components/*"],
-            "@context/*": ["./src/context/*"],
-            "@type/*": ["./src/types/*"],
-            "@utils/*": ["./src/utils/*"],
-            "@hooks/*": ["./src/hooks/*"]
+            "@modals/*": ["src-app/components/modals/*"],
+            "@components/*": ["src-app/components/*"],
+            "@context/*": ["./src-app/context/*"],
+            "@type/*": ["./src-app/types/*"],
+            "@utils/*": ["./src-app/utils/*"],
+            "@hooks/*": ["./src-app/hooks/*"]
         }
     },
-    "include": ["src", "windows/*"],
+    "include": ["src-app", "windows", "src-viewer"],
     "references": [
         {
             "path": "./tsconfig.node.json"
