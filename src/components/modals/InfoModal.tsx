@@ -1,13 +1,16 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { ModalProps } from "@type/ModalProps";
+import { Record } from "@type/Record";
 import { getTimeString } from "@utils/getTimeString";
 
 import { Modal } from "./Modal";
 
-export const InfoModal: React.FC<ModalProps> = ({ close, state }) => {
+export const InfoModal: React.FC<ModalProps & { record: Record }> = ({
+    close,
+    state,
+    record,
+}) => {
     const { appState } = useAppStateContext();
-
-    const record = appState.workingDirRecord;
 
     return (
         <Modal close={close} state={state} title="Info">
@@ -17,10 +20,11 @@ export const InfoModal: React.FC<ModalProps> = ({ close, state }) => {
                 </div>
                 <div>
                     <span className="font-bold">Path:</span>{" "}
-                    {"/" +
-                        appState.workingDir
-                            .map((segment) => segment.name)
-                            .join("/")}
+                    {[
+                        "",
+                        ...appState.workingDir.map((segment) => segment.name),
+                        record.name,
+                    ].join("/")}
                 </div>
                 <div>
                     <span className="font-bold">Date Created:</span>{" "}

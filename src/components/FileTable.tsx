@@ -1,5 +1,6 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { useModalContext } from "@hooks/useModalContext";
+import { writeText } from "@tauri-apps/api/clipboard";
 import { ActionType } from "@type/ActionType";
 import { MenuItemType } from "@type/MenuItemType";
 import { ModalEnum } from "@type/ModalEnum";
@@ -108,7 +109,16 @@ export const FileTable: React.FC = () => {
             {
                 label: "Copy Path",
                 icon: Copy,
-                onClick: () => console.log(record.name),
+                onClick: async () =>
+                    await writeText(
+                        [
+                            "",
+                            ...appState.workingDir.map(
+                                (segment) => segment.name,
+                            ),
+                            record.name,
+                        ].join("/"),
+                    ),
             },
             {
                 label: "Rename",

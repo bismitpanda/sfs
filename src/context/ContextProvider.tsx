@@ -7,6 +7,7 @@ import { PropertiesModal } from "@modals/PropertiesModal";
 import { SettingsModal } from "@modals/SettingsModal";
 import { AppState } from "@type/AppState";
 import { ModalEnum } from "@type/ModalEnum";
+import { Record } from "@type/Record";
 import { useReducer, useState } from "react";
 
 import { appStateReducer } from "../appStateReducer";
@@ -35,6 +36,7 @@ export const ContextProvider: React.FC<{
     }>(defaultModals);
 
     const [appState, dispatch] = useReducer(appStateReducer, initialAppState);
+    const [record, setRecord] = useState(appState.workingDirRecord);
 
     const closeModal = () => setModals(defaultModals);
 
@@ -44,8 +46,10 @@ export const ContextProvider: React.FC<{
         <AppStateContext.Provider value={{ appState, dispatch: asyncDispatch }}>
             <ModalContext.Provider
                 value={{
-                    openModal: (modal: ModalEnum) => {
+                    openModal: (modal: ModalEnum, record?: Record) => {
                         setModals({ ...defaultModals, [modal]: true });
+                        if (record) setRecord(record);
+                        else setRecord(appState.workingDirRecord);
                     },
                 }}
             >
@@ -56,7 +60,11 @@ export const ContextProvider: React.FC<{
                     state={modals.newDirectory}
                     close={closeModal}
                 />
-                <InfoModal state={modals.info} close={closeModal} />
+                <InfoModal
+                    state={modals.info}
+                    close={closeModal}
+                    record={record}
+                />
                 <DeleteModal state={modals.delete} close={closeModal} />
                 {children}
             </ModalContext.Provider>

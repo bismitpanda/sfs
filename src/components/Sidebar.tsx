@@ -9,7 +9,6 @@ import { getIcon } from "@utils/getIcon";
 import {
     Cog,
     Folder,
-    FolderClock,
     LogOut,
     LucideIcon,
     PieChart,
@@ -84,11 +83,6 @@ export const Sidebar: React.FC = () => {
                             color={infoColor}
                             tooltipTop="Properties"
                             onClick={() => openModal(ModalEnum.PROPERTIES)}
-                        />
-                        <IconButton
-                            icon={FolderClock}
-                            color={dirActionColor}
-                            tooltipTop="Recent"
                         />
                         <span className="relative inline-flex">
                             <IconButton

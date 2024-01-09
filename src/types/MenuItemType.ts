@@ -3,5 +3,5 @@ import { LucideIcon } from "lucide-react";
 export interface MenuItemType {
     icon: LucideIcon;
     label: string;
-    onClick: () => void;
+    onClick: () => void | Promise<void>;
 }
