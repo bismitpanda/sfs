@@ -14,6 +14,6 @@ export enum ActionType {
     DROPPED,
     RENAME,
     RENAMED,
-    REQUEST_RECORDS,
-    HANDLE_RESPONSE,
+    CHANGE_DIRECTORY,
+    CHANGED_DIRECTORY,
 }

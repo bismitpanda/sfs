@@ -17,7 +17,7 @@ export const appStateReducer: AppStateReducer = (
         case ActionType.EXPORT:
         case ActionType.DROP:
         case ActionType.RENAME:
-        case ActionType.REQUEST_RECORDS: {
+        case ActionType.CHANGE_DIRECTORY: {
             console.error(
                 "Should have been handle by async dispatcher: ",
                 ActionType[action.type],
@@ -83,13 +83,14 @@ export const appStateReducer: AppStateReducer = (
             };
         }
 
-        case ActionType.HANDLE_RESPONSE: {
-            const [currDirRecord, records] = action.payload;
-            const workingDir = [
-                ...state.workingDir,
-                { name: currDirRecord.name, id: currDirRecord.id },
-            ];
-            return { ...state, currDirRecord, records, workingDir };
+        case ActionType.CHANGED_DIRECTORY: {
+            const [workingDirRecord, records] = action.payload.returned;
+            return {
+                pinned: state.pinned,
+                workingDirRecord,
+                records,
+                workingDir: action.payload.path,
+            };
         }
 
         default:

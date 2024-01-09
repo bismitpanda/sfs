@@ -198,6 +198,25 @@ export const FileTable: React.FC = () => {
         }
     };
 
+    const onDoubleClick = (record: Record) => {
+        if (record.inner.tag === "Directory") {
+            dispatch({
+                type: ActionType.CHANGE_DIRECTORY,
+                payload: {
+                    id: record.id,
+                    path: [
+                        ...appState.workingDir,
+                        {
+                            name: record.name,
+                            id: record.id,
+                        },
+                    ],
+                },
+            });
+            setSelected([]);
+        }
+    };
+
     useEffect(() => {
         const handleClick = () => {
             if (menuState.open) {
@@ -275,14 +294,7 @@ export const FileTable: React.FC = () => {
                                     onClick={(ev) =>
                                         handleOnRowClick(ev, record)
                                     }
-                                    onDoubleClick={() =>
-                                        record.inner.tag === "Directory"
-                                            ? dispatch({
-                                                  type: ActionType.REQUEST_RECORDS,
-                                                  payload: record,
-                                              })
-                                            : console.log(record.name)
-                                    }
+                                    onDoubleClick={() => onDoubleClick(record)}
                                     onContextMenu={(ev) =>
                                         handleOnContextMenu(ev, record)
                                     }

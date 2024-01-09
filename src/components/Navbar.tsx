@@ -23,13 +23,26 @@ import {
 import { IconButton } from "./IconButton";
 
 export const Navbar: React.FC = () => {
-    const { selected } = useSelectedContext();
+    const { selected, setSelected } = useSelectedContext();
     const { openModal } = useModalContext();
     const { dispatch, appState } = useAppStateContext();
 
     const isPinned = appState.pinned.some(
-        (record) => record.id === appState.currDirRecord.id,
+        (record) => record.id === appState.workingDirRecord.id,
     );
+
+    const moveDirUp = () => {
+        const path = [...appState.workingDir];
+        path.pop();
+
+        const toDir = path.at(-1) || { id: 0, path: [] };
+
+        dispatch({
+            type: ActionType.CHANGE_DIRECTORY,
+            payload: { id: toDir.id, path },
+        });
+        setSelected([]);
+    };
 
     return (
         <div className="navbar bg-dark-200 shadow-none rounded-lg">
@@ -43,7 +56,7 @@ export const Navbar: React.FC = () => {
             <div className="navbar-end gap-3">
                 <span
                     className={`${
-                        selected.length > 0 ? "opacity-100" : "opacity-0"
+                        selected.length > 1 ? "opacity-100" : "opacity-0"
                     } flex flex-row gap-3 transition-all ease-in-out duration-200`}
                 >
                     <IconButton
@@ -66,7 +79,7 @@ export const Navbar: React.FC = () => {
                     onClick={() => {
                         dispatch({
                             type: isPinned ? ActionType.UNPIN : ActionType.PIN,
-                            payload: appState.currDirRecord,
+                            payload: appState.workingDirRecord,
                         });
                     }}
                 />
@@ -74,6 +87,7 @@ export const Navbar: React.FC = () => {
                     icon={FolderUp}
                     color={dirActionColor}
                     tooltipBot="Move Up"
+                    onClick={() => moveDirUp()}
                 />
                 <IconButton
                     icon={FolderPlus}

@@ -108,7 +108,7 @@ pub struct RecordTable {
     compressor: Encoder,
     decompressor: Decoder,
     backend: StdFile,
-    curr_dir_id: usize,
+    working_dir_id: usize,
     meta: Meta,
     crypt: Crypt,
 }
@@ -145,12 +145,16 @@ impl RecordTable {
         self.meta.pinned.remove(&record_id);
     }
 
-    pub fn curr_dir(&self) -> &Record {
-        &self.meta.entries[self.curr_dir_id]
+    pub fn working_dir(&self) -> &Record {
+        &self.meta.entries[self.working_dir_id]
     }
 
-    pub fn curr_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
-        self.meta.entries[self.curr_dir_id].as_directory_mut()
+    pub fn wworking_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
+        self.meta.entries[self.working_dir_id].as_directory_mut()
+    }
+
+    pub fn set_working_dir_id(&mut self, record_id: usize) {
+        self.working_dir_id = record_id;
     }
 
     pub fn get_dir_entries(&self, id: usize) -> Result<(Record, Vec<Record>)> {
@@ -201,7 +205,7 @@ impl RecordTable {
         let store_key = Aes256Gcm::generate_key(OsRng);
         let root_record = Record {
             id: 0,
-            name: "/".to_string(),
+            name: String::new(),
             file_times: filetime::now(),
             inner: RecordInner::Directory(DirectoryRecord {
                 entries: HashMap::default(),
@@ -220,7 +224,7 @@ impl RecordTable {
                 .context(FsError {
                     path: config.storage.to_string_lossy(),
                 })?,
-            curr_dir_id: 0,
+            working_dir_id: 0,
             config,
             meta: Meta {
                 entries: vec![root_record],
@@ -272,7 +276,7 @@ impl RecordTable {
                 .context(FsError {
                     path: config.storage.to_string_lossy(),
                 })?,
-            curr_dir_id: 0,
+            working_dir_id: 0,
             config,
             meta,
             crypt,
@@ -330,29 +334,29 @@ impl RecordTable {
 
         let mut index = 0;
         let mut last_off = 0;
-        let mut cur_size = 0;
+        let mut current_size = 0;
 
         let mut new_free = Vec::new();
 
         while let Some(&(off, size)) = free_fragments.get(index) {
-            if cur_size == 0 {
+            if current_size == 0 {
                 last_off = off;
-                cur_size = size;
+                current_size = size;
             }
 
             if let Some(&(next_off, next_size)) = free_fragments.get(index + 1) {
                 if off + size == next_off {
-                    cur_size += next_size;
+                    current_size += next_size;
                 } else {
-                    new_free.push((last_off, cur_size));
-                    cur_size = 0;
+                    new_free.push((last_off, current_size));
+                    current_size = 0;
                 }
             }
 
             index += 1;
         }
 
-        new_free.push((last_off, cur_size));
+        new_free.push((last_off, current_size));
 
         let mut fragments = HashMap::<_, Vec<_>>::new();
 
@@ -440,7 +444,7 @@ impl RecordTable {
             self.meta.entries.len() - 1
         };
 
-        self.curr_dir_mut()?
+        self.wworking_dir_mut()?
             .entries
             .insert(name.to_string(), record_id);
 
@@ -497,37 +501,47 @@ impl RecordTable {
 
         self.meta.pinned.remove(&record_id);
 
-        self.curr_dir_mut()?
+        self.wworking_dir_mut()?
             .entries
             .remove(&record.name)
             .context(NotFoundError { name: &record.name })?;
 
-        if let RecordInner::File(file_record) = record.inner {
-            self.backend
-                .seek(SeekFrom::Start(file_record.offset as u64))?;
-            self.backend.write_all(&vec![0; file_record.len])?;
+        match record.inner {
+            RecordInner::File(file_record) => {
+                self.backend
+                    .seek(SeekFrom::Start(file_record.offset as u64))?;
+                self.backend.write_all(&vec![0; file_record.len])?;
 
-            if let Some((_, free)) = self
-                .meta
-                .free_fragments
-                .iter_mut()
-                .find(|(size, _)| *size == file_record.len)
-            {
-                free.push(file_record.offset);
-            } else {
-                let free_pos = self
+                if let Some((_, free)) = self
                     .meta
                     .free_fragments
-                    .binary_search_by(|&(x, _)| x.cmp(&file_record.len))
-                    .unwrap_or_else(|pos| pos);
+                    .iter_mut()
+                    .find(|(size, _)| *size == file_record.len)
+                {
+                    free.push(file_record.offset);
+                } else {
+                    let free_pos = self
+                        .meta
+                        .free_fragments
+                        .binary_search_by(|&(x, _)| x.cmp(&file_record.len))
+                        .unwrap_or_else(|pos| pos);
 
-                self.meta
-                    .free_fragments
-                    .insert(free_pos, (file_record.len, Vec::new()));
+                    self.meta
+                        .free_fragments
+                        .insert(free_pos, (file_record.len, Vec::new()));
+                }
             }
 
-            self.merge_free();
+            RecordInner::Directory(dir_record) => {
+                for id in dir_record.entries.values() {
+                    self.delete(*id)?;
+                }
+            }
+
+            _ => {}
         }
+
+        self.merge_free();
 
         Ok(())
     }
@@ -535,7 +549,7 @@ impl RecordTable {
     pub fn send(&mut self, record_id: usize, to: &[String]) -> Result<()> {
         let mut record = self.meta.entries[record_id].clone();
 
-        self.curr_dir_mut()?
+        self.wworking_dir_mut()?
             .entries
             .remove(&record.name)
             .context(NotFoundError { name: &record.name })?;
@@ -572,12 +586,14 @@ impl RecordTable {
 
     pub fn rename(&mut self, old_name: &str, new_name: &str) -> Result<()> {
         let id = self
-            .curr_dir_mut()?
+            .wworking_dir_mut()?
             .entries
             .remove(old_name)
             .context(NotFoundError { name: old_name })?;
 
-        self.curr_dir_mut()?.entries.insert(new_name.to_owned(), id);
+        self.wworking_dir_mut()?
+            .entries
+            .insert(new_name.to_owned(), id);
 
         self.meta.entries[id].name = new_name.to_owned();
 

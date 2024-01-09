@@ -10,7 +10,7 @@ export const AppStateContext = createContext<{
         records: [],
         workingDir: [],
         pinned: [],
-        currDirRecord: {
+        workingDirRecord: {
             name: "",
             id: 0,
             file_times: {

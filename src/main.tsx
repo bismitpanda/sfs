@@ -18,7 +18,7 @@ const App: React.FC = () => {
     useEffect(() => {
         const unlisten = listen("initialize", ({ payload }) => {
             const state = payload as {
-                currDirRecord: Record;
+                workingDirRecord: Record;
                 records: Record[];
                 pinned: Record[];
             };

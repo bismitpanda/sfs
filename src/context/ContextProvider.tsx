@@ -30,23 +30,17 @@ export const ContextProvider: React.FC<{
         delete: false,
     };
     const [modals, setModals] = useState<{
-        values: {
-            settings: boolean;
-            properties: boolean;
-            newFile: boolean;
-            newDirectory: boolean;
-            info: boolean;
-            delete: boolean;
-        };
-        record?: Record;
-    }>({
-        values: defaultModals,
-    });
+        settings: boolean;
+        properties: boolean;
+        newFile: boolean;
+        newDirectory: boolean;
+        info: boolean;
+        delete: boolean;
+    }>(defaultModals);
 
     const [appState, dispatch] = useReducer(appStateReducer, initialAppState);
 
-    const closeModal = () =>
-        setModals({ values: defaultModals, record: undefined });
+    const closeModal = () => setModals(defaultModals);
 
     const asyncDispatch = useAsyncDispatch(dispatch);
 
@@ -55,39 +49,23 @@ export const ContextProvider: React.FC<{
             <SelectedContext.Provider value={{ selected, setSelected }}>
                 <ModalContext.Provider
                     value={{
-                        openModal: (modal: ModalEnum, record?: Record) => {
-                            setModals({
-                                values: { ...defaultModals, [modal]: true },
-                                record,
-                            });
+                        openModal: (modal: ModalEnum) => {
+                            setModals({ ...defaultModals, [modal]: true });
                         },
                     }}
                 >
-                    <SettingsModal
-                        state={modals.values.settings}
-                        close={closeModal}
-                    />
+                    <SettingsModal state={modals.settings} close={closeModal} />
                     <PropertiesModal
-                        state={modals.values.properties}
+                        state={modals.properties}
                         close={closeModal}
                     />
-                    <NewFileModal
-                        state={modals.values.newFile}
-                        close={closeModal}
-                    />
+                    <NewFileModal state={modals.newFile} close={closeModal} />
                     <NewDirectoryModal
-                        state={modals.values.newDirectory}
+                        state={modals.newDirectory}
                         close={closeModal}
                     />
-                    <InfoModal
-                        record={modals.record}
-                        state={modals.values.info}
-                        close={closeModal}
-                    />
-                    <DeleteModal
-                        state={modals.values.delete}
-                        close={closeModal}
-                    />
+                    <InfoModal state={modals.info} close={closeModal} />
+                    <DeleteModal state={modals.delete} close={closeModal} />
                     {children}
                 </ModalContext.Provider>
             </SelectedContext.Provider>

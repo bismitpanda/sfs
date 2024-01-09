@@ -1,8 +1,9 @@
+import { PathSegment } from "./PathSegment";
 import { Record } from "./Record";
 
 export interface AppState {
     records: Record[];
-    workingDir: { name: string; id: number }[];
+    workingDir: PathSegment[];
     pinned: Record[];
-    currDirRecord: Record;
+    workingDirRecord: Record;
 }

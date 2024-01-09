@@ -14,6 +14,7 @@ import {
     LucideIcon,
     PieChart,
     PinOff,
+    Rocket,
 } from "lucide-react";
 
 import { IconButton } from "./IconButton";
@@ -72,6 +73,12 @@ export const Sidebar: React.FC = () => {
             <section className="sidebar-footer justify-end h-fit p-4">
                 <div className="navbar bg-dark-100 shadow-none rounded-lg">
                     <div className="navbar-start justify-between">
+                        <IconButton
+                            icon={Rocket}
+                            color={dirActionColor}
+                            tooltipTop="Launch"
+                            onClick={() => console.error("todo")}
+                        />
                         <IconButton
                             icon={Cog}
                             color={infoColor}

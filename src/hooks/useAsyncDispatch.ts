@@ -195,7 +195,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     break;
                 }
 
-                case ActionType.REQUEST_RECORDS: {
+                case ActionType.CHANGE_DIRECTORY: {
                     const records = await invoke<[Record, Record[]]>(
                         "request",
                         {
@@ -203,8 +203,11 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                         },
                     );
                     dispatch({
-                        type: ActionType.HANDLE_RESPONSE,
-                        payload: records,
+                        type: ActionType.CHANGED_DIRECTORY,
+                        payload: {
+                            returned: records,
+                            path: action.payload.path,
+                        },
                     });
                     break;
                 }

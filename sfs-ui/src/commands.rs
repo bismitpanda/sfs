@@ -12,7 +12,7 @@ pub struct AppState {
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 struct InitMeta {
-    curr_dir_record: Record,
+    working_dir_record: Record,
     records: Vec<Record>,
     pinned: Vec<Record>,
 }
@@ -33,7 +33,7 @@ pub fn check_password(password: String) -> Result<()> {
 #[tauri::command]
 pub fn login(password: String, window: Window, handle: AppHandle) -> Result<()> {
     let record_table = RecordTable::init(&password, &path::home_dir().unwrap().join(".sfs"))?;
-    let (curr_dir_record, records) = record_table.get_dir_entries(0)?;
+    let (working_dir_record, records) = record_table.get_dir_entries(0)?;
     let pinned = record_table.get_pinned();
 
     handle.manage(AppState {
@@ -47,7 +47,7 @@ pub fn login(password: String, window: Window, handle: AppHandle) -> Result<()> 
         .emit(
             "initialize",
             InitMeta {
-                curr_dir_record,
+                working_dir_record,
                 records,
                 pinned,
             },
@@ -120,5 +120,10 @@ pub fn rename(new_name: String, old_name: String, state: State<AppState>) -> Res
 
 #[tauri::command]
 pub fn request(record: usize, state: State<AppState>) -> Result<(Record, Vec<Record>)> {
+    state
+        .record_table
+        .lock()
+        .unwrap()
+        .set_working_dir_id(record);
     state.record_table.lock().unwrap().get_dir_entries(record)
 }

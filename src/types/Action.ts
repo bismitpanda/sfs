@@ -1,4 +1,5 @@
 import { ActionType } from "./ActionType";
+import { PathSegment } from "./PathSegment";
 import { Record } from "./Record";
 
 export type Action =
@@ -19,5 +20,11 @@ export type Action =
           type: ActionType.RENAME | ActionType.RENAMED;
           payload: { newName: string; oldName: string };
       }
-    | { type: ActionType.REQUEST_RECORDS; payload: Record }
-    | { type: ActionType.HANDLE_RESPONSE; payload: [Record, Record[]] };
+    | {
+          type: ActionType.CHANGE_DIRECTORY;
+          payload: { id: number; path: PathSegment[] };
+      }
+    | {
+          type: ActionType.CHANGED_DIRECTORY;
+          payload: { returned: [Record, Record[]]; path: PathSegment[] };
+      };
