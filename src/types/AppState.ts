@@ -7,4 +7,5 @@ export interface AppState {
     workingDir: PathSegment[];
     pinned: Record[];
     workingDirRecord: Record;
+    fileServerRunning: boolean;
 }

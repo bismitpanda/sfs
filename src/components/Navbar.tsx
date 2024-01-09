@@ -23,7 +23,7 @@ import { IconButton } from "./IconButton";
 
 export const Navbar: React.FC = () => {
     const { openModal } = useModalContext();
-    const { dispatch, appState } = useAppStateContext();
+    const { appState, dispatch } = useAppStateContext();
 
     const isPinned = appState.pinned.some(
         (record) => record.id === appState.workingDirRecord.id,
@@ -80,12 +80,17 @@ export const Navbar: React.FC = () => {
                             isPinned ? "Unpin Directory" : "Pin Directory"
                         }
                         onClick={() => {
-                            dispatch({
-                                type: isPinned
-                                    ? ActionType.UNPIN
-                                    : ActionType.PIN,
-                                payload: appState.workingDirRecord,
-                            });
+                            dispatch(
+                                isPinned
+                                    ? {
+                                          type: ActionType.UNPIN,
+                                          payload: appState.workingDirRecord.id,
+                                      }
+                                    : {
+                                          type: ActionType.PIN,
+                                          payload: appState.workingDirRecord,
+                                      },
+                            );
                         }}
                     />
                     <IconButton

@@ -216,17 +216,24 @@ impl FileTimes {
         FileTime((self.0 & MASK_128) as u64)
     }
 
-    pub const fn from_times(accessed: FileTime, modified: FileTime, created: FileTime) -> Self {
+    pub fn set_accessed(&mut self) {
+        let now: FileTime = DateTime::now().into();
+
+        self.0 |= u128::from(now.0 & MASK) << 80;
+    }
+
+    pub fn set_modified(&mut self) {
+        let now: FileTime = DateTime::now().into();
+
+        self.0 |= u128::from(now.0 & MASK) << 40;
+    }
+
+    pub fn from_times(accessed: FileTime, modified: FileTime, created: FileTime) -> Self {
         let mut times = 0u128;
 
-        times |= (accessed.0 & MASK) as u128;
-        times <<= 40;
-
-        times |= (modified.0 & MASK) as u128;
-        times <<= 40;
-
-        times |= (created.0 & MASK) as u128;
-        times <<= 40;
+        times |= u128::from(accessed.0 & MASK) << 80;
+        times |= u128::from(modified.0 & MASK) << 40;
+        times |= u128::from(created.0 & MASK);
 
         Self(times)
     }

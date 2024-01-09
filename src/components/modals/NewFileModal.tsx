@@ -6,18 +6,14 @@ import { KeyboardEvent, useRef, useState } from "react";
 import { Modal } from "./Modal";
 
 export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
-    const { dispatch } = useAppStateContext();
+    const { appState, dispatch } = useAppStateContext();
     const inputRef = useRef<HTMLInputElement>(null);
     const [name, setName] = useState("");
+    const [exists, setExists] = useState(false);
 
     const handleKeyDown = (ev: KeyboardEvent) => {
-        if (ev.key === "Enter" && name !== "") {
-            dispatch({
-                type: ActionType.CREATE,
-                payload: { name, file: true },
-            });
-            setName("");
-            newClose();
+        if (ev.key === "Enter") {
+            handleClick();
         }
     };
 
@@ -30,6 +26,18 @@ export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
         close();
     };
 
+    const handleClick = () => {
+        if (appState.records.some((obj) => obj.name === name)) {
+            setExists(true);
+        } else if (name !== "") {
+            dispatch({
+                type: ActionType.CREATE,
+                payload: { name, file: true },
+            });
+            newClose();
+        }
+    };
+
     return (
         <Modal
             state={state}
@@ -40,25 +48,24 @@ export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
             <input
                 className="input input-block"
                 type="text"
-                name="fileNameInput"
                 ref={inputRef}
                 placeholder="Enter File name"
                 onKeyDown={handleKeyDown}
                 onChange={(ev) => setName(ev.target.value)}
                 value={name}
             />
+            <span
+                className={
+                    "text-red1 text-sm" +
+                    (exists ? " opacity-100" : " opacity-0")
+                }
+            >
+                A record already exists
+            </span>
             <span className="w-full flex flex-row justify-end">
                 <button
                     className="btn bg-green1 w-fit bg-opacity-60 text-black"
-                    onClick={() => {
-                        if (name !== "") {
-                            dispatch({
-                                type: ActionType.CREATE,
-                                payload: { name, file: true },
-                            });
-                            newClose();
-                        }
-                    }}
+                    onClick={() => handleClick()}
                 >
                     Create
                 </button>

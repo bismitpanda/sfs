@@ -35,7 +35,7 @@ export const Sidebar: React.FC = () => {
     const handleOnUnpinClick = (record: Record) =>
         dispatch({
             type: ActionType.UNPIN,
-            payload: record,
+            payload: record.id,
         });
 
     return (
@@ -73,18 +73,6 @@ export const Sidebar: React.FC = () => {
             <section className="sidebar-footer justify-end h-fit p-4">
                 <div className="navbar bg-dark-100 shadow-none rounded-lg">
                     <div className="navbar-start justify-between">
-                        <span className="relative inline-flex">
-                            <IconButton
-                                icon={Rocket}
-                                color={dirActionColor}
-                                tooltipTop="Launch"
-                                onClick={() => console.error("todo")}
-                            />
-                            <span className="flex absolute h-3 w-3 top-0 right-0 -mt-1 -mr-1">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-300 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-400"></span>
-                            </span>
-                        </span>
                         <IconButton
                             icon={Cog}
                             color={infoColor}
@@ -102,6 +90,20 @@ export const Sidebar: React.FC = () => {
                             color={dirActionColor}
                             tooltipTop="Recent"
                         />
+                        <span className="relative inline-flex">
+                            <IconButton
+                                icon={Rocket}
+                                color={dirActionColor}
+                                tooltipTop="Launch File Server"
+                                onClick={() => console.error("todo")}
+                            />
+                            {appState.fileServerRunning && (
+                                <span className="flex absolute h-3 w-3 top-0 right-0 -mt-1 -mr-1">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-300 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-400"></span>
+                                </span>
+                            )}
+                        </span>
                         <IconButton
                             icon={LogOut}
                             color={deleteColor}

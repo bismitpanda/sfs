@@ -38,38 +38,23 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                 }
 
                 case ActionType.PIN: {
-                    await toast.promise(
-                        invoke("pin", { record: action.payload.id }).then(() =>
-                            dispatch({
-                                type: ActionType.PINNED,
-                                payload: action.payload,
-                            }),
-                        ),
-                        {
-                            pending: `Pinning ${action.payload.name}`,
-                            error: `Couldn't pin ${action.payload.name}`,
-                            success: `Pinned ${action.payload.name}`,
-                        },
-                    );
+                    await invoke("pin", { record: action.payload.id });
+                    dispatch({
+                        type: ActionType.PINNED,
+                        payload: action.payload,
+                    });
+                    toast.success(`Pinned ${action.payload.name}`);
 
                     break;
                 }
 
                 case ActionType.UNPIN: {
-                    await toast.promise(
-                        invoke("unpin", { record: action.payload.id }).then(
-                            () =>
-                                dispatch({
-                                    type: ActionType.UNPINNED,
-                                    payload: action.payload.id,
-                                }),
-                        ),
-                        {
-                            pending: `Removing pin`,
-                            error: `Couldn't unpin ${action.payload.name}`,
-                            success: `Removed pin`,
-                        },
-                    );
+                    await invoke("unpin", { record: action.payload });
+                    dispatch({
+                        type: ActionType.UNPINNED,
+                        payload: action.payload,
+                    });
+                    toast.success("Removed pin");
 
                     break;
                 }

@@ -7,6 +7,7 @@ export const AppStateContext = createContext<{
     dispatch: Dispatch<Action>;
 }>({
     appState: {
+        fileServerRunning: false,
         selected: [],
         records: [],
         workingDir: [],

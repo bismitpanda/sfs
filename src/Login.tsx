@@ -31,9 +31,7 @@ export const LoginScreen: React.FC = () => {
     return (
         <div className="rounded-3xl bg-dark-200 h-screen w-screen p-5 flex flex-col gap-5 items-center">
             <h2 className="text-xl">Enter Password</h2>
-            <div
-                className={"flex flex-col w-full" + (incorrect ? "" : " pb-5")}
-            >
+            <div className={"flex flex-col w-full"}>
                 <input
                     type="password"
                     className="input input-block"
@@ -42,11 +40,15 @@ export const LoginScreen: React.FC = () => {
                     ref={inputRef}
                     onKeyDown={handleKeyDown}
                 />
-                {incorrect && (
-                    <span className="text-sm text-red1">
-                        Incorrect password!
-                    </span>
-                )}
+
+                <span
+                    className={
+                        "text-sm text-red1" +
+                        (incorrect ? " opacity-100" : " opacity-0")
+                    }
+                >
+                    Incorrect password!
+                </span>
             </div>
             <div className="flex flex-row w-full justify-end items-center gap-3">
                 <button className="btn" onClick={() => exit(0)}>

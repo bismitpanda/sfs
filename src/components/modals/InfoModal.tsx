@@ -17,11 +17,10 @@ export const InfoModal: React.FC<ModalProps> = ({ close, state }) => {
                 </div>
                 <div>
                     <span className="font-bold">Path:</span>{" "}
-                    {[
-                        "",
-                        ...appState.workingDir.map((segment) => segment.name),
-                        record.name,
-                    ].join("/")}
+                    {"/" +
+                        appState.workingDir
+                            .map((segment) => segment.name)
+                            .join("/")}
                 </div>
                 <div>
                     <span className="font-bold">Date Created:</span>{" "}

@@ -7,7 +7,7 @@ export type Action =
     | { type: ActionType.DELETED; payload: number[] }
     | { type: ActionType.PIN; payload: Record }
     | { type: ActionType.PINNED; payload: Record }
-    | { type: ActionType.UNPIN; payload: Record }
+    | { type: ActionType.UNPIN; payload: number }
     | { type: ActionType.UNPINNED; payload: number }
     | { type: ActionType.CREATE; payload: { name: string; file: boolean } }
     | { type: ActionType.CREATED; payload: Record }

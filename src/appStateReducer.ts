@@ -89,8 +89,8 @@ export const appStateReducer: AppStateReducer = (
         case ActionType.CHANGED_DIRECTORY: {
             const [workingDirRecord, records] = action.payload.returned;
             return {
+                ...state,
                 selected: [],
-                pinned: state.pinned,
                 workingDirRecord,
                 records,
                 workingDir: action.payload.path,

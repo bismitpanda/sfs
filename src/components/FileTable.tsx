@@ -8,7 +8,7 @@ import { getIcon } from "@utils/getIcon";
 import { humanFileSize } from "@utils/humanFileSize";
 import {
     ArrowDownUp,
-    ClipboardCopy,
+    Copy,
     FileSymlink,
     Folder,
     FolderGit2,
@@ -106,8 +106,8 @@ export const FileTable: React.FC = () => {
 
         return [
             {
-                label: "Copy",
-                icon: ClipboardCopy,
+                label: "Copy Path",
+                icon: Copy,
                 onClick: () => console.log(record.name),
             },
             {
@@ -148,7 +148,7 @@ export const FileTable: React.FC = () => {
                       onClick: () => {
                           dispatch({
                               type: ActionType.UNPIN,
-                              payload: record,
+                              payload: record.id,
                           });
                       },
                   }
@@ -230,9 +230,9 @@ export const FileTable: React.FC = () => {
         <>
             <ContextMenu {...menuState} closeMenu={closeMenu} />
             <div
-                className={`grid grid-row-2 w-full max-h-[calc(100%-110px)] ${
+                className={`grid grid-row-2 w-full max-h-[calc(100%-110px)] rounded-lg text-sm text-dark-900 select-none ${
                     appState.records.length === 0 ? "" : "bg-dark-200"
-                } rounded-lg text-sm text-dark-900`}
+                }`}
             >
                 {appState.records.length === 0 ? (
                     <div className="flex flex-col items-center justify-center gap-10 pt-20">

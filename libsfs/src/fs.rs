@@ -457,7 +457,8 @@ impl RecordTable {
     }
 
     pub fn read_file(&mut self, record_id: usize) -> Result<Vec<u8>> {
-        let record = self.meta.entries[record_id].clone();
+        let record = &mut self.meta.entries[record_id];
+        record.file_times.set_accessed();
 
         let file_record = record.as_file()?;
         let mut buf = vec![0; file_record.len];
@@ -485,10 +486,13 @@ impl RecordTable {
         })
     }
 
-    pub fn read_directory(&self, record_id: usize) -> Result<Vec<Record>> {
-        let record = self.meta.entries[record_id].as_directory()?;
+    pub fn read_directory(&mut self, record_id: usize) -> Result<Vec<Record>> {
+        let record = &mut self.meta.entries[record_id];
+        record.file_times.set_accessed();
 
-        Ok(record
+        let dir_record = record.as_directory()?.clone();
+
+        Ok(dir_record
             .entries
             .values()
             .map(|&id| self.meta.entries[id].clone())
@@ -547,6 +551,7 @@ impl RecordTable {
     }
 
     pub fn send(&mut self, record_id: usize, to: &[String]) -> Result<()> {
+        self.meta.entries[record_id].file_times.set_accessed();
         let mut record = self.meta.entries[record_id].clone();
 
         self.wworking_dir_mut()?
@@ -596,6 +601,7 @@ impl RecordTable {
             .insert(new_name.to_owned(), id);
 
         self.meta.entries[id].name = new_name.to_owned();
+        self.meta.entries[id].file_times.set_modified();
 
         Ok(())
     }

@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
-const App: React.FC = () => {
+const Main: React.FC = () => {
     const [appState, setAppState] = useState<AppState | null>(null);
 
     useEffect(() => {
@@ -22,7 +22,12 @@ const App: React.FC = () => {
                 records: Record[];
                 pinned: Record[];
             };
-            setAppState({ ...state, selected: [], workingDir: [] });
+            setAppState({
+                ...state,
+                selected: [],
+                workingDir: [],
+                fileServerRunning: false,
+            });
         });
 
         return () => {
@@ -45,7 +50,7 @@ const App: React.FC = () => {
                     </div>
                     <DropZone />
                     <ToastContainer
-                        position="top-right"
+                        position="bottom-right"
                         autoClose={1000}
                         hideProgressBar
                         closeOnClick
@@ -54,6 +59,7 @@ const App: React.FC = () => {
                         pauseOnHover
                         theme="dark"
                         transition={Bounce}
+                        newestOnTop
                     />
                 </ContextProvider>
             )}
@@ -61,4 +67,4 @@ const App: React.FC = () => {
     );
 };
 
-export default App;
+export default Main;
