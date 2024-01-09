@@ -35,6 +35,7 @@ export const ContextProvider: React.FC<{
         newDirectory: boolean;
         info: boolean;
         delete: boolean;
+        sendTo: boolean;
     }>(defaultModals);
 
     const [appState, dispatch] = useReducer(appStateReducer, initialAppState);
@@ -69,7 +70,7 @@ export const ContextProvider: React.FC<{
                 />
                 <DeleteModal state={modals.delete} close={closeModal} />
                 <SendToModal
-                    state={modals.delete}
+                    state={modals.sendTo}
                     close={closeModal}
                     record={record}
                 />

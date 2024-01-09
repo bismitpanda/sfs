@@ -557,7 +557,6 @@ impl RecordTable {
     }
 
     pub fn send(&mut self, record_id: usize, to: &[String]) -> Result<()> {
-        self.meta.entries[record_id].file_times.set_accessed();
         let mut record = self.meta.entries[record_id].clone();
 
         self.working_dir_mut()?
@@ -565,37 +564,30 @@ impl RecordTable {
             .remove(&record.name)
             .context(NotFoundError { name: &record.name })?;
 
-        let [prev @ .., last] = to else {
-            unreachable!()
-        };
-
-        record.name = last.clone();
         record.file_times = filetime::now();
 
-        if prev.is_empty() {
+        if to.is_empty() {
             self.meta.entries[0]
                 .as_directory_mut()?
                 .entries
-                .insert(last.clone(), record.id);
+                .insert(record.name.clone(), record.id);
             return Ok(());
         }
 
-        let mut to_dir =
-            self.meta.entries[self.meta.entries[0].as_directory()?.entries[&prev[0]]].clone();
+        let mut to_dir = 0;
 
-        for part in &prev[1..] {
-            to_dir = self.meta.entries[*to_dir
+        for part in to {
+            to_dir = *self.meta.entries[to_dir]
                 .as_directory()?
                 .entries
                 .get(part)
-                .context(NotFoundError { name: last })?]
-            .clone();
+                .context(NotFoundError { name: &record.name })?;
         }
 
-        to_dir
+        self.meta.entries[to_dir]
             .as_directory_mut()?
             .entries
-            .insert(last.clone(), record.id);
+            .insert(record.name.clone(), record.id);
 
         Ok(())
     }

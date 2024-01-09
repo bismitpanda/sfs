@@ -110,7 +110,7 @@ export const FileTable: React.FC = () => {
                       {
                           label: "Move To",
                           icon: SendHorizonal,
-                          onClick: () => console.log("move"),
+                          onClick: () => openModal(ModalEnum.SEND_TO, record),
                       },
                       {
                           label: "Export",

@@ -5,4 +5,5 @@ export enum ModalEnum {
     NEW_DIRECTORY = "newDirectory",
     INFO = "info",
     DELETE = "delete",
+    SEND_TO = "sendTo",
 }
