@@ -16,4 +16,5 @@ export enum ActionType {
     RENAMED,
     CHANGE_DIRECTORY,
     CHANGED_DIRECTORY,
+    SET_SELECTED,
 }

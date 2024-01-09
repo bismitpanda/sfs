@@ -1,4 +1,4 @@
-import { useSelectedContext } from "@hooks/useSelectedContext";
+import { useAppStateContext } from "@hooks/useAppStateContext";
 import { FileTime } from "@type/FileTime";
 import { Record } from "@type/Record";
 import { LucideIcon } from "lucide-react";
@@ -12,7 +12,7 @@ export const TableRow: React.FC<{
     editing: boolean;
     onInput: (value: string) => void;
 }> = ({ record, date, size, icon: Icon, editing, onInput }) => {
-    const { selected } = useSelectedContext();
+    const { appState } = useAppStateContext();
 
     return (
         <>
@@ -22,8 +22,8 @@ export const TableRow: React.FC<{
                     disabled
                     type="checkbox"
                     className={`checkbox checkbox-sm pl-3 transition-opacity duration-200 ${
-                        selected.length > 1 &&
-                        selected.some((obj) => obj.id === record.id)
+                        appState.selected.length > 1 &&
+                        appState.selected.some((obj) => obj.id === record.id)
                             ? "opacity-50"
                             : "!opacity-0"
                     }`}

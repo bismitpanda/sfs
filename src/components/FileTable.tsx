@@ -1,6 +1,5 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { useModalContext } from "@hooks/useModalContext";
-import { useSelectedContext } from "@hooks/useSelectedContext";
 import { ActionType } from "@type/ActionType";
 import { MenuItemType } from "@type/MenuItemType";
 import { ModalEnum } from "@type/ModalEnum";
@@ -29,7 +28,6 @@ import { ContextMenu } from "./ContextMenu";
 import { TableRow } from "./TableRow";
 
 export const FileTable: React.FC = () => {
-    const { selected, setSelected } = useSelectedContext();
     const { appState, dispatch } = useAppStateContext();
     const { openModal } = useModalContext();
     const [editing, setEditing] = useState<number | null>(null);
@@ -136,9 +134,6 @@ export const FileTable: React.FC = () => {
                         type: ActionType.DELETE,
                         payload: [record],
                     });
-                    setSelected((selected) =>
-                        selected.filter((obj) => obj.id !== record.id),
-                    );
                 },
             },
             {
@@ -170,14 +165,15 @@ export const FileTable: React.FC = () => {
         ];
     };
 
-    const handleOnRowClick = (ev: MouseEvent, record: Record) =>
-        selected.some((obj) => obj.id === record.id)
-            ? setSelected((selected) =>
-                  selected.filter((obj) => obj.id !== record.id),
-              )
-            : ev.shiftKey || selected.length > 1
-              ? setSelected((selected) => [...selected, record])
-              : setSelected([record]);
+    const handleOnRowClick = (ev: MouseEvent, record: Record) => {
+        const selected = appState.selected.some((obj) => obj.id === record.id)
+            ? appState.selected.filter((obj) => obj.id !== record.id)
+            : ev.shiftKey || appState.selected.length > 1
+              ? [...appState.selected, record]
+              : [record];
+
+        dispatch({ type: ActionType.SET_SELECTED, payload: selected });
+    };
 
     const handleOnContextMenu = (ev: MouseEvent, record: Record) => {
         ev.preventDefault();
@@ -189,12 +185,14 @@ export const FileTable: React.FC = () => {
     };
 
     const handleOnSelectAllChange = () => {
-        if (selected.length > 1) {
-            setSelected(
-                selected.length < appState.records.length
-                    ? appState.records
-                    : [],
-            );
+        if (appState.selected.length > 1) {
+            dispatch({
+                type: ActionType.SET_SELECTED,
+                payload:
+                    appState.selected.length < appState.records.length
+                        ? appState.records
+                        : [],
+            });
         }
     };
 
@@ -213,7 +211,6 @@ export const FileTable: React.FC = () => {
                     ],
                 },
             });
-            setSelected([]);
         }
     };
 
@@ -250,12 +247,12 @@ export const FileTable: React.FC = () => {
                             <div className="flex flex-row gap-1 pl-3">
                                 <input
                                     checked={
-                                        selected.length ===
+                                        appState.selected.length ===
                                         appState.records.length
                                     }
                                     type="checkbox"
                                     className={`checkbox checkbox-sm pl-3 mr-11 transition-opacity duration-200 ${
-                                        selected.length > 1
+                                        appState.selected.length > 1
                                             ? "opacity-100"
                                             : "!opacity-0"
                                     }`}
@@ -285,7 +282,7 @@ export const FileTable: React.FC = () => {
                                     key={idx}
                                     className={`
                                     ${
-                                        selected.some(
+                                        appState.selected.some(
                                             (obj) => obj.id === record.id,
                                         )
                                             ? "bg-dark-400 after:bottom-0"

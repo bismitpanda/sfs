@@ -30,6 +30,9 @@ export const appStateReducer: AppStateReducer = (
                 const ids = action.payload;
                 return {
                     ...state,
+                    selected: state.selected.filter(
+                        (obj) => !ids.includes(obj.id),
+                    ),
                     records: state.records.filter(
                         (record) => !ids.some((id) => record.id === id),
                     ),
@@ -86,11 +89,16 @@ export const appStateReducer: AppStateReducer = (
         case ActionType.CHANGED_DIRECTORY: {
             const [workingDirRecord, records] = action.payload.returned;
             return {
+                selected: [],
                 pinned: state.pinned,
                 workingDirRecord,
                 records,
                 workingDir: action.payload.path,
             };
+        }
+
+        case ActionType.SET_SELECTED: {
+            return { ...state, selected: action.payload };
         }
 
         default:

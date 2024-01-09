@@ -2,7 +2,9 @@
 
 mod commands;
 
-use commands::*;
+use commands::{
+    check_password, create, delete, export, import, login, pin, rename, request, unpin, AppState,
+};
 use tauri::{Manager, RunEvent};
 
 fn main() {
@@ -17,11 +19,11 @@ fn main() {
             import,
             export,
             rename,
-            request
+            request,
         ])
-        .setup(|_app| {
+        .setup(|app| {
             #[cfg(debug_assertions)]
-            _app.get_window("main").unwrap().open_devtools();
+            app.get_window("main").unwrap().open_devtools();
 
             Ok(())
         })

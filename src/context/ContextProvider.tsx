@@ -7,20 +7,16 @@ import { PropertiesModal } from "@modals/PropertiesModal";
 import { SettingsModal } from "@modals/SettingsModal";
 import { AppState } from "@type/AppState";
 import { ModalEnum } from "@type/ModalEnum";
-import { Record } from "@type/Record";
 import { useReducer, useState } from "react";
 
 import { appStateReducer } from "../appStateReducer";
 import { AppStateContext } from "./AppStateContext";
 import { ModalContext } from "./ModalContext";
-import { SelectedContext } from "./SelectedContext";
 
 export const ContextProvider: React.FC<{
     children: React.ReactNode;
     initialAppState: AppState;
 }> = ({ children, initialAppState }) => {
-    const [selected, setSelected] = useState<Record[]>([]);
-
     const defaultModals = {
         settings: false,
         properties: false,
@@ -46,29 +42,24 @@ export const ContextProvider: React.FC<{
 
     return (
         <AppStateContext.Provider value={{ appState, dispatch: asyncDispatch }}>
-            <SelectedContext.Provider value={{ selected, setSelected }}>
-                <ModalContext.Provider
-                    value={{
-                        openModal: (modal: ModalEnum) => {
-                            setModals({ ...defaultModals, [modal]: true });
-                        },
-                    }}
-                >
-                    <SettingsModal state={modals.settings} close={closeModal} />
-                    <PropertiesModal
-                        state={modals.properties}
-                        close={closeModal}
-                    />
-                    <NewFileModal state={modals.newFile} close={closeModal} />
-                    <NewDirectoryModal
-                        state={modals.newDirectory}
-                        close={closeModal}
-                    />
-                    <InfoModal state={modals.info} close={closeModal} />
-                    <DeleteModal state={modals.delete} close={closeModal} />
-                    {children}
-                </ModalContext.Provider>
-            </SelectedContext.Provider>
+            <ModalContext.Provider
+                value={{
+                    openModal: (modal: ModalEnum) => {
+                        setModals({ ...defaultModals, [modal]: true });
+                    },
+                }}
+            >
+                <SettingsModal state={modals.settings} close={closeModal} />
+                <PropertiesModal state={modals.properties} close={closeModal} />
+                <NewFileModal state={modals.newFile} close={closeModal} />
+                <NewDirectoryModal
+                    state={modals.newDirectory}
+                    close={closeModal}
+                />
+                <InfoModal state={modals.info} close={closeModal} />
+                <DeleteModal state={modals.delete} close={closeModal} />
+                {children}
+            </ModalContext.Provider>
         </AppStateContext.Provider>
     );
 };

@@ -22,7 +22,7 @@ const App: React.FC = () => {
                 records: Record[];
                 pinned: Record[];
             };
-            setAppState({ ...state, workingDir: [] });
+            setAppState({ ...state, selected: [], workingDir: [] });
         });
 
         return () => {

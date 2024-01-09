@@ -1,11 +1,9 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
-import { useSelectedContext } from "@hooks/useSelectedContext";
 import { ActionType } from "@type/ActionType";
 import { Home } from "lucide-react";
 
 export const WorkingDir: React.FC = () => {
     const { appState, dispatch } = useAppStateContext();
-    const { setSelected } = useSelectedContext();
 
     return (
         <div className="breadcrumbs text-sm min-h-5">
@@ -16,7 +14,6 @@ export const WorkingDir: React.FC = () => {
                             type: ActionType.CHANGE_DIRECTORY,
                             payload: { id: 0, path: [] },
                         });
-                        setSelected([]);
                     }}
                 >
                     <span className="hover:bg-dark-300 transition-colors p-1 rounded-md">
@@ -33,7 +30,6 @@ export const WorkingDir: React.FC = () => {
                                     path: appState.workingDir.slice(0, idx + 1),
                                 },
                             });
-                            setSelected([]);
                         }}
                         key={id}
                     >

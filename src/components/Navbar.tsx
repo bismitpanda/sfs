@@ -1,6 +1,5 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
 import { useModalContext } from "@hooks/useModalContext";
-import { useSelectedContext } from "@hooks/useSelectedContext";
 import { ActionType } from "@type/ActionType";
 import { ModalEnum } from "@type/ModalEnum";
 import {
@@ -23,7 +22,6 @@ import {
 import { IconButton } from "./IconButton";
 
 export const Navbar: React.FC = () => {
-    const { selected, setSelected } = useSelectedContext();
     const { openModal } = useModalContext();
     const { dispatch, appState } = useAppStateContext();
 
@@ -41,7 +39,6 @@ export const Navbar: React.FC = () => {
             type: ActionType.CHANGE_DIRECTORY,
             payload: { id: toDir.id, path },
         });
-        setSelected([]);
     };
 
     return (
@@ -56,7 +53,9 @@ export const Navbar: React.FC = () => {
             <div className="navbar-end gap-3">
                 <span
                     className={`${
-                        selected.length > 1 ? "opacity-100" : "opacity-0"
+                        appState.selected.length > 1
+                            ? "opacity-100"
+                            : "opacity-0"
                     } flex flex-row gap-3 transition-all ease-in-out duration-200`}
                 >
                     <IconButton
@@ -66,28 +65,41 @@ export const Navbar: React.FC = () => {
                         onClick={() => openModal(ModalEnum.DELETE)}
                     />
                 </span>
+                <span
+                    className={
+                        "flex flex-row gap-3 transition-opacity duration-200" +
+                        (appState.workingDirRecord.id === 0
+                            ? " opacity-0"
+                            : " opacity-100")
+                    }
+                >
+                    <IconButton
+                        icon={isPinned ? PinOff : Pin}
+                        color={dirActionColor}
+                        tooltipBot={
+                            isPinned ? "Unpin Directory" : "Pin Directory"
+                        }
+                        onClick={() => {
+                            dispatch({
+                                type: isPinned
+                                    ? ActionType.UNPIN
+                                    : ActionType.PIN,
+                                payload: appState.workingDirRecord,
+                            });
+                        }}
+                    />
+                    <IconButton
+                        icon={FolderUp}
+                        color={dirActionColor}
+                        tooltipBot="Move Up"
+                        onClick={() => moveDirUp()}
+                    />
+                </span>
                 <IconButton
                     icon={Info}
                     color={infoColor}
                     tooltipBot="Info"
                     onClick={() => openModal(ModalEnum.INFO)}
-                />
-                <IconButton
-                    icon={isPinned ? PinOff : Pin}
-                    color={dirActionColor}
-                    tooltipBot={isPinned ? "Unpin Directory" : "Pin Directory"}
-                    onClick={() => {
-                        dispatch({
-                            type: isPinned ? ActionType.UNPIN : ActionType.PIN,
-                            payload: appState.workingDirRecord,
-                        });
-                    }}
-                />
-                <IconButton
-                    icon={FolderUp}
-                    color={dirActionColor}
-                    tooltipBot="Move Up"
-                    onClick={() => moveDirUp()}
                 />
                 <IconButton
                     icon={FolderPlus}

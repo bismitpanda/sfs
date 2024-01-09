@@ -16,6 +16,7 @@ export type Action =
     | { type: ActionType.EXPORT; payload: Record }
     | { type: ActionType.DROP; payload: string[] }
     | { type: ActionType.DROPPED; payload: Record[] }
+    | { type: ActionType.SET_SELECTED; payload: Record[] }
     | {
           type: ActionType.RENAME | ActionType.RENAMED;
           payload: { newName: string; oldName: string };
