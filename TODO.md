@@ -1,12 +1,8 @@
 ## Immediate
 
 -   Animated icons
--   Handle incorrect password
 
 ## Long Term
 
--   Grid view
--   Send To
--   File Conversion
--   Audio/Video/Image Viewer
+-   File server
 -   Locked directories
