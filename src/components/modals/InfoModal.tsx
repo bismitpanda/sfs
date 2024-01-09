@@ -6,14 +6,13 @@ import { getTimeString } from "@utils/getTimeString";
 import { Modal } from "./Modal";
 
 export const InfoModal: React.FC<ModalProps & { record: Record }> = ({
-    close,
-    state,
     record,
+    ...props
 }) => {
     const { appState } = useAppStateContext();
 
     return (
-        <Modal close={close} state={state} title="Info">
+        <Modal {...props} title="Info">
             <div className="flex flex-col gap-2 justify-start w-full">
                 <div>
                     <span className="font-bold">Name:</span> {record.name}

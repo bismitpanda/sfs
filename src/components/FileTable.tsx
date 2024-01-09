@@ -104,6 +104,25 @@ export const FileTable: React.FC = () => {
 
     const getItems = (record: Record) => {
         const isPinned = appState.pinned.some((obj) => obj.id === record.id);
+        const midItems =
+            record.inner.tag === "File"
+                ? [
+                      {
+                          label: "Move To",
+                          icon: SendHorizonal,
+                          onClick: () => console.log("move"),
+                      },
+                      {
+                          label: "Export",
+                          icon: Upload,
+                          onClick: () =>
+                              dispatch({
+                                  type: ActionType.EXPORT,
+                                  payload: record,
+                              }),
+                      },
+                  ]
+                : [];
 
         return [
             {
@@ -125,17 +144,7 @@ export const FileTable: React.FC = () => {
                 icon: Pencil,
                 onClick: () => setEditing(record.id),
             },
-            {
-                label: "Move To",
-                icon: SendHorizonal,
-                onClick: () => console.log("move"),
-            },
-            {
-                label: "Export",
-                icon: Upload,
-                onClick: () =>
-                    dispatch({ type: ActionType.EXPORT, payload: record }),
-            },
+            ...midItems,
             {
                 label: "Delete",
                 icon: Trash2,
@@ -290,8 +299,7 @@ export const FileTable: React.FC = () => {
                                         handleKeyPress(ev, record)
                                     }
                                     key={idx}
-                                    className={`
-                                    ${
+                                    className={`${
                                         appState.selected.some(
                                             (obj) => obj.id === record.id,
                                         )

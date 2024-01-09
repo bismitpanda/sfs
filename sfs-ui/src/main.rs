@@ -2,9 +2,8 @@
 
 mod commands;
 
-use commands::{
-    check_password, create, delete, export, import, login, pin, rename, request, unpin, AppState,
-};
+#[allow(clippy::wildcard_imports)]
+use commands::*;
 use tauri::{Manager, RunEvent};
 
 fn main() {
@@ -20,6 +19,7 @@ fn main() {
             export,
             rename,
             request,
+            send,
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application");

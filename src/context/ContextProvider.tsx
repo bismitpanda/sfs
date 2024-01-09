@@ -4,6 +4,7 @@ import { InfoModal } from "@modals/InfoModal";
 import { NewDirectoryModal } from "@modals/NewDirectoryModal";
 import { NewFileModal } from "@modals/NewFileModal";
 import { PropertiesModal } from "@modals/PropertiesModal";
+import { SendToModal } from "@modals/SendToModal";
 import { SettingsModal } from "@modals/SettingsModal";
 import { AppState } from "@type/AppState";
 import { ModalEnum } from "@type/ModalEnum";
@@ -25,6 +26,7 @@ export const ContextProvider: React.FC<{
         newDirectory: false,
         info: false,
         delete: false,
+        sendTo: false,
     };
     const [modals, setModals] = useState<{
         settings: boolean;
@@ -66,6 +68,11 @@ export const ContextProvider: React.FC<{
                     record={record}
                 />
                 <DeleteModal state={modals.delete} close={closeModal} />
+                <SendToModal
+                    state={modals.delete}
+                    close={closeModal}
+                    record={record}
+                />
                 {children}
             </ModalContext.Provider>
         </AppStateContext.Provider>

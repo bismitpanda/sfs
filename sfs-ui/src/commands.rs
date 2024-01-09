@@ -127,3 +127,8 @@ pub fn request(record: usize, state: State<AppState>) -> Result<(Record, Vec<Rec
         .set_working_dir_id(record);
     state.record_table.lock().unwrap().get_dir_entries(record)
 }
+
+#[tauri::command]
+pub fn send(record: usize, path: Vec<String>, state: State<AppState>) -> Result<()> {
+    state.record_table.lock().unwrap().send(record, &path)
+}

@@ -60,26 +60,17 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                 }
 
                 case ActionType.CREATE: {
-                    await toast.promise(
-                        invoke<Record>("create", {
-                            ...action.payload,
-                        }).then((record) =>
-                            dispatch({
-                                type: ActionType.CREATED,
-                                payload: record,
-                            }),
-                        ),
-                        {
-                            pending: `Creating ${
-                                action.payload.file ? "file" : "directory"
-                            } "${action.payload.name}"`,
-                            success: `Created ${
-                                action.payload.file ? "file" : "directory"
-                            } "${action.payload.name}"`,
-                            error: `Couldn't ${
-                                action.payload.file ? "file" : "directory"
-                            } "${action.payload.name}"`,
-                        },
+                    const record = await invoke<Record>("create", {
+                        ...action.payload,
+                    });
+                    dispatch({
+                        type: ActionType.CREATED,
+                        payload: record,
+                    });
+                    toast.success(
+                        `Created ${
+                            action.payload.file ? "file" : "directory"
+                        } "${action.payload.name}"`,
                     );
 
                     break;
@@ -194,6 +185,21 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             path: action.payload.path,
                         },
                     });
+                    break;
+                }
+
+                case ActionType.SEND: {
+                    await toast.promise(
+                        invoke("send", {
+                            record: action.payload.id,
+                            path: action.payload.path,
+                        }),
+                        {
+                            success: "Successfully sent",
+                            pending: "Sending",
+                            error: "Couldn't send",
+                        },
+                    );
                     break;
                 }
 

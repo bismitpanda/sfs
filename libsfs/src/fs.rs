@@ -149,7 +149,7 @@ impl RecordTable {
         &self.meta.entries[self.working_dir_id]
     }
 
-    pub fn wworking_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
+    pub fn working_dir_mut(&mut self) -> Result<&mut DirectoryRecord> {
         self.meta.entries[self.working_dir_id].as_directory_mut()
     }
 
@@ -444,7 +444,7 @@ impl RecordTable {
             self.meta.entries.len() - 1
         };
 
-        self.wworking_dir_mut()?
+        self.working_dir_mut()?
             .entries
             .insert(name.to_string(), record_id);
 
@@ -500,15 +500,7 @@ impl RecordTable {
     }
 
     pub fn delete(&mut self, record_id: usize) -> Result<()> {
-        let record = std::mem::take(&mut self.meta.entries[record_id]);
-        self.meta.empty_records.push(record_id);
-
-        self.meta.pinned.remove(&record_id);
-
-        self.wworking_dir_mut()?
-            .entries
-            .remove(&record.name)
-            .context(NotFoundError { name: &record.name })?;
+        let record = self.meta.entries[record_id].clone();
 
         match record.inner {
             RecordInner::File(file_record) => {
@@ -537,13 +529,27 @@ impl RecordTable {
             }
 
             RecordInner::Directory(dir_record) => {
+                let orig_id = self.working_dir_id;
+                self.set_working_dir_id(record.id);
+
                 for id in dir_record.entries.values() {
                     self.delete(*id)?;
                 }
+
+                self.set_working_dir_id(orig_id);
             }
 
             _ => {}
         }
+
+        self.working_dir_mut()?
+            .entries
+            .remove(&record.name)
+            .context(NotFoundError { name: &record.name })?;
+
+        self.meta.empty_records.push(record_id);
+        self.meta.pinned.remove(&record_id);
+        self.meta.entries[record_id] = Record::default();
 
         self.merge_free();
 
@@ -554,7 +560,7 @@ impl RecordTable {
         self.meta.entries[record_id].file_times.set_accessed();
         let mut record = self.meta.entries[record_id].clone();
 
-        self.wworking_dir_mut()?
+        self.working_dir_mut()?
             .entries
             .remove(&record.name)
             .context(NotFoundError { name: &record.name })?;
@@ -578,7 +584,12 @@ impl RecordTable {
             self.meta.entries[self.meta.entries[0].as_directory()?.entries[&prev[0]]].clone();
 
         for part in &prev[1..] {
-            to_dir = self.meta.entries[to_dir.as_directory()?.entries[part]].clone();
+            to_dir = self.meta.entries[*to_dir
+                .as_directory()?
+                .entries
+                .get(part)
+                .context(NotFoundError { name: last })?]
+            .clone();
         }
 
         to_dir
@@ -591,12 +602,12 @@ impl RecordTable {
 
     pub fn rename(&mut self, old_name: &str, new_name: &str) -> Result<()> {
         let id = self
-            .wworking_dir_mut()?
+            .working_dir_mut()?
             .entries
             .remove(old_name)
             .context(NotFoundError { name: old_name })?;
 
-        self.wworking_dir_mut()?
+        self.working_dir_mut()?
             .entries
             .insert(new_name.to_owned(), id);
 
