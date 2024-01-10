@@ -130,5 +130,5 @@ pub fn serve(launch: bool) {
     println!(
         "{} File server",
         if launch { "Launched" } else { "Stopped" }
-    )
+    );
 }
