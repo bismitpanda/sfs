@@ -1,9 +1,10 @@
 import react from "@vitejs/plugin-react-swc";
+import million from "million/compiler";
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-    plugins: [react()],
+    plugins: [million.vite({ auto: true }), react()],
     server: {
         port: 2004,
     },

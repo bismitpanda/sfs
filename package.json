@@ -14,6 +14,7 @@
         "@tauri-apps/api": "^1.5.3",
         "lucide-react": "^0.303.0",
         "luxon": "^3.4.4",
+        "million": "^2.6.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-toastify": "^9.1.3",
