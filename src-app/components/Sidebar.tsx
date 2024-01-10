@@ -38,7 +38,7 @@ export const Sidebar: React.FC = () => {
         });
 
     return (
-        <aside className="sidebar w-1/4 h-[calc(100vh-32px)] border-r border-r-dark-300 justify-start bg-dark-50">
+        <aside className="sidebar resize-x w-1/4 h-[calc(100vh-32px)] border-r border-r-dark-300 justify-start bg-dark-50">
             <section className="sidebar-content pt-0">
                 <div className="w-full h-full py-4 text-sm text-dark-900 flex flex-col">
                     <h2 className="px-4">Pinned</h2>
