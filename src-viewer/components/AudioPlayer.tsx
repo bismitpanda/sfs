@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
-export const AudioPlayer: React.FC = () => {
+export const AudioPlayer: React.FC<{ audioSrc: string }> = ({ audioSrc }) => {
     const [volume, setVolume] = useState<{ value: number; muted: boolean }>({
         value: 100,
         muted: false,
@@ -22,7 +22,7 @@ export const AudioPlayer: React.FC = () => {
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
 
-    const audioRef = useRef<HTMLAudioElement>(new Audio("audio.mp3"));
+    const audioRef = useRef<HTMLAudioElement>(new Audio(audioSrc));
 
     const getVolumeIcon = () => {
         let Icon: LucideIcon;
@@ -80,7 +80,7 @@ export const AudioPlayer: React.FC = () => {
     const handleLoadedMetadata = () => {
         setDuration(
             Number.isFinite(audioRef.current.duration)
-                ? Math.round(audioRef.current.duration)
+                ? Math.round(audioRef.current.duration * 10) / 10
                 : 0,
         );
     };
@@ -89,8 +89,11 @@ export const AudioPlayer: React.FC = () => {
         const audioEl = audioRef.current;
         audioEl.addEventListener("loadedmetadata", handleLoadedMetadata);
         const interval = setInterval(
-            () => setCurrentTime(Math.round(audioRef.current.currentTime)),
-            500,
+            () =>
+                setCurrentTime(
+                    Math.round(audioRef.current.currentTime * 10) / 10,
+                ),
+            100,
         );
 
         return () => {
@@ -103,10 +106,14 @@ export const AudioPlayer: React.FC = () => {
         paused ? audioRef.current.pause() : audioRef.current.play();
     }, [paused]);
 
+    useEffect(() => {
+        audioRef.current.loop = loop;
+    }, [loop]);
+
     return (
         <>
             <div className="h-[100px] w-[500px] bg-dark-400 grid grid-rows-2 p-5 pb-2">
-                <div className="h-full w-full flex flex-row items-center justify-center gap-2">
+                <div className="h-full w-full flex flex-row items-center justify-center gap-4">
                     {getDisplayTimeBySeconds(currentTime)}
                     <input
                         type="range"
@@ -114,6 +121,7 @@ export const AudioPlayer: React.FC = () => {
                         max={duration}
                         className="range range-flat-primary w-full"
                         value={currentTime}
+                        step={0.1}
                         onChange={(ev) => {
                             audioRef.current.currentTime = Number.parseInt(
                                 ev.target.value,
@@ -124,7 +132,15 @@ export const AudioPlayer: React.FC = () => {
                 </div>
                 <div className="h-full w-full grid grid-cols-3">
                     <div className="flex flex-row items-center justify-start">
-                        <div onClick={() => setLoop(!loop)}>
+                        <div
+                            className={
+                                "h-8 w-8 rounded-md p-2 transition duration-300 active:scale-95 " +
+                                (loop
+                                    ? "bg-primary hover:bg-opacity-60 active:bg-opacity-30"
+                                    : "hover:bg-dark-600 active:bg-dark-500")
+                            }
+                            onClick={() => setLoop((loop) => !loop)}
+                        >
                             <Repeat size={16} />
                         </div>
                     </div>
@@ -139,7 +155,11 @@ export const AudioPlayer: React.FC = () => {
                             className="h-10 w-10 rounded-md hover:bg-dark-600 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
                             onClick={() => setPaused((paused) => !paused)}
                         >
-                            {paused ? <Play /> : <Pause />}
+                            {paused || audioRef.current.ended ? (
+                                <Play />
+                            ) : (
+                                <Pause />
+                            )}
                         </div>
                         <div
                             className="h-8 w-8 rounded-md hover:bg-dark-600 hover:translate-x-0.5 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
@@ -157,7 +177,7 @@ export const AudioPlayer: React.FC = () => {
                         </div>
                         <input
                             type="range"
-                            className="range"
+                            className="range range-flat-primary"
                             max={100}
                             min={0}
                             onChange={(ev) => handleVolumeChange(ev)}
