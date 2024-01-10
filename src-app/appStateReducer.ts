@@ -107,6 +107,15 @@ export const appStateReducer: AppStateReducer = (
             return { ...state, fileServerRunning: !state.fileServerRunning };
         }
 
+        case ActionType.SENT: {
+            return {
+                ...state,
+                records: state.records.filter(
+                    (obj) => !action.payload.ids.includes(obj.id),
+                ),
+            };
+        }
+
         default:
             console.warn("Unknown dispatch action: ", action);
             return state;

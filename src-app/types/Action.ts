@@ -17,7 +17,8 @@ export type Action =
     | { type: ActionType.DROP; payload: string[] }
     | { type: ActionType.DROPPED; payload: Record[] }
     | { type: ActionType.SET_SELECTED; payload: Record[] }
-    | { type: ActionType.SEND; payload: { id: number; path: string[] } }
+    | { type: ActionType.SEND; payload: { ids: number[]; path: string[] } }
+    | { type: ActionType.SENT; payload: { ids: number[] } }
     | { type: ActionType.SERVE; payload: boolean }
     | { type: ActionType.SERVED }
     | {

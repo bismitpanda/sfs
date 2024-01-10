@@ -307,7 +307,7 @@ export const FileTable: React.FC = () => {
                                         )
                                             ? "bg-dark-100 after:bg-dark-100 after:bottom-0"
                                             : "after:-bottom-[1px] after:bg-dark-300 "
-                                    } last:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-dark-200 active:bg-dark-100 after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:left-[30px] transition-all duration-200`}
+                                    } last:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-dark-200 active:bg-dark-100 after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:h-0 after:left-[30px] transition-all duration-200`}
                                     onClick={(ev) =>
                                         handleOnRowClick(ev, record)
                                     }

@@ -25,16 +25,16 @@ export const TitleBar: React.FC = () => {
     return (
         <div
             data-tauri-drag-region
-            className="h-8 select-none flex justify-end fixed top-0 left-0 right-0 bg-dark-300"
+            className="h-8 select-none flex justify-end fixed top-0 left-0 right-0 bg-dark-100 border-b border-b-dark-200"
         >
             <div
-                className="inline-flex justify-center items-center w-8 h-8 hover:bg-dark-600 transition-colors"
+                className="inline-flex justify-center items-center w-8 h-8 hover:bg-dark-400 transition-colors"
                 onClick={() => appWindow.minimize()}
             >
                 <Minus size={16} />
             </div>
             <div
-                className="inline-flex justify-center items-center w-8 h-8 hover:bg-dark-600 transition-colors"
+                className="inline-flex justify-center items-center w-8 h-8 hover:bg-dark-400 transition-colors"
                 onClick={() => appWindow.toggleMaximize()}
             >
                 {isMaximized ? <Minimize size={16} /> : <Maximize size={16} />}

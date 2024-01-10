@@ -10,6 +10,7 @@ import {
     Info,
     Pin,
     PinOff,
+    SendHorizonal,
     Trash2,
 } from "lucide-react";
 
@@ -63,6 +64,12 @@ export const Navbar: React.FC = () => {
                         color={deleteColor}
                         tooltipBot="Delete"
                         onClick={() => openModal(ModalEnum.DELETE)}
+                    />
+                    <IconButton
+                        icon={SendHorizonal}
+                        color={dirActionColor}
+                        tooltipBot="Move To"
+                        onClick={() => openModal(ModalEnum.SEND_TO)}
                     />
                 </span>
                 {appState.workingDirRecord.id > 0 && (

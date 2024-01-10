@@ -35,7 +35,7 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <div className="rounded-3xl bg-dark-50">
+        <div className="bg-dark-50">
             <TitleBar />
             {appState && (
                 <ContextProvider initialAppState={appState}>

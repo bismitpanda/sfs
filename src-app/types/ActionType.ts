@@ -18,6 +18,7 @@ export enum ActionType {
     CHANGED_DIRECTORY,
     SET_SELECTED,
     SEND,
+    SENT,
     SERVE,
     SERVED,
 }

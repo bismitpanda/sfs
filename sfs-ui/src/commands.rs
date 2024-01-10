@@ -117,8 +117,12 @@ pub fn request(record: usize, state: State<RecordTableState>) -> Result<(Record,
 }
 
 #[tauri::command]
-pub fn send(record: usize, path: Vec<String>, state: State<RecordTableState>) -> Result<()> {
-    state.0.lock().unwrap().send(record, &path)
+pub fn send(records: Vec<usize>, path: Vec<String>, state: State<RecordTableState>) -> Result<()> {
+    for id in records {
+        state.0.lock().unwrap().send(id, &path)?;
+    }
+
+    Ok(())
 }
 
 #[tauri::command]

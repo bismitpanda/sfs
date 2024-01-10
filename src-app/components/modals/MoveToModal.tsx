@@ -6,12 +6,12 @@ import { KeyboardEvent, useRef, useState } from "react";
 
 import { Modal } from "./Modal";
 
-export const SendToModal: React.FC<ModalProps & { record: Record }> = ({
+export const MoveToModal: React.FC<ModalProps & { record?: Record }> = ({
     close,
     state,
     record,
 }) => {
-    const { dispatch } = useAppStateContext();
+    const { appState, dispatch } = useAppStateContext();
     const inputRef = useRef<HTMLInputElement>(null);
     const [path, setPath] = useState("");
 
@@ -35,8 +35,12 @@ export const SendToModal: React.FC<ModalProps & { record: Record }> = ({
             dispatch({
                 type: ActionType.SEND,
                 payload: {
-                    id: record.id,
-                    path: path.replace(/^\//g, "").split("/"),
+                    ids:
+                        record !== undefined
+                            ? [record.id]
+                            : appState.selected.map((obj) => obj.id),
+                    path:
+                        path === "/" ? [] : path.replace(/^\//g, "").split("/"),
                 },
             });
             newClose();

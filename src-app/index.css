@@ -44,6 +44,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
 
     overscroll-behavior: none;
+
+    box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {

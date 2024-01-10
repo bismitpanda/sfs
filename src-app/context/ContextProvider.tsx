@@ -1,10 +1,10 @@
 import { useAsyncDispatch } from "@hooks/useAsyncDispatch";
 import { DeleteModal } from "@modals/DeleteModal";
 import { InfoModal } from "@modals/InfoModal";
+import { MoveToModal } from "@modals/MoveToModal";
 import { NewDirectoryModal } from "@modals/NewDirectoryModal";
 import { NewFileModal } from "@modals/NewFileModal";
 import { PropertiesModal } from "@modals/PropertiesModal";
-import { SendToModal } from "@modals/SendToModal";
 import { SettingsModal } from "@modals/SettingsModal";
 import { AppState } from "@type/AppState";
 import { ModalEnum } from "@type/ModalEnum";
@@ -69,11 +69,7 @@ export const ContextProvider: React.FC<{
                     record={record}
                 />
                 <DeleteModal state={modals.delete} close={closeModal} />
-                <SendToModal
-                    state={modals.sendTo}
-                    close={closeModal}
-                    record={record}
-                />
+                <MoveToModal state={modals.sendTo} close={closeModal} />
                 {children}
             </ModalContext.Provider>
         </AppStateContext.Provider>

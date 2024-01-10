@@ -571,6 +571,7 @@ impl RecordTable {
                 .as_directory_mut()?
                 .entries
                 .insert(record.name.clone(), record.id);
+
             return Ok(());
         }
 

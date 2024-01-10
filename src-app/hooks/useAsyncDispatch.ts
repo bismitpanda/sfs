@@ -191,9 +191,14 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                 case ActionType.SEND: {
                     toast.promise(
                         invoke("send", {
-                            record: action.payload.id,
+                            records: action.payload.ids,
                             path: action.payload.path,
-                        }),
+                        }).then(() =>
+                            dispatch({
+                                type: ActionType.SENT,
+                                payload: { ids: action.payload.ids },
+                            }),
+                        ),
                         {
                             success: "Successfully sent",
                             loading: "Sending",
