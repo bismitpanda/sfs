@@ -42,11 +42,11 @@ export const Navbar: React.FC = () => {
     };
 
     return (
-        <div className="navbar bg-dark-200 shadow-none rounded-lg">
+        <div className="navbar bg-dark-50 border border-dark-300 shadow-none rounded-lg">
             <div className="navbar-start">
                 <input
                     type="text"
-                    className="input input-block input-solid input-sm"
+                    className="input input-block border bg-dark-50 input-sm"
                     placeholder="Search"
                 />
             </div>
@@ -65,41 +65,38 @@ export const Navbar: React.FC = () => {
                         onClick={() => openModal(ModalEnum.DELETE)}
                     />
                 </span>
-                <span
-                    className={
-                        "flex flex-row gap-3 transition-opacity duration-200" +
-                        (appState.workingDirRecord.id === 0
-                            ? " opacity-0"
-                            : " opacity-100")
-                    }
-                >
-                    <IconButton
-                        icon={isPinned ? PinOff : Pin}
-                        color={dirActionColor}
-                        tooltipBot={
-                            isPinned ? "Unpin Directory" : "Pin Directory"
-                        }
-                        onClick={() => {
-                            dispatch(
-                                isPinned
-                                    ? {
-                                          type: ActionType.UNPIN,
-                                          payload: appState.workingDirRecord.id,
-                                      }
-                                    : {
-                                          type: ActionType.PIN,
-                                          payload: appState.workingDirRecord,
-                                      },
-                            );
-                        }}
-                    />
-                    <IconButton
-                        icon={FolderUp}
-                        color={dirActionColor}
-                        tooltipBot="Move Up"
-                        onClick={() => moveDirUp()}
-                    />
-                </span>
+                {appState.workingDirRecord.id > 0 && (
+                    <>
+                        <IconButton
+                            icon={isPinned ? PinOff : Pin}
+                            color={dirActionColor}
+                            tooltipBot={
+                                isPinned ? "Unpin Directory" : "Pin Directory"
+                            }
+                            onClick={() => {
+                                dispatch(
+                                    isPinned
+                                        ? {
+                                              type: ActionType.UNPIN,
+                                              payload:
+                                                  appState.workingDirRecord.id,
+                                          }
+                                        : {
+                                              type: ActionType.PIN,
+                                              payload:
+                                                  appState.workingDirRecord,
+                                          },
+                                );
+                            }}
+                        />
+                        <IconButton
+                            icon={FolderUp}
+                            color={dirActionColor}
+                            tooltipBot="Move Up"
+                            onClick={() => moveDirUp()}
+                        />
+                    </>
+                )}
                 <IconButton
                     icon={Info}
                     color={infoColor}

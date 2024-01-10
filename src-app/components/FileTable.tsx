@@ -250,7 +250,9 @@ export const FileTable: React.FC = () => {
             <ContextMenu {...menuState} closeMenu={closeMenu} />
             <div
                 className={`grid grid-row-2 w-full max-h-[calc(100%-110px)] rounded-lg text-sm text-dark-900 select-none ${
-                    appState.records.length === 0 ? "" : "bg-dark-200"
+                    appState.records.length === 0
+                        ? ""
+                        : "bg-dark-50 border border-dark-300"
                 }`}
             >
                 {appState.records.length === 0 ? (
@@ -262,7 +264,7 @@ export const FileTable: React.FC = () => {
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-[50%_15%_auto] py-3 bg-inherit border-b-[3px] border-b-dark-50 rounded-t-md">
+                        <div className="grid grid-cols-[50%_15%_auto] py-3 bg-inherit border-b border-b-dark-300 rounded-t-md">
                             <div className="flex flex-row gap-1 pl-3">
                                 <input
                                     checked={
@@ -303,9 +305,9 @@ export const FileTable: React.FC = () => {
                                         appState.selected.some(
                                             (obj) => obj.id === record.id,
                                         )
-                                            ? "bg-dark-400 after:bottom-0"
-                                            : "after:-bottom-[1px]"
-                                    } last:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-dark-400 active:bg-dark-300 after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-dark-400 after:left-[30px] transition-all duration-200`}
+                                            ? "bg-dark-100 after:bg-dark-100 after:bottom-0"
+                                            : "after:-bottom-[1px] after:bg-dark-300 "
+                                    } last:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-dark-200 active:bg-dark-100 after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:left-[30px] transition-all duration-200`}
                                     onClick={(ev) =>
                                         handleOnRowClick(ev, record)
                                     }

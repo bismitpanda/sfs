@@ -4,7 +4,7 @@ import { Action } from "@type/Action";
 import { ActionType } from "@type/ActionType";
 import { Record } from "@type/Record";
 import { Dispatch, useCallback } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
     useCallback(
@@ -16,7 +16,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             ? ` ${action.payload.length} files`
                             : ` "${action.payload[0]?.name}"`;
 
-                    await toast.promise(
+                    toast.promise(
                         invoke("delete", {
                             records: action.payload.map((record) => record.id),
                         }).then(() =>
@@ -28,7 +28,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             }),
                         ),
                         {
-                            pending: `Deleting ${display}`,
+                            loading: `Deleting ${display}`,
                             success: `Successfully deleted ${display}`,
                             error: `Couldn't delete ${display}`,
                         },
@@ -43,7 +43,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                         type: ActionType.PINNED,
                         payload: action.payload,
                     });
-                    toast.success(`Pinned ${action.payload.name}`);
+                    toast.success(`Pinned "${action.payload.name}"`);
 
                     break;
                 }
@@ -87,7 +87,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             ? imported
                             : [imported];
 
-                        await toast.promise(
+                        toast.promise(
                             invoke<Record[]>("import", {
                                 files,
                             }).then((records) =>
@@ -97,7 +97,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                                 }),
                             ),
                             {
-                                pending: `Importing ${files.length} ${
+                                loading: `Importing ${files.length} ${
                                     files.length > 1 ? "files" : "file"
                                 }`,
                                 success: `Imported ${files.length} ${
@@ -117,13 +117,13 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                     const file = await save({ title: "Save file" });
 
                     if (file !== null) {
-                        await toast.promise(
+                        toast.promise(
                             invoke("export", {
                                 record: action.payload.id,
                                 file,
                             }),
                             {
-                                pending: `Exporting "${action.payload.name}"`,
+                                loading: `Exporting "${action.payload.name}"`,
                                 success: `Exported "${action.payload.name}"`,
                                 error: `Couldn't export "${action.payload.name}"`,
                             },
@@ -136,7 +136,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                 case ActionType.DROP: {
                     const files = action.payload;
 
-                    await toast.promise(
+                    toast.promise(
                         invoke<Record[]>("import", {
                             files,
                         }).then((records) =>
@@ -146,7 +146,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             }),
                         ),
                         {
-                            pending: `Importing ${files.length} ${
+                            loading: `Importing ${files.length} ${
                                 files.length > 1 ? "files" : "file"
                             }`,
                             success: `Imported ${files.length} ${
@@ -189,14 +189,14 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                 }
 
                 case ActionType.SEND: {
-                    await toast.promise(
+                    toast.promise(
                         invoke("send", {
                             record: action.payload.id,
                             path: action.payload.path,
                         }),
                         {
                             success: "Successfully sent",
-                            pending: "Sending",
+                            loading: "Sending",
                             error: "Couldn't send",
                         },
                     );
@@ -204,7 +204,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                 }
 
                 case ActionType.SERVE: {
-                    await toast.promise(
+                    toast.promise(
                         invoke("serve", { launch: action.payload }).then(() =>
                             dispatch({ type: ActionType.SERVED }),
                         ),
@@ -212,7 +212,7 @@ export const useAsyncDispatch = (dispatch: Dispatch<Action>) =>
                             error: `Couldn't ${
                                 action.payload ? "launch" : "stop"
                             } server`,
-                            pending: `${
+                            loading: `${
                                 action.payload ? "Launch" : "Stop"
                             }ing file server`,
                             success: action.payload

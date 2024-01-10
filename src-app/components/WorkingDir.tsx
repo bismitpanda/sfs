@@ -16,7 +16,7 @@ export const WorkingDir: React.FC = () => {
                         });
                     }}
                 >
-                    <span className="hover:bg-dark-300 transition-colors p-1 rounded-md">
+                    <span className="hover:bg-dark-200 transition-colors p-1 rounded-md">
                         <Home strokeWidth={1} size={16} />
                     </span>
                 </li>

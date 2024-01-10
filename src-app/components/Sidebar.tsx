@@ -37,10 +37,8 @@ export const Sidebar: React.FC = () => {
             payload: record.id,
         });
 
-    console.log(appState.fileServerRunning);
-
     return (
-        <aside className="sidebar h-[calc(100vh-32px)] justify-start bg-dark-200">
+        <aside className="sidebar w-1/4 h-[calc(100vh-32px)] border-r border-r-dark-300 justify-start bg-dark-50">
             <section className="sidebar-content pt-0">
                 <div className="w-full h-full py-4 text-sm text-dark-900 flex flex-col">
                     <h2 className="px-4">Pinned</h2>
@@ -49,7 +47,7 @@ export const Sidebar: React.FC = () => {
                     <div className="overflow-auto">
                         {appState.pinned.map((record, idx) => (
                             <div
-                                className="flex group flex-row justify-between items-center cursor-pointer px-6 py-2 relative hover:bg-dark-500 active:bg-dark-400 after:content-[''] after:absolute after:w-[calc(100%-40px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-dark-500 after:left-[20px] after:-bottom-[1px] transition-colors duration-200"
+                                className="flex group flex-row justify-between items-center cursor-pointer px-6 py-2 relative hover:bg-dark-200 active:bg-dark-100 after:content-[''] after:absolute after:w-[calc(100%-40px)] last:after:h-0 after:h-[1px] hover:after:bottom-0 after:bg-dark-400 after:left-[20px] after:-bottom-[1px] transition-colors duration-200"
                                 key={idx}
                             >
                                 <span className="flex flex-row gap-3">
@@ -57,7 +55,7 @@ export const Sidebar: React.FC = () => {
                                     {record.name}
                                 </span>
                                 <span
-                                    className="group-hover:opacity-70 opacity-0 hover:bg-dark-700 active:!scale-[0.95] p-[10px] rounded-md transition duration-200"
+                                    className="group-hover:opacity-70 opacity-0 hover:bg-dark-400 active:!scale-[0.95] p-[10px] rounded-md transition duration-200"
                                     onClick={() => handleOnUnpinClick(record)}
                                 >
                                     <PinOff
@@ -72,7 +70,7 @@ export const Sidebar: React.FC = () => {
                 </div>
             </section>
             <section className="sidebar-footer justify-end h-fit p-4">
-                <div className="navbar bg-dark-100 shadow-none rounded-lg">
+                <div className="navbar bg-dark-50 border border-dark-300 shadow-none rounded-lg">
                     <div className="navbar-start justify-between">
                         <IconButton
                             icon={Cog}

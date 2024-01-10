@@ -9,8 +9,7 @@ import { listen } from "@tauri-apps/api/event";
 import { AppState } from "@type/AppState";
 import { Record } from "@type/Record";
 import { useEffect, useState } from "react";
-import { Bounce, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.min.css";
+import { Toaster } from "sonner";
 
 const App: React.FC = () => {
     const [appState, setAppState] = useState<AppState | null>(null);
@@ -36,7 +35,7 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <div className="rounded-3xl">
+        <div className="rounded-3xl bg-dark-50">
             <TitleBar />
             {appState && (
                 <ContextProvider initialAppState={appState}>
@@ -49,17 +48,11 @@ const App: React.FC = () => {
                         </div>
                     </div>
                     <DropZone />
-                    <ToastContainer
-                        position="bottom-right"
-                        autoClose={1000}
-                        hideProgressBar
-                        closeOnClick
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
+                    <Toaster
+                        visibleToasts={10}
+                        richColors
+                        closeButton
                         theme="dark"
-                        transition={Bounce}
-                        newestOnTop
                     />
                 </ContextProvider>
             )}

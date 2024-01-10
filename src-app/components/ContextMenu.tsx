@@ -29,14 +29,14 @@ export const ContextMenu: React.FC<{
         <div
             id="ctxmenu"
             ref={contextMenuRef}
-            className={`flex flex-col absolute bg-dark-500 p-1 rounded-lg transition-opacity duration-300 ${
+            className={`flex flex-col absolute backdrop-blur-sm bg-opacity-70 bg-dark-100 border border-dark-300 p-1 rounded-lg transition-opacity duration-300 ${
                 open ? "opacity-100" : "opacity-0"
             } z-50`}
             style={{ top: `${y}px`, left: `${x}px` }}
         >
             {items.map(({ label, icon: Icon, onClick }, i) => (
                 <button
-                    className="hover:bg-dark-600 py-2 pl-3 pr-10 rounded-md active:scale-95 transition"
+                    className="hover:bg-dark-300 py-2 pl-3 pr-10 rounded-md active:scale-95 transition"
                     key={i}
                     onClick={() => {
                         onClick();

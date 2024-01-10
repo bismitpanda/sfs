@@ -10,7 +10,7 @@ export const IconButton: React.FC<{
 }> = ({ icon: Icon, color, tooltipTop, tooltipBot, onClick }) => (
     <div
         data-tooltip={tooltipTop || tooltipBot}
-        className={`navbar-item bg-dark-400 aspect-square p-2 hover:opacity-75 active:opacity-70 active:!scale-[0.97] ${
+        className={`navbar-item bg-dark-50 border border-dark-300 aspect-square p-2 hover:bg-dark-100 active:!scale-[0.97] ${
             tooltipTop ? "tooltip tooltip-top" : ""
         } ${tooltipBot ? "tooltip tooltip-bottom" : ""}`}
         onClick={onClick}

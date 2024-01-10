@@ -23,6 +23,7 @@ export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
 
     const newClose = () => {
         setName("");
+        setExists(false);
         close();
     };
 
@@ -46,7 +47,7 @@ export const NewFileModal: React.FC<ModalProps> = ({ close, state }) => {
             onChangeState={onChangeState}
         >
             <input
-                className="input input-block"
+                className="input input-block border bg-dark-50"
                 type="text"
                 ref={inputRef}
                 placeholder="Enter File name"
