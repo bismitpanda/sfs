@@ -18,7 +18,7 @@ export const AudioPlayer: React.FC = () => {
         muted: false,
     });
     const [loop, setLoop] = useState(false);
-    const [paused, setPaused] = useState(false);
+    const [paused, setPaused] = useState(true);
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
 
@@ -80,7 +80,7 @@ export const AudioPlayer: React.FC = () => {
     const handleLoadedMetadata = () => {
         setDuration(
             Number.isFinite(audioRef.current.duration)
-                ? audioRef.current.duration
+                ? Math.round(audioRef.current.duration)
                 : 0,
         );
     };
@@ -89,7 +89,7 @@ export const AudioPlayer: React.FC = () => {
         const audioEl = audioRef.current;
         audioEl.addEventListener("loadedmetadata", handleLoadedMetadata);
         const interval = setInterval(
-            () => setCurrentTime(audioRef.current.currentTime),
+            () => setCurrentTime(Math.round(audioRef.current.currentTime)),
             500,
         );
 
@@ -100,39 +100,27 @@ export const AudioPlayer: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        paused ? audioRef.current.play() : audioRef.current.pause();
+        paused ? audioRef.current.pause() : audioRef.current.play();
     }, [paused]);
 
     return (
         <>
             <div className="h-[100px] w-[500px] bg-dark-400 grid grid-rows-2 p-5 pb-2">
                 <div className="h-full w-full flex flex-row items-center justify-center gap-2">
-                    {Number.isNaN(currentTime)
-                        ? "--:--"
-                        : getDisplayTimeBySeconds(currentTime)}
+                    {getDisplayTimeBySeconds(currentTime)}
                     <input
                         type="range"
                         min={0}
-                        max={100}
+                        max={duration}
                         className="range range-flat-primary w-full"
-                        value={(() => {
-                            const dur = Math.round(
-                                (currentTime / duration) * 100,
-                            );
-
-                            return Number.isFinite(dur) ? dur : 0;
-                        })()}
+                        value={currentTime}
                         onChange={(ev) => {
-                            const currValue = Math.round(
-                                (parseInt(ev.target.value) / 100) * duration,
+                            audioRef.current.currentTime = Number.parseInt(
+                                ev.target.value,
                             );
-                            if (Number.isFinite(currValue))
-                                audioRef.current.currentTime = currValue;
                         }}
                     />
-                    {Number.isNaN(audioRef.current.duration)
-                        ? "--:--"
-                        : getDisplayTimeBySeconds(audioRef.current.duration)}
+                    {getDisplayTimeBySeconds(duration)}
                 </div>
                 <div className="h-full w-full grid grid-cols-3">
                     <div className="flex flex-row items-center justify-start">
@@ -149,7 +137,7 @@ export const AudioPlayer: React.FC = () => {
                         </div>
                         <div
                             className="h-10 w-10 rounded-md hover:bg-dark-600 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
-                            onClick={() => setPaused(!paused)}
+                            onClick={() => setPaused((paused) => !paused)}
                         >
                             {paused ? <Play /> : <Pause />}
                         </div>

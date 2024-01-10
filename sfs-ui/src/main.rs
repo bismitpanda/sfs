@@ -2,9 +2,15 @@
 
 mod commands;
 
+use std::sync::Mutex;
+
 #[allow(clippy::wildcard_imports)]
 use commands::*;
-use tauri::{Manager, RunEvent};
+use libsfs::RecordTable;
+use tauri::{async_runtime::Sender, Manager, RunEvent};
+
+pub struct RecordTableState(Mutex<RecordTable>);
+pub struct SenderState(Mutex<Sender<()>>);
 
 fn main() {
     let app = tauri::Builder::default()
@@ -29,8 +35,8 @@ fn main() {
         if let RunEvent::ExitRequested { api, .. } = event {
             api.prevent_exit();
             app_handle
-                .state::<AppState>()
-                .record_table
+                .state::<RecordTableState>()
+                .0
                 .lock()
                 .unwrap()
                 .close()
