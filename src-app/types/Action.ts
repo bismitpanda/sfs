@@ -32,4 +32,8 @@ export type Action =
     | {
           type: ActionType.CHANGED_DIRECTORY;
           payload: { returned: [Record, Record[]]; path: PathSegment[] };
+      }
+    | {
+          type: ActionType.SORT;
+          payload: { column: "name" | "date" | "size"; order: "asc" | "desc" };
       };

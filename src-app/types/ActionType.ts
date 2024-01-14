@@ -21,4 +21,5 @@ export enum ActionType {
     SENT,
     SERVE,
     SERVED,
+    SORT,
 }

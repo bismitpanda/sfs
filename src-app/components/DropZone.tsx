@@ -36,13 +36,13 @@ export const DropZone: React.FC = () => {
 
     return (
         <div
-            className={`flex flex-col items-center justify-center align-middle absolute w-[calc(100%-328px)] rounded-xl border-opacity-100 border-4 border-dashed border-sky-400 h-[calc(100%-170px)] right-5 bottom-5 bg-white transition-opacity duration-500 pointer-events-none ${
+            className={`flex flex-col items-center justify-center align-middle absolute w-3/4 rounded-xl border-opacity-100 border-4 border-dashed border-sky-400 h-[calc(100%-172px)] right-5 bottom-4 bg-white transition-opacity duration-500 pointer-events-none ${
                 filesHover
                     ? "opacity-100 bg-opacity-20"
                     : "opacity-0 bg-opacity-0"
             }`}
         >
-            <div className="h-20 w-20">
+            <div className="size-20">
                 <Plus size={100} />
             </div>
         </div>

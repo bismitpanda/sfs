@@ -28,7 +28,7 @@ export const TableRow: React.FC<{
                             : "!opacity-0"
                     }`}
                 />
-                <span className="h-5 w-5">
+                <span className="size-5">
                     <Icon size={18} strokeWidth={1} />
                 </span>
                 <span

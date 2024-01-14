@@ -1,47 +1,28 @@
 import { useAppStateContext } from "@hooks/useAppStateContext";
-import { useModalContext } from "@hooks/useModalContext";
-import { writeText } from "@tauri-apps/api/clipboard";
+import { useContextMenu } from "@hooks/useContextMenu";
 import { ActionType } from "@type/ActionType";
-import { MenuItemType } from "@type/MenuItemType";
-import { ModalEnum } from "@type/ModalEnum";
 import { Record } from "@type/Record";
 import { getIcon } from "@utils/getIcon";
 import { humanFileSize } from "@utils/humanFileSize";
 import {
     ArrowDownUp,
-    Copy,
     FileSymlink,
     Folder,
     FolderGit2,
     FolderSymlink,
     Frown,
-    Info,
-    Pencil,
-    Pin,
-    PinOff,
-    SendHorizonal,
-    Trash2,
-    Upload,
 } from "lucide-react";
-import { KeyboardEvent, MouseEvent, useEffect, useState } from "react";
+import { KeyboardEvent, MouseEvent, useState } from "react";
 
 import { ContextMenu } from "./ContextMenu";
 import { TableRow } from "./TableRow";
 
 export const FileTable: React.FC = () => {
     const { appState, dispatch } = useAppStateContext();
-    const { openModal } = useModalContext();
     const [editing, setEditing] = useState<number | null>(null);
     const [newName, setNewName] = useState("");
-
-    const [menuState, setMenuState] = useState<{
-        open: boolean;
-        items: MenuItemType[];
-        clientX: number;
-        clientY: number;
-        pageY: number;
-        pageX: number;
-    }>({ open: false, items: [], clientX: 0, clientY: 0, pageX: 0, pageY: 0 });
+    const { handleOnContextMenu, closeMenu, menuProps } =
+        useContextMenu(setEditing);
 
     const getRow = (record: Record) => {
         const defaultProps = {
@@ -83,13 +64,6 @@ export const FileTable: React.FC = () => {
         }
     };
 
-    const closeMenu = () =>
-        setMenuState((state) => ({
-            ...state,
-            items: [],
-            open: false,
-        }));
-
     const handleKeyPress = (ev: KeyboardEvent, record: Record) => {
         if (editing !== null && ev.key === "Enter" && record.name !== newName) {
             dispatch({
@@ -102,89 +76,7 @@ export const FileTable: React.FC = () => {
         }
     };
 
-    const getItems = (record: Record) => {
-        const isPinned = appState.pinned.some((obj) => obj.id === record.id);
-        const midItems =
-            record.inner.tag === "File"
-                ? [
-                      {
-                          label: "Move To",
-                          icon: SendHorizonal,
-                          onClick: () => openModal(ModalEnum.SEND_TO, record),
-                      },
-                      {
-                          label: "Export",
-                          icon: Upload,
-                          onClick: () =>
-                              dispatch({
-                                  type: ActionType.EXPORT,
-                                  payload: record,
-                              }),
-                      },
-                  ]
-                : [];
-
-        return [
-            {
-                label: "Copy Path",
-                icon: Copy,
-                onClick: async () =>
-                    await writeText(
-                        [
-                            "",
-                            ...appState.workingDir.map(
-                                (segment) => segment.name,
-                            ),
-                            record.name,
-                        ].join("/"),
-                    ),
-            },
-            {
-                label: "Rename",
-                icon: Pencil,
-                onClick: () => setEditing(record.id),
-            },
-            ...midItems,
-            {
-                label: "Delete",
-                icon: Trash2,
-                onClick: () => {
-                    dispatch({
-                        type: ActionType.DELETE,
-                        payload: [record],
-                    });
-                },
-            },
-            {
-                label: "Info",
-                icon: Info,
-                onClick: () => openModal(ModalEnum.INFO, record),
-            },
-            isPinned
-                ? {
-                      label: "Unpin",
-                      icon: PinOff,
-                      onClick: () => {
-                          dispatch({
-                              type: ActionType.UNPIN,
-                              payload: record.id,
-                          });
-                      },
-                  }
-                : {
-                      label: "Pin",
-                      icon: Pin,
-                      onClick: () => {
-                          dispatch({
-                              type: ActionType.PIN,
-                              payload: record,
-                          });
-                      },
-                  },
-        ];
-    };
-
-    const handleOnRowClick = (ev: MouseEvent, record: Record) => {
+    const handleRowClick = (ev: MouseEvent, record: Record) => {
         const selected = appState.selected.some((obj) => obj.id === record.id)
             ? appState.selected.filter((obj) => obj.id !== record.id)
             : ev.shiftKey || appState.selected.length > 1
@@ -194,16 +86,7 @@ export const FileTable: React.FC = () => {
         dispatch({ type: ActionType.SET_SELECTED, payload: selected });
     };
 
-    const handleOnContextMenu = (ev: MouseEvent, record: Record) => {
-        ev.preventDefault();
-        setMenuState({
-            items: getItems(record),
-            open: true,
-            ...ev,
-        });
-    };
-
-    const handleOnSelectAllChange = () => {
+    const handleSelectAllChange = () => {
         if (appState.selected.length > 1) {
             dispatch({
                 type: ActionType.SET_SELECTED,
@@ -215,7 +98,7 @@ export const FileTable: React.FC = () => {
         }
     };
 
-    const onDoubleClick = (record: Record) => {
+    const handleDoubleClick = (record: Record) => {
         if (record.inner.tag === "Directory") {
             dispatch({
                 type: ActionType.CHANGE_DIRECTORY,
@@ -233,21 +116,9 @@ export const FileTable: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        const handleClick = () => {
-            if (menuState.open) {
-                closeMenu();
-            }
-        };
-
-        document.addEventListener("click", handleClick);
-
-        return () => document.removeEventListener("click", handleClick);
-    }, [menuState.open]);
-
     return (
         <>
-            <ContextMenu {...menuState} closeMenu={closeMenu} />
+            <ContextMenu {...menuProps} />
             <div
                 className={`grid grid-row-2 w-full max-h-[calc(100%-110px)] rounded-lg text-sm text-dark-900 select-none ${
                     appState.records.length === 0
@@ -277,18 +148,24 @@ export const FileTable: React.FC = () => {
                                             ? "opacity-100"
                                             : "!opacity-0"
                                     }`}
-                                    onChange={() => handleOnSelectAllChange()}
+                                    onChange={() => handleSelectAllChange()}
                                 />
                                 Name
-                                <ArrowDownUp size={14} strokeWidth={1} />
+                                <span>
+                                    <ArrowDownUp size={14} strokeWidth={1} />
+                                </span>
                             </div>
                             <div className="flex flex-row gap-1">
                                 Size
-                                <ArrowDownUp size={14} strokeWidth={1} />
+                                <span>
+                                    <ArrowDownUp size={14} strokeWidth={1} />
+                                </span>
                             </div>
                             <div className="flex flex-row gap-1">
                                 Last Modified
-                                <ArrowDownUp size={14} strokeWidth={1} />
+                                <span>
+                                    <ArrowDownUp size={14} strokeWidth={1} />
+                                </span>
                             </div>
                         </div>
                         <div
@@ -308,10 +185,10 @@ export const FileTable: React.FC = () => {
                                             ? "bg-dark-100 after:bg-dark-100 after:bottom-0"
                                             : "after:-bottom-[1px] after:bg-dark-300 "
                                     } last:rounded-b-md grid grid-cols-subgrid col-span-4 cursor-pointer pl-3 pr-10 py-4 relative hover:bg-dark-200 active:bg-dark-100 after:content-[''] after:absolute after:w-[calc(100%-60px)] last:after:h-0 after:h-[1px] hover:after:h-0 after:left-[30px] transition-all duration-200`}
-                                    onClick={(ev) =>
-                                        handleOnRowClick(ev, record)
+                                    onClick={(ev) => handleRowClick(ev, record)}
+                                    onDoubleClick={() =>
+                                        handleDoubleClick(record)
                                     }
-                                    onDoubleClick={() => onDoubleClick(record)}
                                     onContextMenu={(ev) =>
                                         handleOnContextMenu(ev, record)
                                     }

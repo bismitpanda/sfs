@@ -113,7 +113,7 @@ export const AudioPlayer: React.FC<{ audioSrc: string }> = ({ audioSrc }) => {
     return (
         <>
             <div className="h-[100px] w-[500px] bg-dark-400 grid grid-rows-2 p-5 pb-2">
-                <div className="h-full w-full flex flex-row items-center justify-center gap-4">
+                <div className="size-full flex flex-row items-center justify-center gap-4">
                     {getDisplayTimeBySeconds(currentTime)}
                     <input
                         type="range"
@@ -130,11 +130,11 @@ export const AudioPlayer: React.FC<{ audioSrc: string }> = ({ audioSrc }) => {
                     />
                     {getDisplayTimeBySeconds(duration)}
                 </div>
-                <div className="h-full w-full grid grid-cols-3">
+                <div className="size-full grid grid-cols-3">
                     <div className="flex flex-row items-center justify-start">
                         <div
                             className={
-                                "h-8 w-8 rounded-md p-2 transition duration-300 active:scale-95 " +
+                                "size-8 rounded-md p-2 transition duration-300 active:scale-95 " +
                                 (loop
                                     ? "bg-primary hover:bg-opacity-60 active:bg-opacity-30"
                                     : "hover:bg-dark-600 active:bg-dark-500")
@@ -146,13 +146,13 @@ export const AudioPlayer: React.FC<{ audioSrc: string }> = ({ audioSrc }) => {
                     </div>
                     <div className="flex flex-row items-center justify-center">
                         <div
-                            className="h-8 w-8 rounded-md hover:bg-dark-600 hover:-translate-x-0.5 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
+                            className="size-8 rounded-md hover:bg-dark-600 hover:-translate-x-0.5 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
                             onClick={() => (audioRef.current.currentTime -= 10)}
                         >
                             <StepBack size={16} />
                         </div>
                         <div
-                            className="h-10 w-10 rounded-md hover:bg-dark-600 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
+                            className="size-10 rounded-md hover:bg-dark-600 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
                             onClick={() => setPaused((paused) => !paused)}
                         >
                             {paused || audioRef.current.ended ? (
@@ -162,7 +162,7 @@ export const AudioPlayer: React.FC<{ audioSrc: string }> = ({ audioSrc }) => {
                             )}
                         </div>
                         <div
-                            className="h-8 w-8 rounded-md hover:bg-dark-600 hover:translate-x-0.5 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
+                            className="size-8 rounded-md hover:bg-dark-600 hover:translate-x-0.5 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
                             onClick={() => (audioRef.current.currentTime += 10)}
                         >
                             <StepForward size={16} />
@@ -170,7 +170,7 @@ export const AudioPlayer: React.FC<{ audioSrc: string }> = ({ audioSrc }) => {
                     </div>
                     <div className="flex flex-row gap-2 items-center justify-center">
                         <div
-                            className="h-8 w-8 rounded-md hover:bg-dark-600 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
+                            className="size-8 rounded-md hover:bg-dark-600 p-2 active:bg-dark-500 transition duration-300 active:scale-95"
                             onClick={() => handleMute()}
                         >
                             {getVolumeIcon()}

@@ -27,7 +27,6 @@ export const ContextMenu: React.FC<{
 
     return (
         <div
-            id="ctxmenu"
             ref={contextMenuRef}
             className={`flex flex-col absolute backdrop-blur-sm bg-opacity-70 bg-dark-100 border border-dark-300 p-1 rounded-lg transition-opacity duration-300 ${
                 open ? "opacity-100" : "opacity-0"

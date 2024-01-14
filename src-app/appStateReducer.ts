@@ -116,6 +116,10 @@ export const appStateReducer: AppStateReducer = (
             };
         }
 
+        case ActionType.SORT: {
+            return { ...state, records: state.records.sort() };
+        }
+
         default:
             console.warn("Unknown dispatch action: ", action);
             return state;
