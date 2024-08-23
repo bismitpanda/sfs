@@ -27,7 +27,7 @@
             "@hooks/*": ["./src-app/hooks/*"]
         }
     },
-    "include": ["src-app", "windows", "src-viewer"],
+    "include": ["src-app", "windows"],
     "references": [
         {
             "path": "./tsconfig.node.json"

@@ -6,12 +6,12 @@ edition = "2021"
 
 [dependencies]
 aes-gcm = { version = "0.10.3", features = ["std"] }
-argon2 = { version = "0.5.2", features = ["std"] }
-rkyv = { version = "0.7.43", features = ["validation"] }
-serde = { version = "1.0.194", features = ["derive"] }
+argon2 = { version = "0.5.3", features = ["std"] }
+rkyv = { version = "0.7.44", features = ["validation"] }
+serde = { version = "1.0.198", features = ["derive"] }
 snap = "1.1.1"
-snafu = "0.8.0"
-xxhash-rust = { version = "0.8.8", features = ["xxh3"] }
+snafu = "0.8.2"
+xxhash-rust = { version = "0.8.10", features = ["xxh3"] }
 
 [lints.clippy]
 pedantic = "warn"

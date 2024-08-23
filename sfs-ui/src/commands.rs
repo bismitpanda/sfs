@@ -127,6 +127,12 @@ pub fn send(records: Vec<usize>, path: Vec<String>, state: State<RecordTableStat
 
 #[tauri::command]
 pub fn serve(launch: bool) {
+    tokio::spawn(async move {
+        let app = Router::new();
+        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+        axum::serve(listener, app).await.unwrap();
+    });
+
     println!(
         "{} File server",
         if launch { "Launched" } else { "Stopped" }

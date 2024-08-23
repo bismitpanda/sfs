@@ -15,7 +15,6 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, "windows/main.html"),
                 login: resolve(__dirname, "windows/login.html"),
-                viewer: resolve(__dirname, "windows/viewer.html"),
             },
         },
         outDir: "../dist",

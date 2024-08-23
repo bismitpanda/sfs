@@ -19,6 +19,5 @@ _Note: All instances of file/record shall be referred to as `record` from here_
 
 -   Add file server implementation
 -   Store user preferences
--   Integrate `viewer` into app
 -   Search capability
 -   Sorting based on parameter

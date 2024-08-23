@@ -13,8 +13,9 @@ rust-version = "1.75"
 tauri-build = { version = "1.5.1", features = [] }
 
 [dependencies]
-serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.5.4", features = [ "clipboard-write-text",
+serde = { version = "1.0.198", features = ["derive"] }
+tauri = { version = "1.6.1", features = [
+    "clipboard-write-text",
     "window-show",
     "window-start-dragging",
     "window-minimize",
@@ -27,8 +28,10 @@ tauri = { version = "1.5.4", features = [ "clipboard-write-text",
     "dialog-open",
     "process-exit",
 ] }
-argon2 = { version = "0.5.2", features = ["std"] }
+argon2 = { version = "0.5.3", features = ["std"] }
 libsfs = { path = "../libsfs" }
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread", "net"] }
+axum = "0.7.5"
 
 
 [features]
